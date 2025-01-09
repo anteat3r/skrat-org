@@ -15,7 +15,7 @@ func main() {
 
     app.OnServe().BindFunc(func(se *core.ServeEvent) error {
 
-        se.Router.GET("/", apis.Static(os.DirFS("/root/skrat-org/web"), false))
+        se.Router.GET("/{path...}", apis.Static(os.DirFS("/root/skrat-org/web"), false))
         se.Router.GET("/ss", func(e *core.RequestEvent) error {
           return app.RunInTransaction(func(txApp core.App) error {
             key := e.Request.URL.Query().Get("k")
