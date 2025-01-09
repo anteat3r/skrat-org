@@ -30,7 +30,7 @@ func main() {
             return txApp.Save(nrec)
           })
         })
-        se.Router.GET("/s/:key", func(e *core.RequestEvent) error {
+        se.Router.GET("/s/{key}", func(e *core.RequestEvent) error {
           key := e.Request.PathValue("key")
           if key == "" { return fmt.Errorf("invalid param") }
           rec, err := app.FindFirstRecordByData("urls", "name", key)
