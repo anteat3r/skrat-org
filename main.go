@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
@@ -21,6 +22,7 @@ func main() {
             key := e.Request.URL.Query().Get("k")
             value := e.Request.URL.Query().Get("v")
             if key == "" || value == "" { return fmt.Errorf("invalid params") }
+            if !strings.HasPrefix("value", "https://") { value += "https://" }
             _, err := txApp.FindFirstRecordByData("urls", "name", key)
             if err == nil { return fmt.Errorf("already defined") }
             coll, _ := txApp.FindCollectionByNameOrId("urls")
