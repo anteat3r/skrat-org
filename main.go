@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -21,12 +20,12 @@ func main() {
           return app.RunInTransaction(func(txApp core.App) error {
             key := e.Request.URL.Query().Get("k")
             value := e.Request.URL.Query().Get("v")
-            if key == "" || value == "" { return fmt.Errorf("invalid params") }
+            if key == "" || value == "" { return e.Error(400, "invalid params", nil) }
             if !strings.HasPrefix("value", "https://") {
               value = "https://" + value
             }
             _, err := txApp.FindFirstRecordByData("urls", "name", key)
-            if err == nil { return fmt.Errorf("already defined") }
+            if err == nil { return e.Error(400, "already defined", nil ) }
             coll, _ := txApp.FindCollectionByNameOrId("urls")
             nrec := core.NewRecord(coll)
             nrec.Set("name", key)
@@ -36,7 +35,7 @@ func main() {
         })
         se.Router.GET("/s/{key}", func(e *core.RequestEvent) error {
           key := e.Request.PathValue("key")
-          if key == "" { return fmt.Errorf("invalid param") }
+          if key == "" { return e.Error(400, "invalid key", nil ) }
           rec, err := app.FindFirstRecordByData("urls", "name", key)
           if err != nil { return err }
           return e.Redirect(301, rec.GetString("value"))
