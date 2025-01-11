@@ -1,19 +1,20 @@
 <script lang="ts">
-  import svelteLogo from './assets/svelte.svg'
-  import viteLogo from '/vite.svg'
+  import skratLogo_color from './assets/svelte.svg'
+  import skratLogo_cnb from '/scrat_logo_cnb.png'
   import Counter from './lib/Counter.svelte'
   import Navbar from './lib/navbar.svelte';
+  let page = $state(0);
 </script>
 
 <main>
-  <Navbar />
-
+  <Navbar bind:page={page} />
+  {#if page === 0}
   <div>
-    <a href="https://vite.dev" target="_blank" rel="noreferrer">
-      <img src={viteLogo} class="logo" alt="Vite Logo" />
+    <a href="about_us" target="_blank" rel="noreferrer">
+      <img src={skratLogo_cnb} class="logo" alt="scrat_logo_cnb" />
     </a>
     <a href="https://svelte.dev" target="_blank" rel="noreferrer">
-      <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
+      <img src={skratLogo_color} class="logo svelte" alt="scrat_logo_color" />
     </a>
   </div>
   <h1>Vite + Svelte</h1>
@@ -27,8 +28,10 @@
     Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!
   </p>
 
+  {/if}
+
   <p class="read-the-docs">
-    Click on the Vite and Svelte logos to learn more
+    Skrat© 2025
   </p>
 </main>
 
