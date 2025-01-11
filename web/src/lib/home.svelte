@@ -1,5 +1,5 @@
 <script>
-  import skratLogo_color from '../assets/svelte.svg'
+  import skratLogo_color from '/scrat_logo_color.svg'
   import skratLogo_cnb from '/scrat_logo_cnb.png'
   import Counter from './Counter.svelte'
 
@@ -14,20 +14,17 @@
     <img src={skratLogo_color} class="logo svelte" alt="scrat_logo_color" />
   </a>
 </div>
-<h1>Vite + Svelte</h1>
 
 <div class="card">
   <Counter />
 </div>
 
 
-<p>
-  Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite! 
-</p>
+<h2>Vite + Svelte</h2>
 
 <style>
   .logo {
-    height: 6em;
+    height: 10em;
     padding: 1.5em;
     will-change: filter;
     transition: filter 300ms;
