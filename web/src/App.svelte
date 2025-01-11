@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="cs">
   import Home from './lib/home.svelte'
   import Navbar from './lib/navbar.svelte';
   import About_us from './lib/about_us.svelte';
@@ -11,6 +11,7 @@
 <main>
   <div class="spacer"></div>
   <Navbar bind:page={page} />
+  <h1>SKRAT</h1>
   {#if page === 0}
     <Home />
   {:else if page === 1 }
