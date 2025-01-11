@@ -3,6 +3,8 @@
   import Navbar from './lib/navbar.svelte';
   import About_us from './lib/about_us.svelte';
   import Achieve from './lib/achieve.svelte'
+  import Footer from './lib/footer.svelte'
+
   let page = $state(0);
 </script>
 
@@ -17,9 +19,7 @@
     <Achieve />
   {/if}
 
-  <p class="read-the-docs">
-    Skrat© 2025
-  </p>
+  <Footer />
 </main>
 
 <style>

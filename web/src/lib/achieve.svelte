@@ -3,6 +3,13 @@
   const pb = new PocketBase("https://skrat.org");
 </script>
 
+<div class="container">
+  <h1> Úspěchy </h1>
+  <p>
+    Za posledních pár let se nám podařilo mnoho úspěchů v robotických soutěžích 
+    <br> Zde jsou:
+  </p>
+</div>
 
 {#await pb.collection("accomplishments").getFullList()}
   4ek8m na data
@@ -11,8 +18,8 @@
   <tbody>
     {#each value as item}
       <tr>
-        <td>{item.name}</td>
         <td>{item.year}</td>
+        <td>{item.name}</td>
         <td>{item.desc}</td>
       </tr>
     {/each}
