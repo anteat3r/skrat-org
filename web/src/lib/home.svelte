@@ -15,12 +15,12 @@
   </a>
 </div>
 
-<div class="card">
+<!-- <div class="card">
   <Counter />
-</div>
+</div> -->
 
 
-<h2>Vite + Svelte</h2>
+<!--<h2>Vite + Svelte</h2>-->
 
 <style>
   .logo {
