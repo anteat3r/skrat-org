@@ -7,10 +7,10 @@
 
 
 <div>
-  <a href="about_us" target="_blank" rel="noreferrer">
+  <a href="https://gchd.cz" target="_blank" rel="noreferrer">
     <img src={skratLogo_cnb} class="logo" alt="scrat_logo_cnb" />
   </a>
-  <a href="https://svelte.dev" target="_blank" rel="noreferrer">
+  <a href="https://strela-vlna.gchd.cz" target="_blank" rel="noreferrer">
     <img src={skratLogo_color} class="logo svelte" alt="scrat_logo_color" />
   </a>
 </div>
