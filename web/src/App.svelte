@@ -4,6 +4,7 @@
   import About_us from './lib/about_us.svelte';
   import Achieve from './lib/achieve.svelte'
   import Footer from './lib/footer.svelte'
+  import Photo from './lib/photo.svelte'
 
   let page = $state(0);
 </script>
@@ -17,6 +18,8 @@
   {:else if page === 1 }
     <About_us />
   {:else if page === 2 }
+    <Photo />
+  {:else if page === 3 }
     <Achieve />
   {/if}
 
