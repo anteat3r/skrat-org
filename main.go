@@ -21,7 +21,7 @@ func main() {
             key := e.Request.URL.Query().Get("k")
             value := e.Request.URL.Query().Get("v")
             if key == "" || value == "" { return e.Error(400, "invalid params", nil) }
-            if !strings.HasPrefix("value", "https://") {
+            if !strings.HasPrefix(value, "https://") {
               value = "https://" + value
             }
             _, err := txApp.FindFirstRecordByData("urls", "name", key)
@@ -39,6 +39,13 @@ func main() {
           rec, err := app.FindFirstRecordByData("urls", "name", key)
           if err != nil { return err }
           return e.Redirect(301, rec.GetString("value"))
+        })
+        se.Router.GET("/f/{key}", func(e *core.RequestEvent) error {
+          key := e.Request.PathValue("key")
+          if key == "" { return e.Error(400, "invalid key", nil ) }
+          rec, err := app.FindFirstRecordByData("files", "name", key)
+          if err != nil { return err }
+          return e.Redirect(301, "https://skrat.org/api/files/files/" + rec.Id + "/" + rec.GetString("file"))
         })
 
         return se.Next()
