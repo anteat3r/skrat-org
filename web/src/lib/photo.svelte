@@ -11,7 +11,7 @@
   </p>
 </div>
 
-{#await pb.collection("accomplishments").getFullList()}
+{#await pb.collection("accomplishments").getFullList({ sort: "-year, -ranked" })}
   čekám na data
 {:then value}
   <table>
