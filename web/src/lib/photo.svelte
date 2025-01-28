@@ -4,24 +4,27 @@
 </script>
 
 <div class="container">
-  <h1> Úspěchy </h1>
+  <h1> Fotky </h1>
   <p>
-    Za posledních pár let se nám podařilo mnoho úspěchů v robotických soutěžích 
+    Fotky z akcí
     <br> Zde jsou:
   </p>
 </div>
 
 {#await pb.collection("accomplishments").getFullList({ sort: "-year, -ranked" })}
-  4ek8m na data
+  čekám na data
 {:then value}
   <table>
   <tbody>
     {#each value as item}
+      {#if item.url != ""} 
       <tr>
         <td>{item.year}</td>
-        <td>{item.name}</td>
-        <td>{item.desc}</td>
+        <td>
+            <a href="{item.url}" target="_blank" rel="noreferrer">{item.name}</a>
+          </td>
       </tr>
+      {/if}
     {/each}
   </tbody>
   </table>
