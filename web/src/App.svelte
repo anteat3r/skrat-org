@@ -1,4 +1,4 @@
-<script lang="cs">
+<script lang="ts">
   import Home from './lib/home.svelte'
   import Navbar from './lib/navbar.svelte';
   import About_us from './lib/about_us.svelte';
