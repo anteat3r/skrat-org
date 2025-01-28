@@ -1,12 +1,12 @@
 <script lang="ts">
-  let { page = $bindable() } = $props();
+  import { link } from "svelte-routing";
 </script>
 
 <div class="container">
-  <div class="menu"> <a href="/" on:click|preventDefault={() => (page = 0)}> Domů </a></div>
-  <div class="menu"> <a href="about_us" on:click|preventDefault={() => (page = 1)}> O nás </a></div>
-  <div class="menu"> <a href="photo" on:click|preventDefault={() => (page = 2)}> Fotky </a></div>
-  <div class="menu"> <a href="achieve" on:click|preventDefault={() => (page = 3)}> Úspěchy </a></div>
+  <a class="menu" href="/" use:link>Domu</a>
+  <a class="menu" href="/about_us" use:link>O nas</a>
+  <a class="menu" href="/photos" use:link>Fotky</a>
+  <a class="menu" href="/achieve" use:link>Uspechy</a>
 </div>
 
 <style>

@@ -1,29 +1,30 @@
 <script lang="ts">
   import Home from './lib/home.svelte'
   import Navbar from './lib/navbar.svelte';
-  import About_us from './lib/about_us.svelte';
+  import AboutUs from './lib/about_us.svelte';
   import Achieve from './lib/achieve.svelte'
   import Footer from './lib/footer.svelte'
   import Photo from './lib/photo.svelte'
 
-  let page = $state(0);
+  import { Router, Route } from 'svelte-routing';
+
+  let url = $state("");
 </script>
 
 <main>
+<Router {url}>
   <div class="spacer"></div>
-  <Navbar bind:page={page} />
+  <Navbar />
+
   <h1>SKRAT</h1>
-  {#if page === 0}
-    <Home />
-  {:else if page === 1 }
-    <About_us />
-  {:else if page === 2 }
-    <Photo />
-  {:else if page === 3 }
-    <Achieve />
-  {/if}
+
+  <Route path="/" component={Home} />
+  <Route path="/about_us" component={AboutUs} />
+  <Route path="/photos" component={Photo} />
+  <Route path="/achieve" component={Achieve} />
 
   <Footer />
+</Router>
 </main>
 
 <style>
