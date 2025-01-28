@@ -1,9 +1,10 @@
-<script lang="cs">
+<script lang="ts">
   import Home from './lib/home.svelte'
   import Navbar from './lib/navbar.svelte';
   import About_us from './lib/about_us.svelte';
   import Achieve from './lib/achieve.svelte'
   import Footer from './lib/footer.svelte'
+  import { Link } from 'svelte-routing';
 
   let page = $state(0);
 </script>

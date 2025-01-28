@@ -18,6 +18,7 @@
     "vite": "^6.0.5"
   },
   "dependencies": {
-    "pocketbase": "^0.25.0"
+    "pocketbase": "^0.25.0",
+    "svelte-routing": "^2.13.0"
   }
 }
