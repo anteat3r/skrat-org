@@ -3,10 +3,10 @@
 </script>
 
 <div class="container">
-  <a class="menu" href="/" use:link>Domu</a>
-  <a class="menu" href="/about_us" use:link>O nas</a>
+  <a class="menu" href="/" use:link>Domů</a>
+  <a class="menu" href="/about_us" use:link>O nás</a>
   <a class="menu" href="/photos" use:link>Fotky</a>
-  <a class="menu" href="/achieve" use:link>Uspechy</a>
+  <a class="menu" href="/achieve" use:link>Úspechy</a>
 </div>
 
 <style>
