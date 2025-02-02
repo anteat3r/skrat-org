@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"regexp"
@@ -23,6 +24,7 @@ func main() {
         re, _ := regexp.Compile(`<Route path="(.+)"`)
         ms := re.FindAllSubmatch(appsv, 0)
         if ms == nil { ms = [][][]byte{} }
+        fmt.Println(ms)
         for _, m := range ms {
           if m == nil { continue }
           if len(m) < 2 { continue }
