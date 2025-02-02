@@ -31,6 +31,7 @@ func main() {
           if m == nil { continue }
           if len(m) < 2 { continue }
           route := string(m[1])
+          if route == "/" { continue }
           se.Router.GET(route, func(e *core.RequestEvent) error {
             return e.FileFS(os.DirFS("/root/skrat-org/web/dist"), "index.html")
           })
