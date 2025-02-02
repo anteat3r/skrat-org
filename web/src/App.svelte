@@ -5,6 +5,7 @@
   import Achieve from './lib/achieve.svelte'
   import Footer from './lib/footer.svelte'
   import Photo from './lib/photo.svelte'
+  import UrlShortener from './lib/url_shortener.svelte';
 
   import { Router, Route } from 'svelte-routing';
 
@@ -22,6 +23,7 @@
   <Route path="/about_us" component={AboutUs} />
   <Route path="/photos" component={Photo} />
   <Route path="/achieve" component={Achieve} />
+  <Route path="/urls" component={UrlShortener} />
 
   <Footer />
 </Router>

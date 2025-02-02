@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/pocketbase/pocketbase"
@@ -16,6 +17,21 @@ func main() {
     app.OnServe().BindFunc(func(se *core.ServeEvent) error {
 
         se.Router.GET("/{path...}", apis.Static(os.DirFS("/root/skrat-org/web/dist"), false))
+        
+        appsv, err := os.ReadFile("/root/skrat-org/web/src/App.svelte")
+        if err != nil { return err }
+        re, _ := regexp.Compile(`<Route path="(.+)"`)
+        ms := re.FindAllSubmatch(appsv, 0)
+        if ms == nil { ms = [][][]byte{} }
+        for _, m := range ms {
+          if m == nil { continue }
+          if len(m) < 2 { continue }
+          route := string(m[1])
+          se.Router.GET(route, func(e *core.RequestEvent) error {
+            return e.FileFS(os.DirFS("/root/skrat-org/web/dist"), "index.html")
+          })
+        }
+        
         se.Router.GET("/ss", func(e *core.RequestEvent) error {
           return app.RunInTransaction(func(txApp core.App) error {
             key := e.Request.URL.Query().Get("k")
@@ -30,7 +46,9 @@ func main() {
             nrec := core.NewRecord(coll)
             nrec.Set("name", key)
             nrec.Set("value", value)
-            return txApp.Save(nrec)
+            err = txApp.Save(nrec)
+            if err != nil { return err }
+            return e.String(200, "")
           })
         })
         se.Router.GET("/s/{key}", func(e *core.RequestEvent) error {
@@ -40,6 +58,9 @@ func main() {
           if err != nil { return err }
           return e.Redirect(301, rec.GetString("value"))
         })
+        se.Router.GET("/s/{key}/", func(e *core.RequestEvent) error {
+          return e.Redirect(301, "https://skrat.org/s/" + e.Request.PathValue("key"))
+        })
         se.Router.GET("/f/{key}", func(e *core.RequestEvent) error {
           key := e.Request.PathValue("key")
           if key == "" { return e.Error(400, "invalid key", nil ) }
@@ -47,6 +68,7 @@ func main() {
           if err != nil { return err }
           return e.Redirect(301, "https://skrat.org/api/files/files/" + rec.Id + "/" + rec.GetString("file"))
         })
+
 
         return se.Next()
     })
