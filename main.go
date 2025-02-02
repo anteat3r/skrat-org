@@ -23,8 +23,8 @@ func main() {
         if err != nil { return err }
         fmt.Println(string(appsv))
         re, err := regexp.Compile(`<Route path="(.+)"`)
-        if err != nil { return err }
-        ms := re.FindAllSubmatch(appsv, 0)
+        if err != nil { return err}
+        ms := re.FindAllSubmatch(appsv, -1)
         if ms == nil { ms = [][][]byte{} }
         fmt.Println(ms)
         for _, m := range ms {
