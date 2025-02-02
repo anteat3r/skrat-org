@@ -22,7 +22,8 @@ func main() {
         appsv, err := os.ReadFile("/root/skrat-org/web/src/App.svelte")
         if err != nil { return err }
         fmt.Println(string(appsv))
-        re, _ := regexp.Compile(`<Route path="(.+)"`)
+        re, err := regexp.Compile(`<Route path="(.+)"`)
+        if err != nil { return err }
         ms := re.FindAllSubmatch(appsv, 0)
         if ms == nil { ms = [][][]byte{} }
         fmt.Println(ms)
