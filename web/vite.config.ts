@@ -7,8 +7,8 @@ export default defineConfig({
     emptyOutDir: false,
     rollupOptions: {
       input: {
-        "": "index.html",
-        "kleo/index.html": "kleo.html",
+        "index.html": "index.html",
+        "kleo/index.html": "kleo/index.html",
       }
     }
   },
