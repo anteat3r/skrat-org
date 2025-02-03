@@ -1,7 +1,6 @@
 <script lang="ts">
   import skratLogo_color from '/scrat_logo_color.svg'
   import skratLogo_cnb from '/scrat_logo_cnb.png'
-  import Counter from './Counter.svelte'
 
 </script>
 

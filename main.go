@@ -4,13 +4,17 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 )
+
+var lastReloaded = time.Now()
 
 func main() {
     app := pocketbase.New()
@@ -72,6 +76,17 @@ func main() {
           rec, err := app.FindFirstRecordByData("files", "name", key)
           if err != nil { return err }
           return e.Redirect(301, "https://skrat.org/api/files/files/" + rec.Id + "/" + rec.GetString("file"))
+        })
+
+        se.Router.GET("/api/system/reload", func(e *core.RequestEvent) error {
+          nw := time.Now()
+          if nw.Sub(lastReloaded) > time.Minute {
+            lastReloaded = nw
+            err := exec.Command("sh", "/root/skrat-org/reload.sh").Run()
+            if err != nil { return err }
+            return e.String(200, "")
+          }
+          return e.Error(401, "reloaded a minute ago, slow down", nil)
         })
 
 
