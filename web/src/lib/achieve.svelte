@@ -14,17 +14,17 @@
 {#await pb.collection("accomplishments").getFullList({ sort: "-year, -ranked" })}
   4ek8m na data
 {:then value}
-  <table>
-  <tbody>
     {#each value as item}
-      <tr>
-        <td>{item.year}</td>
-        <td>{item.name}</td>
-        <td>{item.desc}</td>
-      </tr>
+    <div class="card">
+      <div class="title">{item.name}</div>
+      <div class="year">{item.year}</div>
+      <div class="rank">{item.tdesc}</div>
+      <div class="desc">{item.text}</div>
+
+    </div>
+    <p></p>
     {/each}
-  </tbody>
-  </table>
+
 {:catch error}
   no data :( ({error})
 {/await}
@@ -40,13 +40,32 @@
     flex-wrap: wrap;
   }
 
-  table, td {
-    border: 1px solid;
+  .card{
+    margin: 0px 0px 0px 160px;
+    width: 300px;
+    height: 350px;
+    background-color: #440044;
+    border-radius:30px;
+    border: 5px solid #330033;
   }
 
-  table {
-    width: calc(100%);
+  .title{
+    margin: -13px 0px 25px 0px;
+    font-size: 30px;
+  }
+  
+  .year{
+    font-size: 25px;
+    color: #aabbaa;
   }
 
+  .rank{
+    font-size: 22px;
+  }
+
+  .desc{
+    text-align: justify;
+    font-size: 15px;
+  }
 
 </style>
