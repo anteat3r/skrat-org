@@ -6,7 +6,7 @@
   <a class="menu" href="/" use:link>Domů</a>
   <a class="menu" href="/about_us" use:link>O nás</a>
   <a class="menu" href="/photos" use:link>Fotky</a>
-  <a class="menu" href="/achieve" use:link>Úspěchy</a>
+  <a class="menu" href="/achieve" use:link>Úspechy</a>
 </div>
 
 <style>
