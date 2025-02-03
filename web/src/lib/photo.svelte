@@ -16,12 +16,22 @@
 {:then value}
   <table>
   <tbody>
+    <tr>
+        <td>rok</td>
+        <td>Fotky Šimon</td>
+        <td>Fotky Tomáš</td>
+      </tr>
     {#each value as item}
-      {#if item.url != ""} 
+      {#if item.url != "" || item.urlt != ""} 
       <tr>
         <td>{item.year}</td>
-        <td>
+        <td> {#if item.url != ""}
             <a href="{item.url}" target="_blank" rel="noreferrer">{item.name}</a>
+              {/if}
+          </td>
+        <td> {#if item.urlt != ""}
+            <a href="{item.urlt}" target="_blank" rel="noreferrer">{item.name}</a>
+              {/if}
           </td>
       </tr>
       {/if}
