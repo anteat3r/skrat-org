@@ -83,7 +83,7 @@ func main() {
           if nw.Sub(lastReloaded) > time.Minute {
             lastReloaded = nw
             err := exec.Command("sh", "/root/skrat-org/reload.sh").Run()
-            if err != nil { return err }
+            if err != nil { return e.Error(400, err.Error(), nil) }
             return e.String(200, "")
           }
           return e.Error(401, "reloaded a minute ago, slow down", nil)
