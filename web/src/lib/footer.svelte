@@ -2,7 +2,7 @@
   import skratLogo_cnb from '/scrat_logo_cnb.png'
 </script>
 
-<h2 style="color: gold">místo pro sponzory</h2>
+<h2 style="color: gold">místo pro sponzory TEST</h2>
 <p class="read-the-docs">
   Skrat© 2025
   <img src={skratLogo_cnb} class="logo" alt="skratLogo_cnb">
