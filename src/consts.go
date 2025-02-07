@@ -6,5 +6,5 @@ const (
   BAKAVALID = "bakavalid"
   BAKATOKEN_EXPIRES = "bakatoken_expires"
   USERS = "users"
-  BAKA_PATH = "https://bakalari.gchd.cz/bakaweb/api/3/"
+  BAKA_PATH = "https://bakalari.gchd.cz/api/3/"
 )
