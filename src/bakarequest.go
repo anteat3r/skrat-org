@@ -50,7 +50,7 @@ func BakaQuery(
     nw = time.Now()
     resp, err = http.DefaultClient.Do(req)
     if err != nil { return }
-    app.Logger().Debug(time.Since(nw).String())
+    app.Logger().Info(time.Since(nw).String())
 
     if resp.StatusCode != 401 {
       resb, err = io.ReadAll(resp.Body)
