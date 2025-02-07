@@ -126,6 +126,7 @@ func BakaLoginPass(
   if err != nil { return err }
 
   body, err := io.ReadAll(resp.Body)
+  app.Logger().Info(fmt.Sprintf("%#v\n", resp.Body))
   if err != nil { return err }
 
   res := BakaLoginResponse{}
