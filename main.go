@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/anteat3r/skrat-org/src"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
@@ -88,6 +89,24 @@ func main() {
           }
           return e.Error(401, "reloaded a minute ago, slow down", nil)
         })
+
+        se.Router.POST("/api/kleo/login", func(e *core.RequestEvent) error {
+          body := struct{
+            Username string `json:"username"`
+            Password string `json:"password"`
+          }{}
+          err := e.BindBody(&body)
+          if err != nil { return err }
+
+          return src.BakaLoginPass(app, e.Auth, body.Username, body.Password)
+        }).Bind(apis.RequireAuth("users"))
+
+        se.Router.GET("/api/kleo/endp/{endp}", func(e *core.RequestEvent) error {
+          status, resp, err := src.BakaQuery(app, e.Auth, "GET", e.Request.PathValue("endp"), "")
+          if err != nil { return err }
+
+          return e.String(status, resp)
+        }).Bind(apis.RequireAuth("users"))
 
 
         return se.Next()
