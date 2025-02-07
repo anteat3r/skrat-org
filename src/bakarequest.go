@@ -132,6 +132,8 @@ func BakaLoginPass(
   err = json.Unmarshal(body, &res)
   if err != nil { return err }
 
+  app.Logger().Info(fmt.Sprintf("%#v\n", res))
+
   user.Set(BAKATOKEN, res.AccessToken)
   user.Set(BAKAREFRESTOKEN, res.RefreshToken)
   
