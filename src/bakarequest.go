@@ -30,6 +30,7 @@ func BakaQuery(
   var req *http.Request
   var bodybuf *strings.Reader
   var resb []byte
+  var nw time.Time
 
   if user.GetDateTime(BAKATOKEN_EXPIRES).Time().Before(time.Now()){
     goto try_refresh
@@ -46,8 +47,10 @@ func BakaQuery(
     req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
     req.Header.Set("Authorization", "Bearer " + user.GetString(BAKATOKEN))
 
+    nw = time.Now()
     resp, err = http.DefaultClient.Do(req)
     if err != nil { return }
+    app.Logger().Debug(time.Since(nw).String())
 
     if resp.StatusCode != 401 {
       resb, err = io.ReadAll(resp.Body)
@@ -126,14 +129,11 @@ func BakaLoginPass(
   if err != nil { return err }
 
   body, err := io.ReadAll(resp.Body)
-  app.Logger().Info(fmt.Sprintf("%#v\n", string(body)))
   if err != nil { return err }
 
   res := BakaLoginResponse{}
   err = json.Unmarshal(body, &res)
   if err != nil { return err }
-
-  app.Logger().Info(fmt.Sprintf("%#v\n", res))
 
   user.Set(BAKATOKEN, res.AccessToken)
   user.Set(BAKAREFRESTOKEN, res.RefreshToken)

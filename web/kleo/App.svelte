@@ -1,5 +1,6 @@
 <script lang="ts">
   import BakaLogin from './lib/BakaLogin.svelte';
+  import CustomEndp from './lib/CustomEndp.svelte';
   import githubLogo from '/github.svg'
   import { pb } from './pb_store.svelte';
   let reload = $state({});
@@ -25,6 +26,7 @@
   <button onclick={logout}>Logout</button>
   <br>
   <BakaLogin />
+  <CustomEndp />
 {:else}
   <button onclick={githubLogin}>
     <img src={githubLogo} alt="github logo">
