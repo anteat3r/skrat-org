@@ -14,6 +14,7 @@
 {#await pb.collection("accomplishments").getFullList({ sort: "-year, -ranked" })}
   4ek8m na data
 {:then value}
+    <div class="bar">
     {#each value as item}
     <div class="card">
       <div class="title">{item.name}</div>
@@ -24,6 +25,7 @@
     </div>
     <p></p>
     {/each}
+    </div>
 
 {:catch error}
   no data :( ({error})
@@ -37,6 +39,14 @@
     height: auto;
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
+  }
+
+  .bar{
+    width: 100%;
+    display: table;
+    flex-direction: row;
+    padding: 10px;
     flex-wrap: wrap;
   }
 
@@ -66,6 +76,12 @@
   .desc{
     text-align: justify;
     font-size: 15px;
+  }
+  
+  @media (max-width: 700px){
+    .bar{
+
+    }
   }
 
 </style>
