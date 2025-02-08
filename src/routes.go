@@ -70,6 +70,8 @@ func WebTimeTableHandler(
     if err != nil { return err }
     if status != 200 { return fmt.Errorf("bad status code: %v", status) }
 
+    app.Logger().Info(res)
+
     parsedtt, err := ParseTimeTableWeb(res)
     if err != nil { return err }
 
