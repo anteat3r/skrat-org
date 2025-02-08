@@ -86,7 +86,7 @@ func WebTimeTableHandler(
     )
     if err != nil {
       datarec = core.NewRecord(datacoll)
-      datarec.Set(OWNER, user.Id)
+      datarec.Set(OWNER, "")
       datarec.Set(NAME, name)
     }
     datarec.Set(DATA, stringtt)
