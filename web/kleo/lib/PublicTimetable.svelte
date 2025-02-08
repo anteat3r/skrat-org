@@ -47,7 +47,7 @@
           {#each ttable.hours as hour}
             <th>
               <h1>{hour.idx}</h1>
-              <h5>{hour.dur}</h5>
+              <h5>{hour.dur.replaceAll(" ", "\xa0")}</h5>
             </th>
           {/each}
         </tr>
@@ -88,10 +88,10 @@
   }
   td, th {
     border: solid;
-    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: stretch;
+    flex-basis: 100%;
   }
   div {
     width: 100%;
@@ -108,6 +108,7 @@
   h1, h5 {
     text-align: center;
     margin: 5px;
+    white-space: nowrap;
   }
   .bk-white {
     background-color: transparent;

@@ -94,7 +94,7 @@ func ParseTimeTableWeb(htmldoc string) (tt TimeTable, err error) {
     dayel := dom.QuerySelector(row, ".bk-day-day")
     dateel := dom.QuerySelector(row, ".bk-day-date")
 
-    rowres.Title = dom.InnerHTML(dayel) + " " + dom.InnerHTML(dateel)
+    rowres.Title = dom.InnerHTML(dayel) + "\n" + dom.InnerHTML(dateel)
 
     var guards []*html.Node
 
