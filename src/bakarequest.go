@@ -38,6 +38,7 @@ func BakaQuery(
 
   try_access:
     bodybuf = strings.NewReader(body)
+    app.Logger().Info(BAKA_PATH + "api/v3/" + endpoint)
     req, err = http.NewRequest(
       method,
       BAKA_PATH + "api/v3/" + endpoint,
