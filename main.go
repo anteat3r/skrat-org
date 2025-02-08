@@ -101,8 +101,8 @@ func main() {
           return src.BakaLoginPass(app, e.Auth, body.Username, body.Password)
         }).Bind(apis.RequireAuth("users"))
 
-        se.Router.GET("/api/kleo/endp/{endp}", func(e *core.RequestEvent) error {
-          status, resp, err := src.BakaQuery(app, e.Auth, "GET", e.Request.PathValue("endp"), "")
+        se.Router.GET("/api/kleo/endp", func(e *core.RequestEvent) error {
+          status, resp, err := src.BakaQuery(app, e.Auth, "GET", e.Request.URL.Query().Get("endp"), "")
           if err != nil { return err }
 
           return e.String(status, resp)

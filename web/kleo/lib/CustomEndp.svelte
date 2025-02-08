@@ -4,7 +4,10 @@
   let endpoint = $state("");
 
   function login() {
-    pb.send("/api/kleo/endp/" + endpoint, {
+    pb.send("/api/kleo/endp", {
+      query: {
+        endp: endpoint,
+      },
       method: "GET",
     })
   }

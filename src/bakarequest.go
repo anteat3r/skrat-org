@@ -63,8 +63,7 @@ func BakaQuery(
     req, err = http.NewRequest(
       "POST",
       "https://bakalari.gchd.cz/api/login",
-      strings.NewReader("client_id=ANDR&grant_type=refresh_token&refresh_token=" +
-                        user.GetString(BAKAREFRESTOKEN)),
+      strings.NewReader("client_id=ANDR&grant_type=refresh_token&refresh_token=" + user.GetString(BAKAREFRESTOKEN)),
     )
     if err != nil { return }
     req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
