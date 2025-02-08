@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/anteat3r/skrat-org/src"
-	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
