@@ -96,6 +96,8 @@ func ParseTimeTableWeb(htmldoc string) (tt TimeTable, err error) {
 
     rowres.Title = dom.InnerHTML(dayel) + " " + dom.InnerHTML(dateel)
 
+    var guards []*html.Node
+
     if len(cells) == 1 {
       titleel := dom.QuerySelector(cells[0], "span")
       rowres.Special = dom.InnerHTML(titleel)
@@ -131,9 +133,8 @@ func ParseTimeTableWeb(htmldoc string) (tt TimeTable, err error) {
       }
       rowres.Hours = append(rowres.Hours, cellres)
     }
-    appendday: timetable.Days = append(timetable.Days, rowres)
 
-    guards := dom.QuerySelectorAll(row, ".bk-timetable-guard")
+    guards = dom.QuerySelectorAll(row, ".bk-timetable-guard")
     fmt.Printf("%#v\n", guards)
     for _, guard := range guards {
       guardres := TimeTableGuard{}
@@ -159,6 +160,8 @@ func ParseTimeTableWeb(htmldoc string) (tt TimeTable, err error) {
 
       rowres.Guards = append(rowres.Guards, guardres)
     }
+
+    appendday: timetable.Days = append(timetable.Days, rowres)
   }
 
   return timetable, nil
