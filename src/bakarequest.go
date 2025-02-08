@@ -208,6 +208,7 @@ func BakaWebQuery(
   user *core.Record,
   endpoint string,
 ) (status int, res string, err error) {
+  app.Logger().Info(endpoint)
   if user.GetDateTime(BAKACOOKIE_EXPIRES).Time().Before(time.Now()) {
     user.Set(BAKAVALID, false)
     err = app.Save(user)
