@@ -60,8 +60,7 @@ func BakaQuery(
     }
 
   try_refresh:
-    var req2 *http.Request
-    req2, err = http.NewRequest(
+    req, err = http.NewRequest(
       "POST",
       "https://bakalari.gchd.cz/api/login",
       strings.NewReader("client_id=ANDR&grant_type=refresh_token&refresh_token=" +
@@ -70,13 +69,12 @@ func BakaQuery(
     if err != nil { return }
     req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
-    var resp2 *http.Response
-    resp2, err = http.DefaultClient.Do(req2)
+    resp, err = http.DefaultClient.Do(req)
 
-    if resp2.StatusCode == 200 {
+    if resp.StatusCode == 200 {
       resb, err = io.ReadAll(resp.Body)
       if err != nil { return }
-      resp2.Body.Close()
+      resp.Body.Close()
       jres := BakaLoginResponse{}
       err = json.Unmarshal(resb, &jres)
       if err != nil { return }
