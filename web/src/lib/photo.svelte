@@ -58,7 +58,7 @@
   }
 
   table {
-    width: calc(100%);
+    width: calc(50%);
   }
 
 

@@ -23,7 +23,6 @@
       <div class="desc">{item.text}</div>
 
     </div>
-    <p></p>
     {/each}
     </div>
 
@@ -43,15 +42,24 @@
   }
 
   .bar{
-    width: 100%;
-    display: table;
-    flex-direction: row;
-    padding: 10px;
-    flex-wrap: wrap;
+    width: 100vw;
+    /*max-width: 3000px;*/
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1rem;
+    margin: 0 auto;
+    z-index: 0;
+    /*justify-content: center;*/
   }
 
   .card{
-    margin: 0px 0px 0px 160px;
+    /*position: relative;*/
+    padding: 20px;
+    background-color: #440044;
+    border-radius: 30px;
+    border: 5px solid #330033;
+  transition: transform 0.3s;
     width: 300px;
     height: 350px;
     background-color: #440044;
@@ -77,11 +85,14 @@
     text-align: justify;
     font-size: 15px;
   }
-  
-  @media (max-width: 700px){
-    .bar{
 
-    }
+  .card:nth-child(2n) {
+    transform: translateY(20px);
   }
+
+  .card:nth-child(3n) {
+    transform: translateY(40px);
+  }
+  
 
 </style>

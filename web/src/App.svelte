@@ -30,8 +30,13 @@
 </main>
 
 <style>
+  main{
+    width: 100vw;
+  }
   .spacer{
+    /*position: absolute;*/
+    /*left: 0px;*/
     height: 50px;
-    width: 700px;
+    width: 100vw;
   }
 </style>
