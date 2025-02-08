@@ -20,9 +20,9 @@ var lastReloaded = time.Now()
 func main() {
     app := pocketbase.New()
 
-    datacoll, _ := app.FindCollectionByNameOrId(src.DATA)
 
     app.OnServe().BindFunc(func(se *core.ServeEvent) error {
+        datacoll, _ := app.FindCollectionByNameOrId(src.DATA)
 
         se.Router.GET("/{path...}", apis.Static(os.DirFS("/root/skrat-org/web/dist"), false))
         
