@@ -8,5 +8,8 @@ const (
   USERS = "users"
   BAKA_PATH = "https://bakalari.gchd.cz/"
   DATA = "data"
-
+  OWNER = "owner"
+  NAME = "name"
+  BAKACOOKIE = "bakacookie"
+  BAKACOOKIE_EXPIRES = "bakacookie_expires"
 )

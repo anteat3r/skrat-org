@@ -13,6 +13,14 @@ import (
 	"github.com/pocketbase/pocketbase/tools/types"
 )
 
+var doNotRedirectClient = http.Client{
+  CheckRedirect: func(
+    req *http.Request, via []*http.Request,
+  ) error {
+    return http.ErrUseLastResponse
+  },
+}
+
 func BakaQuery(
   app *pocketbase.PocketBase,
   user *core.Record,
@@ -139,9 +147,100 @@ func BakaLoginPass(
     time.Second * time.Duration(res.ExpiresIn)))
   user.Set(BAKATOKEN_EXPIRES, date)
 
+  req, err = http.NewRequest(
+    "GET",
+    BAKA_PATH + "login",
+    strings.NewReader(""),
+  )
+  if err != nil { return err }
+
+  resp, err = http.DefaultClient.Do(req)
+  if err != nil { return err }
+
+  rawcookie := resp.Header.Get("Set-Cookie")
+  rwckl := strings.Split(rawcookie, ";")
+  if len(rwckl) < 2 { return fmt.Errorf("invalid cookie: %v\n", rawcookie) }
+  cookie := rwckl[0]
+
+  payl := "username=" + username + "&password=" + password + "&persistent=true&returnUrl="
+
+  req, err = http.NewRequest(
+    "POST",
+    BAKA_PATH + "Login",
+    strings.NewReader(payl),
+  )
+  if err != nil { return err }
+
+  req.Header.Add("Cookie", cookie)
+  req.Header.Add(
+    "Content-Type",
+    "application/x-www-form-urlencoded",
+  )
+  req.Header.Add(
+    "Accept", 
+    "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8",
+  )
+
+  resp, err = doNotRedirectClient.Do(req)
+  if err != nil { return err }
+
+  rawcookie = resp.Header.Get("Set-Cookie")
+  rwckl = strings.Split(rawcookie, ";")
+  if len(rwckl) < 2 { return fmt.Errorf("invalid cookie: %v\n", rawcookie) }
+  cookie = rwckl[0]
+
+  user.Set(BAKACOOKIE, cookie)
+  nextweek, err := types.ParseDateTime(
+    time.Now().Add(time.Hour * time.Duration(24 * 6.5)),
+  )
+  if err != nil { return err }
+  user.Set(BAKACOOKIE_EXPIRES, nextweek)
+  
   user.Set(BAKAVALID, true)
 
   err = app.Save(user)
 
   return
+}
+
+func BakaWebQuery(
+  app *pocketbase.PocketBase,
+  user *core.Record,
+  endpoint string,
+) (status int, res string, err error) {
+  if user.GetDateTime(BAKACOOKIE_EXPIRES).Time().Before(time.Now()) {
+    user.Set(BAKAVALID, false)
+    err = app.Save(user)
+    return
+  }
+  
+  var req *http.Request
+  req, err = http.NewRequest(
+    "GET",
+    BAKA_PATH + endpoint,
+    nil,
+  )
+  if err != nil { return }
+  req.Header.Set("Cookie", user.GetString(BAKACOOKIE))
+
+  var resp *http.Response
+  resp, err = http.DefaultClient.Do(req)
+  if err != nil { return }
+
+  var resb []byte
+  resb, err = io.ReadAll(resp.Body)
+  if err != nil { return }
+
+  return resp.StatusCode, string(resb), nil
+}
+
+func BakaTimeTableQuery(
+  app *pocketbase.PocketBase,
+  user *core.Record,
+  time, ttype, name string,
+) (status int, res string, err error) {
+  return BakaWebQuery(
+    app, user,
+    "Timetable/Public/" + time + "/" + ttype + "/" + name,
+  )
 }

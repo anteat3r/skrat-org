@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/anteat3r/skrat-org/src"
+	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
@@ -19,6 +20,8 @@ var lastReloaded = time.Now()
 
 func main() {
     app := pocketbase.New()
+
+    datacoll, _ := app.FindCollectionByNameOrId(src.DATA)
 
     app.OnServe().BindFunc(func(se *core.ServeEvent) error {
 
@@ -90,35 +93,28 @@ func main() {
           return e.Error(401, "reloaded a minute ago, slow down", nil)
         })
 
-        se.Router.POST("/api/kleo/login", func(e *core.RequestEvent) error {
-          body := struct{
-            Username string `json:"username"`
-            Password string `json:"password"`
-          }{}
-          err := e.BindBody(&body)
-          if err != nil { return err }
+        se.Router.POST(
+          "/api/kleo/login",
+          src.LoginHandler(app),
+        ).Bind(apis.RequireAuth(src.USERS))
 
-          return src.BakaLoginPass(app, e.Auth, body.Username, body.Password)
-        }).Bind(apis.RequireAuth("users"))
+        se.Router.GET(
+          "/api/kleo/endp",
+          src.EndpHandler(app, datacoll),
+        ).Bind(apis.RequireAuth(src.USERS))
 
-        se.Router.GET("/api/kleo/endp", func(e *core.RequestEvent) error {
-          user := e.Auth
-          if !user.GetBool(src.BAKAVALID) {
-            return e.UnauthorizedError("your baka login is not valid", nil)
-          }
-          endp := e.Request.URL.Query().Get("endp")
-          status, resp, err := src.BakaQuery(app, user, "GET", endp, "")
-          if err != nil { return err }
+        se.Router.GET(
+          "/api/kleo/web/{time}/{ttype}/{name}",
+          src.WebTimeTableHandler(app, datacoll),
+        ).Bind(apis.RequireAuth(src.USERS))
 
-          return e.String(status, resp)
-          
-        }).Bind(apis.RequireAuth("users"))
-
+        se.Router.GET(
+          "/api/kleo/websrcs",
+          src.WebSourcesHandler(app),
+        ).Bind(apis.RequireAuth(src.USERS))
 
         return se.Next()
     })
 
-    if err := app.Start(); err != nil {
-        log.Fatal(err)
-    }
+    if err := app.Start(); err != nil { log.Fatal(err) }
 }
