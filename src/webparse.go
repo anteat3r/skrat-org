@@ -1,7 +1,7 @@
 package src
 
 import (
-	"fmt"
+	// "fmt"
 	"slices"
 	"strconv"
 	"strings"
@@ -44,9 +44,9 @@ func NewlineInnerText(el *html.Node) string {
 }
 
 func ParseTimeTableWeb(htmldoc string) (tt TimeTable, err error) {
-  defer func() {
-    if r := recover(); r != nil { err = fmt.Errorf("%#v", r) }
-  }()
+  // defer func() {
+  //   if r := recover(); r != nil { err = fmt.Errorf("%#v", r) }
+  // }()
   doc, err := html.Parse(strings.NewReader(htmldoc))
   if err != nil { return TimeTable{}, err }
 
