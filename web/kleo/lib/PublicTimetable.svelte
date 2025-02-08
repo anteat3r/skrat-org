@@ -39,6 +39,7 @@
   {/each}
 
   {#if ttable !== null}
+    <main>
     <table>
       <tbody>
         <tr>
@@ -53,7 +54,7 @@
         {#each ttable.days as day}
           <tr>
             <th>
-              <h1>{day.title}</h1>
+              <h1>{day.title.replaceAll(" ", "\n")}</h1>
             </th>
             {#each day.hours as hour}
               <td>
@@ -68,6 +69,7 @@
         {/each}
       </tbody>
     </table>
+    </main>
   {/if}
 
 {:catch error}
@@ -77,15 +79,16 @@
 <style>
   table {
     table-layout: fixed;
-    width: 100%;
+    width: max-content;
     border: solid;
+  }
+  main {
     overflow-x: scroll;
+    width: fit-content;
   }
-  th, td {
+  td, th {
     border: solid;
     width: 100%;
-  }
-  td {
     display: flex;
     flex-direction: column;
     justify-content: stretch;

@@ -2,7 +2,7 @@ body {
   background-color: #181a1b;
   color: #e8e6e3;
 }
-button {
+button, select {
   background-color: #2b2a33;
   color: #e8e6e3;
   border-radius: 5px;
