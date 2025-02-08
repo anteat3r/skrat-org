@@ -40,7 +40,7 @@ func BakaQuery(
     bodybuf = strings.NewReader(body)
     req, err = http.NewRequest(
       method,
-      BAKA_PATH + endpoint,
+      BAKA_PATH + "api/v3/" + endpoint,
       bodybuf,
     )
     if err != nil { return }
@@ -62,7 +62,7 @@ func BakaQuery(
   try_refresh:
     req, err = http.NewRequest(
       "POST",
-      "https://bakalari.gchd.cz/api/login",
+      BAKA_PATH + "api/login",
       strings.NewReader("client_id=ANDR&grant_type=refresh_token&refresh_token=" + user.GetString(BAKAREFRESTOKEN)),
     )
     if err != nil { return }
@@ -117,7 +117,7 @@ func BakaLoginPass(
 ) (err error) {
   req, err := http.NewRequest(
     "POST",
-    "https://bakalari.gchd.cz/api/login",
+    BAKA_PATH + "/api/login",
     strings.NewReader("client_id=ANDR&grant_type=password&username=" + username + "&password=" + password),
   )
   if err != nil { return err }

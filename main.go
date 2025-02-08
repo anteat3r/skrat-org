@@ -102,10 +102,16 @@ func main() {
         }).Bind(apis.RequireAuth("users"))
 
         se.Router.GET("/api/kleo/endp", func(e *core.RequestEvent) error {
-          status, resp, err := src.BakaQuery(app, e.Auth, "GET", e.Request.URL.Query().Get("endp"), "")
+          user := e.Auth
+          if !user.GetBool(src.BAKAVALID) {
+            return e.UnauthorizedError("your baka login is not valid", nil)
+          }
+          endp := e.Request.URL.Query().Get("endp")
+          status, resp, err := src.BakaQuery(app, user, "GET", endp, "")
           if err != nil { return err }
 
           return e.String(status, resp)
+          
         }).Bind(apis.RequireAuth("users"))
 
 
