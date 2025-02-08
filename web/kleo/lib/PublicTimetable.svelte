@@ -7,7 +7,7 @@
         ttable = null;
         return;
       }
-      let resp = await pb.send(`/api/kleo/web/Actual/${ttype[0].toUpperCase() + ttype.substring(1).toLowerCase()}/${src}`, {});
+      let resp = await pb.send(`/api/kleo/web/Actual/${ttype}/${src}`, {});
       console.log(resp);
       console.log(typeof resp);
     }
@@ -15,16 +15,25 @@
 
   let ttable = $state(null);
   let src = $state("");
+
+  const srcts = [
+    { name: "classes",
+      url: "Class", },
+    { name: "teachers",
+      url: "Teacher", },
+    { name: "rooms",
+      url: "Room", },
+  ];
 </script>
 
 {#await pb.send("/api/kleo/websrcs", {})}
   <h1>Loading... 🙄</h1>
 {:then srcs}
   
-  {#each ["classes", "teachers", "rooms"] as srct}
-    <select bind:value={src} onchange={srcChange(srct)}>
+  {#each srcts as srct}
+    <select bind:value={src} onchange={srcChange(srct.url)}>
       <option value=""></option>
-      {#each srcs[srct] as item}
+      {#each srcs[srct.name] as item}
         <option value={item.id}>{item.name}</option>
       {/each}
     </select>

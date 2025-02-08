@@ -23,10 +23,18 @@ type TimeTableHour struct {
   Cells []TimeTableCell `json:"cells"`
 }
 
+type TimeTableGuard struct {
+  IsPause bool `json:"is_pause"`
+  Title string `json:"title"`
+  Detail string `json:"detail"`
+  Abbrev string `json:"abbrev"`
+}
+
 type TimeTableDay struct {
   Title string `json:"title"`
   Special string `json:"special"`
   Hours []TimeTableHour `json:"hours"`
+  Guards []TimeTableGuard `json:"guards"`
 }
 
 type TimeTableHourTitle struct {
@@ -79,6 +87,7 @@ func ParseTimeTableWeb(htmldoc string) (tt TimeTable, err error) {
     cells := dom.QuerySelectorAll(row, ".bk-timetable-cell")
     rowres := TimeTableDay{
       Hours: make([]TimeTableHour, 0),
+      Guards: make([]TimeTableGuard, 0),
     }
 
     dayel := dom.QuerySelector(row, ".bk-day-day")
@@ -115,12 +124,39 @@ func ParseTimeTableWeb(htmldoc string) (tt TimeTable, err error) {
         } else if slices.Contains(classes, "green") {
           hourres.Color = "green"
         }
+        hourres.Detail = dom.GetAttribute(hour, "data-detail")
 
         cellres.Cells = append(cellres.Cells, hourres)
       }
       rowres.Hours = append(rowres.Hours, cellres)
     }
     appendday: timetable.Days = append(timetable.Days, rowres)
+
+    guards := dom.QuerySelectorAll(row, ".bk-timetable-guard")
+    for _, guard := range guards {
+      guardres := TimeTableGuard{}
+      
+      classAttr := dom.GetAttribute(guard, "class")
+      for _, class := range strings.Fields(strings.TrimSpace(classAttr)) {
+        if class == "bk-timetable-pauseGuard" {
+          guardres.IsPause = true
+          break
+        }
+      }
+      if guardres.IsPause {
+        span := dom.QuerySelector(guard, "span")
+        guardres.Title = NewlineInnerText(span)
+      } else {
+        nameSpan := dom.QuerySelector(guard, ".withName")
+        guardres.Title = NewlineInnerText(nameSpan)
+        abbrevSpan := dom.QuerySelector(guard, ".withAbbrev")
+        guardres.Abbrev = NewlineInnerText(abbrevSpan)
+      }
+
+      guardres.Detail = dom.GetAttribute(guard, "data-detail")
+
+      rowres.Guards = append(rowres.Guards, guardres)
+    }
   }
 
   return timetable, nil

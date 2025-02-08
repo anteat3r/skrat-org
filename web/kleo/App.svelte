@@ -44,13 +44,3 @@
   {/if}
   {/key}
 </main>
-
-<style>
-  main {
-    background-color: #181a1b;
-    color: #e8e6e3;
-  }
-  button {
-    background-color: #2b2a33;
-  }
-</style>
