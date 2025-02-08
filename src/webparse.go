@@ -2,6 +2,7 @@ package src
 
 import (
 	// "fmt"
+	"fmt"
 	"slices"
 	"strconv"
 	"strings"
@@ -133,6 +134,7 @@ func ParseTimeTableWeb(htmldoc string) (tt TimeTable, err error) {
     appendday: timetable.Days = append(timetable.Days, rowres)
 
     guards := dom.QuerySelectorAll(row, ".bk-timetable-guard")
+    fmt.Printf("%#v\n", guards)
     for _, guard := range guards {
       guardres := TimeTableGuard{}
       

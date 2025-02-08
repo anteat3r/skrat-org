@@ -8,8 +8,7 @@
         return;
       }
       let resp = await pb.send(`/api/kleo/web/Actual/${ttype}/${src}`, {});
-      console.log(resp);
-      console.log(typeof resp);
+      ttable = resp;
     }
   }
 
