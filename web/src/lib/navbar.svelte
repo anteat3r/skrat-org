@@ -14,12 +14,14 @@
 <style>
     .floating{
       position: fixed;
+      width: 100%;
       margin-top: -52px;
-      left: 34vw;
+      /*left: 34vw;*/
       /*margin-left: 30vw;*/
       /*background-color: #090306;*/
       /*border: 2px solid #090306;*/
       /*margin: auto,0;*/
+      text-align: center;
       flex-grow: 2;
       z-index: 999;
     }
@@ -27,8 +29,10 @@
         border: 2px solid #090306;
         background-color: #090306;
         /*background-color: #ffffff;*/
-        width: 700px;
-        height: auto;
+        min-width: 400px;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;

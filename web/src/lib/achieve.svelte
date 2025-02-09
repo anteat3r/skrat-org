@@ -42,13 +42,16 @@
   }
 
   .bar{
-    width: 100vw;
+    width: 99vw;
     /*max-width: 3000px;*/
 
+    margin-left: 1vw;
+    /*margin-right: 30px;*/
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 1rem;
-    margin: 0 auto;
+    gap: 20px;
+    /*margin: auto;*/
+    justify-content: center;
     z-index: 0;
     /*justify-content: center;*/
   }
@@ -58,12 +61,10 @@
     padding: 20px;
     background-color: #440044;
     border-radius: 30px;
-    border: 5px solid #330033;
-  transition: transform 0.3s;
+    transition: transform 0.3s;
     width: 300px;
     height: 350px;
     background-color: #440044;
-    border-radius:30px;
     border: 5px solid #330033;
   }
 
@@ -87,12 +88,19 @@
   }
 
   .card:nth-child(2n) {
-    transform: translateY(20px);
+    margin-top: 70px;
   }
 
   .card:nth-child(3n) {
-    transform: translateY(40px);
+    margin-top: 140px;
   }
-  
+  /**/
+  /*.card:nth-child(4n) {*/
+  /*  margin-top: 210px;*/
+  /*}*/
+  /**/
+  /*.card:nth-child(5n) {*/
+  /*  margin-top: 140px;*/
+  /*}*/
 
 </style>

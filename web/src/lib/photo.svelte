@@ -58,7 +58,11 @@
   }
 
   table {
-    width: calc(50%);
+    /*width: calc(40%);*/
+    min-width: 600px;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
 

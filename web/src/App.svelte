@@ -37,6 +37,6 @@
     /*position: absolute;*/
     /*left: 0px;*/
     height: 50px;
-    width: 100vw;
+    /*width: 100vw;*/
   }
 </style>
