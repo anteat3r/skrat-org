@@ -23,6 +23,17 @@
     { name: "rooms",
       url: "Room", },
   ];
+
+  function forwardButtonPress(e: KeyboardEvent) {
+    e.preventDefault();
+    e.target.dispatchEvent(new MouseEvent("click")); 
+  }
+
+  function detailAlertCallback(detail: string) {
+    return function() {
+      alert(detail);
+    }
+  }
 </script>
 
 {#await pb.send("/api/kleo/websrcs", {})}
@@ -47,20 +58,38 @@
           {#each ttable.hours as hour}
             <th>
               <h1>{hour.idx}</h1>
-              <h5>{hour.dur.replaceAll(" ", "\xa0")}</h5>
+              <p>{hour.dur.split(" - ")[0]}</p>
+              <p>{hour.dur.split(" - ")[1]}</p>
+              <p class="spacer"></p>
             </th>
           {/each}
         </tr>
         {#each ttable.days as day}
           <tr>
             <th>
-              <h1>{day.title.replaceAll(" ", "\n")}</h1>
+              <div class="cell">
+                <h1>{day.title.split(" ")[0]}</h1>
+                <h1>{day.title.split(" ")[1]}</h1>
+              </div>
             </th>
             {#each day.hours as hour}
               <td>
                 {#each hour.cells as cell}
-                  <div class="bk-{cell.color}">
-                    <h1>{cell.subject}</h1>
+                  <div
+                      class="bk-{cell.color} cell" 
+                      onclick={detailAlertCallback(cell.detail)} 
+                      role="button" tabindex="-1" onkeypress={forwardButtonPress}
+                  >
+                    <div class="cell-top">
+                      <div class="cell-topleft">{cell.group}</div>
+                      <div class="cell-topright">{cell.room}</div>
+                    </div>
+                    <div class="cell-middle">
+                      <div> {cell.subject} </div>
+                    </div>
+                    <div class="cell-bottom">
+                      <div> {cell.teacher} </div>
+                    </div>
                   </div>
                 {/each}
               </td>
@@ -80,38 +109,73 @@
   table {
     table-layout: fixed;
     width: max-content;
-    border: solid;
+    /* border: solid; */
   }
   main {
     overflow-x: scroll;
     width: fit-content;
   }
   td, th {
-    border: solid;
+    border: solid 1px;
     display: flex;
     flex-direction: column;
     justify-content: stretch;
     flex-basis: 100%;
+    width: 100px;
+    padding: 2px;
   }
-  div {
+  .cell {
     width: 100%;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
+    /* padding: 2px; */
+    margin: 2px;
+  }
+  .cell-top {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 20%;
+    font-size: 12px;
+    margin-inline: 3px;
+  }
+  .cell-middle {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 60%;
+    font-size: 20px;
+  }
+  .cell-bottom {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: end;
+    height: 20%;
+    font-size: 12px;
+    margin-inline: 3px;
   }
   tr {
     display: flex;
     flex-direction: row;
     justify-content: stretch;
   }
-  h1, h5 {
+  h1 {
     text-align: center;
-    margin: 5px;
-    white-space: nowrap;
+    margin: 0px;
+    white-space: pre-line;
+  }
+  p {
+    margin: 0px;
+  }
+  .spacer {
+    margin: 3px;
   }
   .bk-white {
-    background-color: transparent;
+    background-color: #31373a;
   }
   .bk-pink {
     background-color: maroon;
