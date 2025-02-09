@@ -15,6 +15,11 @@
     reload = {};
   }
 
+  async function discordLogin() {
+    await pb.collection("users").authWithOAuth2({ provider: "discord" });
+    reload = {};
+  }
+
   let avatarUrl = $derived(pb.baseURL + "/api/files/users/" + pb.authStore.record.id + "/" + pb.authStore.record.avatar + "?thumb=50x50");
 </script>
 
@@ -38,6 +43,11 @@
 {:else}
   <button onclick={githubLogin}>
     <img src={githubLogo} alt="github logo">
+    Login with Github
+  </button>
+  <br>
+  <button onclick={discordLogin}>
+    <!-- <img src={githubLogo} alt="github logo"> -->
     Login with Discord
   </button>
 {/if}

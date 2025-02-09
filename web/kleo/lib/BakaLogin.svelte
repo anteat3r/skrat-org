@@ -17,6 +17,6 @@
 
 <input type="text" bind:value={username} placeholder="username">
 <br>
-<input type="text" bind:value={password} placeholder="password">
+<input type="password" bind:value={password} placeholder="password">
 <br>
 <button onclick={login}>Login</button>
