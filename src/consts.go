@@ -13,4 +13,5 @@ const (
   BAKACOOKIE = "bakacookie"
   BAKACOOKIE_EXPIRES = "bakacookie_expires"
   LAST_USED = "last_used"
+  TYPE = "type"
 )

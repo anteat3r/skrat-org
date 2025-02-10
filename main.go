@@ -115,5 +115,11 @@ func main() {
         return se.Next()
     })
 
+    app.Cron().MustAdd(
+      "ttreload",
+      "* 6-18 * 1-5",
+      src.TimeTableReload,
+    )
+
     if err := app.Start(); err != nil { log.Fatal(err) }
 }

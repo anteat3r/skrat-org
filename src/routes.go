@@ -66,6 +66,9 @@ func WebTimeTableHandler(
     time := e.Request.PathValue("time")
     ttype := e.Request.PathValue("ttype")
     name := e.Request.PathValue("name")
+    if ttype != "Teacher" && ttype != "Class" && ttype != "Room" {
+      return e.Error(401, "invalid ttype", ttype)
+    }
     status, res, err := BakaTimeTableQuery(app, user, time, ttype, name)
     if err != nil { return err }
     if status != 200 { return fmt.Errorf("bad status code: %v", status) }
@@ -88,6 +91,7 @@ func WebTimeTableHandler(
       datarec = core.NewRecord(datacoll)
       datarec.Set(OWNER, "")
       datarec.Set(NAME, name)
+      datarec.Set(TYPE, ttype)
     }
     datarec.Set(DATA, stringtt)
 
