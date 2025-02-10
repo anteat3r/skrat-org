@@ -94,6 +94,9 @@ func WebTimeTableHandler(
       datarec.Set(TYPE, ttype)
     }
     datarec.Set(DATA, stringtt)
+    if datarec.GetString(TYPE) == "" {
+      datarec.Set(TYPE, ttype)
+    }
 
     err = app.Save(datarec)
     if err != nil { return err }
