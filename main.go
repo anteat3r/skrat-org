@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/anteat3r/skrat-org/src"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
@@ -19,7 +20,9 @@ var lastReloaded = time.Now()
 func main() {
     app := pocketbase.New()
 
+
     app.OnServe().BindFunc(func(se *core.ServeEvent) error {
+        datacoll, _ := app.FindCollectionByNameOrId(src.DATA)
 
         se.Router.GET("/{path...}", apis.Static(os.DirFS("/root/skrat-org/web/dist"), false))
         
@@ -89,11 +92,34 @@ func main() {
           return e.Error(401, "reloaded a minute ago, slow down", nil)
         })
 
+        se.Router.POST(
+          "/api/kleo/login",
+          src.LoginHandler(app),
+        ).Bind(apis.RequireAuth(src.USERS))
+
+        se.Router.GET(
+          "/api/kleo/endp",
+          src.EndpHandler(app, datacoll),
+        ).Bind(apis.RequireAuth(src.USERS))
+
+        se.Router.GET(
+          "/api/kleo/web/{time}/{ttype}/{name}",
+          src.WebTimeTableHandler(app, datacoll),
+        ).Bind(apis.RequireAuth(src.USERS))
+
+        se.Router.GET(
+          "/api/kleo/websrcs",
+          src.WebSourcesHandler(app),
+        ).Bind(apis.RequireAuth(src.USERS))
 
         return se.Next()
     })
 
-    if err := app.Start(); err != nil {
-        log.Fatal(err)
-    }
+    app.Cron().MustAdd(
+      "ttreload",
+      "* 6-18 * * 1-5",
+      src.TimeTableReload,
+    )
+
+    if err := app.Start(); err != nil { log.Fatal(err) }
 }
