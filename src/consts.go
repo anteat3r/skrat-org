@@ -31,6 +31,11 @@ const (
 )
 
 func GetTTime() string {
+  // TODO: remove
+  year, week := time.Now().ISOWeek()
+  if year == 2025 && week == 7 { return NEXT }
+
+  
   wd := time.Now().Weekday()
   if wd == time.Sunday || wd == time.Sunday { return NEXT }
   return ACTUAL
