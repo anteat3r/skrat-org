@@ -178,6 +178,14 @@ type WebSources struct {
   Classes []WebSourcePair `json:"classes"`
 }
 
+func (w WebSources) AsMap() map[string][]WebSourcePair {
+  return map[string][]WebSourcePair{
+    TEACHER: w.Teachers,
+    CLASS: w.Classes,
+    ROOM: w.Rooms,
+  }
+}
+
 func ParseSourcesWeb(htmldoc string) (WebSources, error) {
   doc, err := html.Parse(strings.NewReader(htmldoc))
   if err != nil { return WebSources{}, err }

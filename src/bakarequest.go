@@ -201,7 +201,7 @@ func BakaLoginPass(
 }
 
 func BakaWebQuery(
-  app *pocketbase.PocketBase,
+  app core.App,
   user *core.Record,
   endpoint string,
 ) (status int, res string, err error) {
@@ -232,12 +232,12 @@ func BakaWebQuery(
 }
 
 func BakaTimeTableQuery(
-  app *pocketbase.PocketBase,
+  app core.App,
   user *core.Record,
   time, ttype, name string,
 ) (status int, res string, err error) {
   return BakaWebQuery(
     app, user,
-    "Timetable/Public/" + time + "/" + ttype + "/" + name,
+    TIMETABLE_PUBLIC + "/" + time + "/" + ttype + "/" + name,
   )
 }

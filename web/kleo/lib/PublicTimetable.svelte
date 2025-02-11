@@ -7,13 +7,28 @@
         ttable = null;
         return;
       }
-      let resp = await pb.send(`/api/kleo/web/Actual/${ttype}/${src}`, {});
+      let resp = await pb.send(`/api/kleo/web/${ttime}/${ttype}/${src}`, {});
       ttable = resp;
+      last_ttype = ttype;
     }
+  }
+
+  async function ttimeChange() {
+    if (src === "") {
+      ttable = null;
+      return;
+    }
+    if (last_ttype === "") {
+      return;
+    }
+    let resp = await pb.send(`/api/kleo/web/${ttime}/${last_ttype}/${src}`, {});
+    ttable = resp;
   }
 
   let ttable = $state(null);
   let src = $state("");
+  let ttime = $state("Actual");
+  let last_ttype = $state("");
 
   const srcts = [
     { name: "classes",
@@ -40,6 +55,11 @@
   <h1>Loading... 🙄</h1>
 {:then srcs}
   
+  <select bind:value={ttime} onchange={ttimeChange}>
+    <option value="Actual">Actual</option>
+    <option value="Next">Next</option>
+    <option value="Permanent">Permanent</option>
+  </select>
   {#each srcts as srct}
     <select bind:value={src} onchange={srcChange(srct.url)}>
       <option value=""></option>

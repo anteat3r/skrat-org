@@ -1,5 +1,7 @@
 package src
 
+import "time"
+
 const (
   BAKATOKEN = "bakatoken"
   BAKAREFRESTOKEN = "bakarefreshtoken"
@@ -13,5 +15,23 @@ const (
   BAKACOOKIE = "bakacookie"
   BAKACOOKIE_EXPIRES = "bakacookie_expires"
   LAST_USED = "last_used"
+  LAST_UPDATED = "last_updated"
   TYPE = "type"
+  SOURCES = "sources"
+  TIMETABLE_PUBLIC = "TimeTable/Public"
+  DESC = "desc"
+
+  TEACHER = "Teacher"
+  CLASS = "Class"
+  ROOM = "Room"
+
+  ACTUAL = "Actual"
+  NEXT = "Next"
+  PERMANENT = "Permanent"
 )
+
+func GetTTime() string {
+  wd := time.Now().Weekday()
+  if wd == time.Sunday || wd == time.Sunday { return NEXT }
+  return ACTUAL
+}

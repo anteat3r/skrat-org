@@ -117,8 +117,14 @@ func main() {
 
     app.Cron().MustAdd(
       "ttreload",
-      "* 6-18 * * 1-5",
-      src.TimeTableReload,
+      "* 6-18 * * 1-6",
+      src.TimeTableReload(app),
+    )
+
+    app.Cron().MustAdd(
+      "srcsreload",
+      "1 7 * * 6",
+      src.TimeTableSourcesReload(app),
     )
 
     if err := app.Start(); err != nil { log.Fatal(err) }

@@ -3,6 +3,7 @@ package src
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase"
@@ -111,12 +112,67 @@ func WebSourcesHandler(
   return func(e *core.RequestEvent) error {
     user := e.Auth
     
-    status, html, err := BakaWebQuery(app, user, "TimeTable/Public")
+    status, html, err := BakaWebQuery(app, user, TIMETABLE_PUBLIC)
     if status != 200 { return fmt.Errorf("bad status code: %v", status) }
 
     srcs, err := ParseSourcesWeb(html)
     if err != nil { return err }
 
     return e.JSON(200, srcs)
+  }
+}
+
+func DayOverwievHandler(
+  app *pocketbase.PocketBase,
+) func(*core.RequestEvent) error {
+  return func(e *core.RequestEvent) error {
+    weekdays := e.Request.URL.Query().Get("day")
+    weekday, err := strconv.Atoi(weekdays)
+    if err != nil { return err }
+
+    if weekday < 1 || weekday > 5 {
+      return e.Error(401, "invalid day param", weekday)
+    }
+
+    classsrcs, err := app.FindRecordsByFilter(
+      SOURCES,
+      TYPE + ` = ` + CLASS,
+      `created`,
+      0, 0,
+    )
+    if err != nil { return err }
+
+
+    res := struct{
+      Data map[string][]TimeTableHour `json:"data"`
+      Hours []TimeTableHourTitle `json:"hours"`
+    }{
+      Data: make(map[string][]TimeTableHour),
+    }
+
+    if len(classsrcs) < 1 { return e.JSON(200, res) }
+
+    for _, classsrc := range classsrcs {
+      datarecs, err := app.FindRecordsByFilter(
+        DATA,
+        NAME + ` = ` + classsrc.GetString(NAME) + ` && ` + OWNER + ` = ""`,
+        `created`,
+        1, 0,
+      )
+      if err != nil { return err }
+
+      if len(datarecs) < 1 { continue }
+      datarec := datarecs[0]
+
+      var tt TimeTable
+      err = json.Unmarshal([]byte(datarec.GetString(DATA)), &tt)
+      if err != nil { return err }
+
+      if len(tt.Days) < weekday - 2 { continue }
+
+      res.Data[datarec.GetString(DESC)] = tt.Days[weekday - 1].Hours
+    }
+
+    return e.JSON(200, res)
   }
 }
