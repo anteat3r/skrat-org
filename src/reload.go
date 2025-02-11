@@ -120,6 +120,8 @@ func TimeTableSourcesReload(
       return nil
     })
 
+    fmt.Print(err)
+
     if err != nil { app.Logger().Error(err.Error(), err) }
   }
 }
