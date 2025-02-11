@@ -3,6 +3,7 @@ package src
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase"
@@ -11,6 +12,7 @@ import (
 )
 
 func TimeTableReload(app *pocketbase.PocketBase) func() {
+  app.Logger().Info(strconv.FormatBool(app.IsDev()))
   datacoll, _ := app.FindCollectionByNameOrId(DATA)
   return func() {
     err := app.RunInTransaction(func(txApp core.App) error {
