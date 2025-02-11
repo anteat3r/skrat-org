@@ -3,7 +3,6 @@ package src
 import (
 	"encoding/json"
 	"fmt"
-	"strconv"
 
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase"
@@ -11,9 +10,7 @@ import (
 	"github.com/pocketbase/pocketbase/tools/types"
 )
 
-func TimeTableReload(app *pocketbase.PocketBase) func() {
-  app.Logger().Info(strconv.FormatBool(app.IsDev()))
-  datacoll, _ := app.FindCollectionByNameOrId(DATA)
+func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func() {
   return func() {
     err := app.RunInTransaction(func(txApp core.App) error {
       srcs, err := txApp.FindRecordsByFilter(

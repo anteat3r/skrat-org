@@ -117,20 +117,21 @@ func main() {
           src.DayOverviewHandler(app),
         ).Bind(apis.RequireAuth(src.USERS))
 
+        app.Cron().MustAdd(
+          "ttreload",
+          "* 6-18 * * 1-6",
+          src.TimeTableReload(app),
+        )
+
+        app.Cron().MustAdd(
+          "srcsreload",
+          "1 7 * * 6",
+          src.TimeTableSourcesReload(app),
+        )
+
         return se.Next()
     })
 
-    // app.Cron().MustAdd(
-    //   "ttreload",
-    //   "* 6-18 * * 1-6",
-    //   src.TimeTableReload(app),
-    // )
-
-    app.Cron().MustAdd(
-      "srcsreload",
-      "1 7 * * 6",
-      src.TimeTableSourcesReload(app),
-    )
 
     if err := app.Start(); err != nil { log.Fatal(err) }
 }
