@@ -115,6 +115,14 @@ func main() {
           src.DayOverviewHandler(app),
         ).Bind(apis.RequireAuth(src.USERS))
 
+        se.Router.GET(
+          "/api/kleo/reloadsrcs",
+          func(e *core.RequestEvent) error {
+            src.TimeTableSourcesReload(app)
+            return e.String(200, "")
+          },
+        )
+
         app.Cron().MustAdd(
           "ttreload",
           "* 6-18 * * 1-6",
