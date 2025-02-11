@@ -112,6 +112,11 @@ func main() {
           src.WebSourcesHandler(app),
         ).Bind(apis.RequireAuth(src.USERS))
 
+        se.Router.GET(
+          "/api/kleo/daytt",
+          src.DayOverviewHandler(app),
+        ).Bind(apis.RequireAuth(src.USERS))
+
         return se.Next()
     })
 

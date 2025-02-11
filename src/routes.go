@@ -122,7 +122,7 @@ func WebSourcesHandler(
   }
 }
 
-func DayOverwievHandler(
+func DayOverviewHandler(
   app *pocketbase.PocketBase,
 ) func(*core.RequestEvent) error {
   return func(e *core.RequestEvent) error {
@@ -141,7 +141,6 @@ func DayOverwievHandler(
       0, 0,
     )
     if err != nil { return err }
-
 
     res := struct{
       Data map[string][]TimeTableHour `json:"data"`
