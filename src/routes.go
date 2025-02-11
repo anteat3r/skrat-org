@@ -136,7 +136,7 @@ func DayOverviewHandler(
 
     classsrcs, err := app.FindRecordsByFilter(
       SOURCES,
-      TYPE + ` = ` + CLASS,
+      TYPE + ` = "` + CLASS + `"`,
       `created`,
       0, 0,
     )
