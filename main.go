@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -28,12 +27,10 @@ func main() {
         
         appsv, err := os.ReadFile("/root/skrat-org/web/src/App.svelte")
         if err != nil { return err }
-        fmt.Println(string(appsv))
         re, err := regexp.Compile(`<Route path="(.+)"`)
         if err != nil { return err}
         ms := re.FindAllSubmatch(appsv, -1)
         if ms == nil { ms = [][][]byte{} }
-        fmt.Println(ms)
         for _, m := range ms {
           if m == nil { continue }
           if len(m) < 2 { continue }
