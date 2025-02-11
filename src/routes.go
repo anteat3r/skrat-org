@@ -67,7 +67,7 @@ func WebTimeTableHandler(
     time := e.Request.PathValue("time")
     ttype := e.Request.PathValue("ttype")
     name := e.Request.PathValue("name")
-    if ttype != "Teacher" && ttype != "Class" && ttype != "Room" {
+    if ttype != TEACHER && ttype != CLASS && ttype != ROOM {
       return e.Error(401, "invalid ttype", ttype)
     }
     status, res, err := BakaTimeTableQuery(app, user, time, ttype, name)
@@ -81,6 +81,8 @@ func WebTimeTableHandler(
     if err != nil { return err }
 
     stringtt := string(jsontt)
+
+    if time != GetTTime() { return e.String(200, stringtt) }
 
     var datarec *core.Record
     datarec, err = app.FindFirstRecordByFilter(
