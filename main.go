@@ -120,11 +120,11 @@ func main() {
         return se.Next()
     })
 
-    app.Cron().MustAdd(
-      "ttreload",
-      "* 6-18 * * 1-6",
-      src.TimeTableReload(app),
-    )
+    // app.Cron().MustAdd(
+    //   "ttreload",
+    //   "* 6-18 * * 1-6",
+    //   src.TimeTableReload(app),
+    // )
 
     app.Cron().MustAdd(
       "srcsreload",
