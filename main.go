@@ -12,6 +12,7 @@ import (
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
+	"github.com/spf13/cobra"
 )
 
 var lastReloaded = time.Now()
@@ -125,6 +126,13 @@ func main() {
           "1 7 * * 6",
           src.TimeTableSourcesReload(app),
         )
+
+        app.RootCmd.AddCommand(&cobra.Command{
+          Use: "reloadsrcs",
+          Run: func(cmd *cobra.Command, args []string) {
+            src.TimeTableSourcesReload(app)
+          },
+        })
 
         return se.Next()
     })
