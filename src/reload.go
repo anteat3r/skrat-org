@@ -98,6 +98,8 @@ func TimeTableSourcesReload(
       srcs, err := ParseSourcesWeb(resp)
       if err != nil { return err }
 
+      txApp.Logger().Info(fmt.Sprint(srcs.AsMap()))
+
       coll, _ := txApp.FindCollectionByNameOrId(SOURCES)
       for name, src := range srcs.AsMap() {
         for _, ttsrc := range src {
