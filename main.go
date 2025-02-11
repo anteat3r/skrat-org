@@ -127,14 +127,15 @@ func main() {
           src.TimeTableSourcesReload(app),
         )
 
-        app.RootCmd.AddCommand(&cobra.Command{
-          Use: "reloadsrcs",
-          Run: func(cmd *cobra.Command, args []string) {
-            src.TimeTableSourcesReload(app)
-          },
-        })
 
         return se.Next()
+    })
+
+    app.RootCmd.AddCommand(&cobra.Command{
+      Use: "reloadsrcs",
+      Run: func(cmd *cobra.Command, args []string) {
+        src.TimeTableSourcesReload(app)
+      },
     })
 
 
