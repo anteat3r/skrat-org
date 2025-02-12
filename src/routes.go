@@ -156,7 +156,7 @@ func DayOverviewHandler(
     for _, classsrc := range classsrcs {
       datarecs, err := app.FindRecordsByFilter(
         DATA,
-        NAME + ` = ` + classsrc.GetString(NAME) + ` && ` + OWNER + ` = ""`,
+        NAME + ` = "` + classsrc.GetString(NAME) + `" && ` + OWNER + ` = ""`,
         `created`,
         1, 0,
       )
