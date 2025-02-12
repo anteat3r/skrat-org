@@ -21,7 +21,7 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
       )
       if err != nil { return err }
 
-      if len(srcs) < 0 { return fmt.Errorf("no suitable source found") }
+      if len(srcs) < 1 { return fmt.Errorf("no suitable source found") }
       src := srcs[0]
 
       users, err := txApp.FindRecordsByFilter(

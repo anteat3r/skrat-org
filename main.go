@@ -118,7 +118,7 @@ func main() {
         se.Router.GET(
           "/api/kleo/reloadsrcs",
           func(e *core.RequestEvent) error {
-            src.TimeTableSourcesReload(app)
+            src.TimeTableSourcesReload(app)()
             return e.String(200, "")
           },
         )
