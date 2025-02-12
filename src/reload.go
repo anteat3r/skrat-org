@@ -12,6 +12,11 @@ import (
 
 func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func() {
   return func() {
+    defer func(){
+      r := recover()
+      if r == nil { return }
+      app.Logger().Error(fmt.Sprint(r))
+    }()
     err := app.RunInTransaction(func(txApp core.App) error {
       srcs, err := txApp.FindRecordsByFilter(
         SOURCES,

@@ -6,7 +6,7 @@
 
   async function dayIdxChange() {
     if (dayIdx == 0) return;
-    tt = await pb.send(`/api/kleo/daytt`, { query: { day: dayIdx } });
+    tt = await pb.send(`/api/kleo/daytt/${ttype}`, { query: { day: dayIdx } });
   }
 
   function detailAlertCallback(detail: string) {
