@@ -2,6 +2,7 @@
   // import { pb } from './pb_store.svelte';
   import Marks from './Marks.svelte';
   import PublicTimetable from './PublicTimetable.svelte';
+  import DayTable from './DayTable.svelte';
 
   let page = $state(0);
 </script>
@@ -9,6 +10,7 @@
 <button onclick={() => { page = 0; }}>Home</button>
 <button onclick={() => { page = 1; }}>Marks</button>
 <button onclick={() => { page = 2; }}>PublicTimetable</button>
+<button onclick={() => { page = 3; }}>DayTable</button>
 <br>
 {#if page == 0}
   cs lil bro
@@ -16,4 +18,6 @@
   <Marks />
 {:else if page == 2}
   <PublicTimetable />
+{:else if page == 3}
+  <DayTable />
 {/if}
