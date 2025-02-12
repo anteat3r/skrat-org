@@ -154,7 +154,7 @@ func DayOverviewHandler(
 
     if len(classsrcs) < 1 { return e.JSON(200, res) }
 
-    for _, classsrc := range classsrcs {
+    for i, classsrc := range classsrcs {
       datarecs, err := app.FindRecordsByFilter(
         DATA,
         NAME + ` = "` + classsrc.GetString(NAME) + `" && ` + OWNER + ` = ""`,
@@ -173,9 +173,11 @@ func DayOverviewHandler(
 
       // if len(tt.Days) < weekday - 2 { continue }
 
-      app.Logger().Info(fmt.Sprintf("%v: %#v", datarec.GetString(DESC), tt.Days[weekday - 1].Hours))
+      app.Logger().Info(fmt.Sprintf("%v: %#v", classsrc.GetString(DESC), tt.Days[weekday - 1].Hours))
 
-      res.Data[datarec.GetString(DESC)] = tt.Days[weekday - 1].Hours
+      res.Data[classsrc.GetString(DESC)] = tt.Days[weekday - 1].Hours
+
+      if i == 0 { res.Hours = tt.Hours }
     }
 
     return e.JSON(200, res)
