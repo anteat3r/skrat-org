@@ -3,6 +3,7 @@
   import Marks from './Marks.svelte';
   import PublicTimetable from './PublicTimetable.svelte';
   import DayOverview from './DayOverview.svelte';
+  import CustomEndp from './CustomEndp.svelte';
 
   let page = $state(0);
 </script>
@@ -11,6 +12,7 @@
 <button onclick={() => { page = 1; }}>Marks</button>
 <button onclick={() => { page = 2; }}>PublicTimetable</button>
 <button onclick={() => { page = 3; }}>DayOverview</button>
+<button onclick={() => { page = 4; }}>CustomEndp</button>
 <br>
 {#if page == 0}
   cs lil bro
@@ -20,4 +22,6 @@
   <PublicTimetable />
 {:else if page == 3}
   <DayOverview />
+{:else if page == 4}
+  <CustomEndp />
 {/if}

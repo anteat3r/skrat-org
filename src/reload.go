@@ -41,7 +41,7 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
       var jresp string
 
       if src.GetString(TYPE) == EVENTS {
-        status, resp, err := BakaQuery(txApp, user, "GET", "events/all", "")
+        status, resp, err := BakaQuery(txApp, user, "GET", "events", "")
         if err != nil { return err }
         if status != 200 { return fmt.Errorf("invalid status code: %v %v", status, resp) }
 
