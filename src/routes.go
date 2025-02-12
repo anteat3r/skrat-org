@@ -140,7 +140,7 @@ func DayOverviewHandler(
       SOURCES,
       TYPE + ` = "` + CLASS + `"`,
       `created`,
-      0, 0,
+      -1, 0,
     )
     if err != nil { return err }
 
