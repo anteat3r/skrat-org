@@ -111,7 +111,7 @@ func main() {
         ).Bind(apis.RequireAuth(src.USERS))
 
         se.Router.GET(
-          "/api/kleo/daytt",
+          "/api/kleo/daytt/{ttype}",
           src.DayOverviewHandler(app),
         ).Bind(apis.RequireAuth(src.USERS))
 

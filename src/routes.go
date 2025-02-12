@@ -132,25 +132,24 @@ func DayOverviewHandler(
     weekday, err := strconv.Atoi(weekdays)
     if err != nil { return err }
 
-    if weekday < 1 || weekday > 5 {
-      return e.Error(401, "invalid day param", weekday)
+    if weekday < 1 || weekday > 5 { return e.Error(401, "invalid day param", weekday) }
+
+    ttype := e.Request.PathValue("ttype")
+    if ttype != TEACHER && ttype != CLASS && ttype != ROOM {
+      return e.Error(401, "invalid ttype", ttype)
     }
 
     classsrcs, err := app.FindRecordsByFilter(
       SOURCES,
-      TYPE + ` = "` + CLASS + `"`,
-      `created`,
-      -1, 0,
+      TYPE + ` = "` + ttype + `"`,
+      `created`, -1, 0,
     )
     if err != nil { return err }
-
 
     res := struct{
       Data map[string][]TimeTableHour `json:"data"`
       Hours []TimeTableHourTitle `json:"hours"`
-    }{
-      Data: make(map[string][]TimeTableHour),
-    }
+    }{ Data: make(map[string][]TimeTableHour), }
 
     if len(classsrcs) < 1 { return e.JSON(200, res) }
 
@@ -158,14 +157,12 @@ func DayOverviewHandler(
       datarecs, err := app.FindRecordsByFilter(
         DATA,
         NAME + ` = "` + classsrc.GetString(NAME) + `" && ` + OWNER + ` = ""`,
-        `created`,
-        1, 0,
+        `created`, 1, 0,
       )
       if err != nil { return err }
 
       if len(datarecs) < 1 { continue }
       datarec := datarecs[0]
-
 
       var tt TimeTable
       err = json.Unmarshal([]byte(datarec.GetString(DATA)), &tt)

@@ -19,8 +19,16 @@
     e.preventDefault();
     e.target.dispatchEvent(new MouseEvent("click")); 
   }
+
+  let ttype = $state("Class");
 </script>
 
+
+<select bind:value={ttype}>
+  <option value="Class">Class</option>
+  <option value="Room">Room</option>
+  <option value="Teacher">Teacher</option>
+</select>
 <select bind:value={dayIdx} onchange={dayIdxChange}>
   <option value={0}></option>
   {#each [...Array(5).keys()].map((x) => x+1) as idx}

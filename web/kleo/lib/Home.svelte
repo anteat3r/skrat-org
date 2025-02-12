@@ -10,7 +10,7 @@
 <button onclick={() => { page = 0; }}>Home</button>
 <button onclick={() => { page = 1; }}>Marks</button>
 <button onclick={() => { page = 2; }}>PublicTimetable</button>
-<button onclick={() => { page = 3; }}>dayOverview</button>
+<button onclick={() => { page = 3; }}>DayOverview</button>
 <br>
 {#if page == 0}
   cs lil bro
