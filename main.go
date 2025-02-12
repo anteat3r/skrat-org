@@ -115,26 +115,17 @@ func main() {
           src.DayOverviewHandler(app),
         ).Bind(apis.RequireAuth(src.USERS))
 
-        se.Router.GET(
-          "/api/kleo/reloadsrcs",
-          func(e *core.RequestEvent) error {
-            src.TimeTableSourcesReload(app)()
-            return e.String(200, "")
-          },
-        )
-
         app.Cron().MustAdd(
           "ttreload",
           "* 6-18 * * 1-6",
           src.TimeTableReload(app, datacoll),
         )
-        //
-        // app.Cron().MustAdd(
-        //   "srcsreload",
-        //   "1 7 * * 6",
-        //   src.TimeTableSourcesReload(app),
-        // )
 
+        app.Cron().MustAdd(
+          "srcsreload",
+          "1 7 * * 6",
+          src.TimeTableSourcesReload(app),
+        )
 
         return se.Next()
     })
@@ -142,7 +133,7 @@ func main() {
     app.RootCmd.AddCommand(&cobra.Command{
       Use: "reloadsrcs",
       Run: func(cmd *cobra.Command, args []string) {
-        src.TimeTableSourcesReload(app)
+        src.TimeTableSourcesReload(app)()
       },
     })
 
