@@ -144,6 +144,8 @@ func DayOverviewHandler(
     )
     if err != nil { return err }
 
+    app.Logger().Info(fmt.Sprintf("%#v", classsrcs))
+
     res := struct{
       Data map[string][]TimeTableHour `json:"data"`
       Hours []TimeTableHourTitle `json:"hours"`
