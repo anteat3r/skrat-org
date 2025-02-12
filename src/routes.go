@@ -171,7 +171,7 @@ func DayOverviewHandler(
       err = json.Unmarshal([]byte(datarec.GetString(DATA)), &tt)
       if err != nil { return err }
 
-      if len(tt.Days) < weekday - 2 { continue }
+      // if len(tt.Days) < weekday - 2 { continue }
 
       res.Data[datarec.GetString(DESC)] = tt.Days[weekday - 1].Hours
     }
