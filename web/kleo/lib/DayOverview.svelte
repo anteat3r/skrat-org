@@ -50,7 +50,7 @@
               <h1>{title}</h1>
             </div>
           </th>
-          {#each (day as any).hours as hour}
+          {#each (day as any) as hour}
             <td>
               {#each hour.cells as cell}
                 <div
