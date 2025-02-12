@@ -24,7 +24,7 @@
 </script>
 
 
-<select bind:value={ttype}>
+<select bind:value={ttype} onchange={dayIdxChange}>
   <option value="Class">Class</option>
   <option value="Room">Room</option>
   <option value="Teacher">Teacher</option>
