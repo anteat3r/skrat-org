@@ -17,7 +17,6 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
       if r == nil { return }
       app.Logger().Error(fmt.Sprint(r))
     }()
-    app.Logger().Info("reloading")
     err := app.RunInTransaction(func(txApp core.App) error {
       srcs, err := txApp.FindRecordsByFilter(
         SOURCES,
@@ -39,14 +38,28 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
       if len(users) < 1 { return fmt.Errorf("no suitable user found") }
       user := users[0]
 
-      status, resp, err := BakaTimeTableQuery(txApp, user, GetTTime(), src.GetString(TYPE), src.GetString(NAME))
-      if status != 200 { return fmt.Errorf("invalid status code: %v %v", status, resp) }
+      var jresp string
 
-      tt, err := ParseTimeTableWeb(resp)
-      if err != nil { return err }
+      if src.GetString(TYPE) == EVENTS {
+        status, resp, err := BakaQuery(txApp, user, "GET", "events/all", "")
+        if err != nil { return err }
+        if status != 200 { return fmt.Errorf("invalid status code: %v %v", status, resp) }
 
-      resb, err := json.Marshal(tt)
-      if err != nil { return err }
+        jresp = resp
+      } else {
+        status, resp, err := BakaTimeTableQuery(txApp, user, GetTTime(), src.GetString(TYPE), src.GetString(NAME))
+        if err != nil { return err }
+        if status != 200 { return fmt.Errorf("invalid status code: %v %v", status, resp) }
+
+        tt, err := ParseTimeTableWeb(resp)
+        if err != nil { return err }
+
+        resb, err := json.Marshal(tt)
+        if err != nil { return err }
+
+        jresp = string(resb)
+      }
+
 
       var datarec *core.Record
       datarec, err = txApp.FindFirstRecordByFilter(
@@ -60,7 +73,7 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
         datarec.Set(NAME, src.GetString(NAME))
         datarec.Set(TYPE, src.GetString(TYPE))
       }
-      datarec.Set(DATA, string(resb))
+      datarec.Set(DATA, jresp)
       if datarec.GetString(TYPE) == "" {
         datarec.Set(TYPE, src.GetString(TYPE))
       }
@@ -124,6 +137,13 @@ func TimeTableSourcesReload(
           if err != nil { return err }
         }
       }
+
+      rec := core.NewRecord(coll)
+      rec.Set(NAME, EVENTS)
+      rec.Set(DESC, EVENTS)
+      rec.Set(TYPE, EVENTS)
+      err = txApp.Save(rec)
+      if err != nil { return err }
 
       user.Set(LAST_USED, types.NowDateTime())
 

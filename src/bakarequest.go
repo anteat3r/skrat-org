@@ -22,7 +22,7 @@ var doNotRedirectClient = http.Client{
 }
 
 func BakaQuery(
-  app *pocketbase.PocketBase,
+  app core.App,
   user *core.Record,
   method, endpoint, body string,
 ) (status int, res string, err error) {

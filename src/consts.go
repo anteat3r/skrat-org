@@ -24,6 +24,7 @@ const (
   TEACHER = "Teacher"
   CLASS = "Class"
   ROOM = "Room"
+  EVENTS = "Events"
 
   ACTUAL = "Actual"
   NEXT = "Next"
