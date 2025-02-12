@@ -166,7 +166,6 @@ func DayOverviewHandler(
       if len(datarecs) < 1 { continue }
       datarec := datarecs[0]
 
-      app.Logger().Info(fmt.Sprintf("%#v", datarec))
 
       var tt TimeTable
       err = json.Unmarshal([]byte(datarec.GetString(DATA)), &tt)
@@ -176,6 +175,8 @@ func DayOverviewHandler(
 
       res.Data[datarec.GetString(DESC)] = tt.Days[weekday - 1].Hours
     }
+
+    app.Logger().Info(fmt.Sprintf("%#v", res))
 
     return e.JSON(200, res)
   }
