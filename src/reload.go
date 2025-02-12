@@ -70,6 +70,14 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
       err = txApp.Save(user)
       if err != nil { return err }
 
+      err = txApp.Save(datarec)
+      if err != nil { return err }
+
+      src.Set(LAST_UPDATED, types.NowDateTime())
+
+      err = txApp.Save(src)
+      if err != nil { return err }
+
       return nil
     })
     
