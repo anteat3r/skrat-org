@@ -173,10 +173,10 @@ func DayOverviewHandler(
 
       // if len(tt.Days) < weekday - 2 { continue }
 
+      app.Logger().Info(fmt.Sprintf("%#v", tt.Days[weekday - 1].Hours))
+
       res.Data[datarec.GetString(DESC)] = tt.Days[weekday - 1].Hours
     }
-
-    app.Logger().Info(fmt.Sprintf("%#v", res))
 
     return e.JSON(200, res)
   }
