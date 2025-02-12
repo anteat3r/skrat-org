@@ -49,7 +49,7 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
       if err != nil { return err }
 
       var datarec *core.Record
-      datarec, err = app.FindFirstRecordByFilter(
+      datarec, err = txApp.FindFirstRecordByFilter(
         DATA,
         OWNER + ` = "" && ` + NAME + ` = {:name}`,
         dbx.Params{"name": src.GetString(NAME)},
