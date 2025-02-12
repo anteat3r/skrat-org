@@ -78,7 +78,7 @@ func TimeTableSourcesReload(
   return func() {
 
     err := app.RunInTransaction(func(txApp core.App) error {
-      _, err := txApp.DB().NewQuery("delete * from " + SOURCES).Execute()
+      _, err := txApp.DB().NewQuery("delete from " + SOURCES).Execute()
       if err != nil { return err }
 
       users, err := txApp.FindRecordsByFilter(
