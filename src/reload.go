@@ -17,12 +17,12 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
       if r == nil { return }
       app.Logger().Error(fmt.Sprint(r))
     }()
+    app.Logger().Info("reloading")
     err := app.RunInTransaction(func(txApp core.App) error {
       srcs, err := txApp.FindRecordsByFilter(
         SOURCES,
         `id != ""`,
-        LAST_UPDATED,
-        1, 0, 
+        LAST_UPDATED, 1, 0, 
       )
       if err != nil { return err }
 

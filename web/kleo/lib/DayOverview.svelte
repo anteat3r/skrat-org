@@ -32,7 +32,7 @@
 <select bind:value={dayIdx} onchange={dayIdxChange}>
   <option value={0}></option>
   {#each [...Array(5).keys()].map((x) => x+1) as idx}
-    <option value={idx}>{idx}</option>
+    <option value={idx}>{new Date(Date.UTC(2025, 9, idx)).toLocaleDateString('cs-CZ', { weekday: "short" })}</option>
   {/each}
 </select>
 
