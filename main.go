@@ -123,17 +123,17 @@ func main() {
           },
         )
 
-        app.Cron().MustAdd(
-          "ttreload",
-          "* 6-18 * * 1-6",
-          src.TimeTableReload(app, datacoll),
-        )
-
-        app.Cron().MustAdd(
-          "srcsreload",
-          "1 7 * * 6",
-          src.TimeTableSourcesReload(app),
-        )
+        // app.Cron().MustAdd(
+        //   "ttreload",
+        //   "* 6-18 * * 1-6",
+        //   src.TimeTableReload(app, datacoll),
+        // )
+        //
+        // app.Cron().MustAdd(
+        //   "srcsreload",
+        //   "1 7 * * 6",
+        //   src.TimeTableSourcesReload(app),
+        // )
 
 
         return se.Next()
