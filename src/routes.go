@@ -144,7 +144,6 @@ func DayOverviewHandler(
     )
     if err != nil { return err }
 
-    app.Logger().Info(fmt.Sprintf("%#v", classsrcs))
 
     res := struct{
       Data map[string][]TimeTableHour `json:"data"`
@@ -166,6 +165,8 @@ func DayOverviewHandler(
 
       if len(datarecs) < 1 { continue }
       datarec := datarecs[0]
+
+      app.Logger().Info(fmt.Sprintf("%#v", datarec))
 
       var tt TimeTable
       err = json.Unmarshal([]byte(datarec.GetString(DATA)), &tt)
