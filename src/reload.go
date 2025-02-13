@@ -10,6 +10,90 @@ import (
 	"github.com/pocketbase/pocketbase/tools/types"
 )
 
+type ResourceName struct {
+  Name string
+  Type string
+  Owner string
+}
+
+var (
+  DataCache = map[ResourceName]any{}
+)
+
+func StoreData(
+  app core.App,
+  datacoll *core.Collection,
+  name, ttype, owner string,
+  parseddata any,
+  stringdata string,
+) error {
+  datarec, err := app.FindFirstRecordByFilter(
+    DATA,
+    OWNER + ` = {:owner} && ` + NAME + ` = {:name} && ` + TYPE + ` = {:type}`,
+    dbx.Params{"name": name, TYPE: ttype, OWNER: owner},
+  )
+  if err != nil {
+    datarec = core.NewRecord(datacoll)
+    datarec.Set(OWNER, owner)
+    datarec.Set(NAME, name)
+    datarec.Set(TYPE, ttype)
+  }
+
+  if stringdata == "" {
+    bytedata, err := json.Marshal(parseddata)
+    if err != nil { return err }
+    stringdata = string(bytedata)
+  }
+  
+  datarec.Set(DATA, stringdata)
+  if datarec.GetString(TYPE) == "" {
+    datarec.Set(TYPE, ttype)
+  }
+
+  err = app.Save(datarec)
+  if err != nil { return err }
+
+  DataCache[ResourceName{
+    Name: name,
+    Type: ttype,
+    Owner: owner,
+  }] = parseddata
+
+  return nil
+}
+
+func QueryData[T any](
+  app core.App,
+  name, ttype, owner string,
+) (data T, err error) {
+  cdata, ok := DataCache[ResourceName{
+    Name: name,
+    Type: ttype,
+    Owner: owner,
+  }]
+
+  if ok {
+    tdata, ok := cdata.(T)
+    if ok { return tdata, nil }
+  }
+
+  var rec *core.Record
+  rec, err = app.FindFirstRecordByFilter(
+    DATA,
+    OWNER + ` = {:owner} && ` + NAME + ` = {:name} && ` + TYPE + ` = {:type}`,
+    dbx.Params{"name": name, TYPE: ttype, OWNER: owner},
+  )
+  if err != nil { return }
+
+  sdata := rec.GetString(DATA)
+
+  rest := new(T)
+  err = json.Unmarshal([]byte(sdata), rest)
+  if err != nil { return }
+
+  return *rest, nil
+}
+
 func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func() {
   return func() {
     defer func(){
@@ -39,6 +123,7 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
       user := users[0]
 
       var jresp string
+      var tresp any
 
       if src.GetString(TYPE) == EVENTS {
         status, resp, err := BakaQuery(txApp, user, "GET", "events", "")
@@ -46,6 +131,11 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
         if status != 200 { return fmt.Errorf("invalid status code: %v %v", status, resp) }
 
         jresp = resp
+
+        evts := BakaEvents{}
+        json.Unmarshal([]byte(resp), &evts)
+
+        tresp = evts
       } else {
         status, resp, err := BakaTimeTableQuery(txApp, user, GetTTime(), src.GetString(TYPE), src.GetString(NAME))
         if err != nil { return err }
@@ -54,36 +144,27 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
         tt, err := ParseTimeTableWeb(resp)
         if err != nil { return err }
 
+        tresp = tt
+
         resb, err := json.Marshal(tt)
         if err != nil { return err }
 
         jresp = string(resb)
       }
 
-
-      var datarec *core.Record
-      datarec, err = txApp.FindFirstRecordByFilter(
-        DATA,
-        OWNER + ` = "" && ` + NAME + ` = {:name}`,
-        dbx.Params{"name": src.GetString(NAME)},
+      err = StoreData(
+        txApp,
+        datacoll,
+        src.GetString(NAME),
+        src.GetString(TYPE),
+        "",
+        tresp, jresp,
       )
-      if err != nil {
-        datarec = core.NewRecord(datacoll)
-        datarec.Set(OWNER, "")
-        datarec.Set(NAME, src.GetString(NAME))
-        datarec.Set(TYPE, src.GetString(TYPE))
-      }
-      datarec.Set(DATA, jresp)
-      if datarec.GetString(TYPE) == "" {
-        datarec.Set(TYPE, src.GetString(TYPE))
-      }
+      if err != nil { return err }
 
       user.Set(LAST_USED, types.NowDateTime())
 
       err = txApp.Save(user)
-      if err != nil { return err }
-
-      err = txApp.Save(datarec)
       if err != nil { return err }
 
       src.Set(LAST_UPDATED, types.NowDateTime())

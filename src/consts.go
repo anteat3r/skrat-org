@@ -29,6 +29,8 @@ const (
   ACTUAL = "Actual"
   NEXT = "Next"
   PERMANENT = "Permanent"
+
+  PRIVATE = "Private"
 )
 
 func GetTTime() string {

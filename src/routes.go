@@ -1,11 +1,11 @@
 package src
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"strconv"
 
-	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/core"
 )
@@ -23,20 +23,16 @@ func EndpHandler(
     status, resp, err := BakaQuery(app, user, "GET", endp, "")
     if err != nil { return err }
 
-    var datarec *core.Record
-    datarec, err = app.FindFirstRecordByFilter(
-      DATA,
-      "owner = {:owner} && name = {:name}",
-      dbx.Params{"owner": user.Id, "name": endp},
-    )
-    if err != nil {
-      datarec = core.NewRecord(datacoll)
-      datarec.Set(OWNER, user.Id)
-      datarec.Set(NAME, endp)
-    }
-    datarec.Set(DATA, resp)
+    var res map[string]any
+    err = json.Unmarshal([]byte(resp), &res)
+    if err != nil { return err }
 
-    err = app.Save(datarec)
+    err = StoreData(
+      app, datacoll,
+      endp, PRIVATE,
+      user.Id,
+      res, resp,
+    )
     if err != nil { return err }
 
     return e.String(status, resp)
@@ -82,27 +78,15 @@ func WebTimeTableHandler(
 
     stringtt := string(jsontt)
 
-    if time != GetTTime() { return e.String(200, stringtt) }
-
-    var datarec *core.Record
-    datarec, err = app.FindFirstRecordByFilter(
-      DATA,
-      `owner = "" && name = {:name}`,
-      dbx.Params{"name": name},
-    )
-    if err != nil {
-      datarec = core.NewRecord(datacoll)
-      datarec.Set(OWNER, "")
-      datarec.Set(NAME, name)
-      datarec.Set(TYPE, ttype)
+    if time == GetTTime() {
+      err = StoreData(
+        app,
+        datacoll,
+        name, ttype, "",
+        parsedtt, stringtt,
+      )
+      if err != nil { return err }
     }
-    datarec.Set(DATA, stringtt)
-    if datarec.GetString(TYPE) == "" {
-      datarec.Set(TYPE, ttype)
-    }
-
-    err = app.Save(datarec)
-    if err != nil { return err }
 
     return e.String(200, stringtt)
   }
@@ -126,6 +110,7 @@ func WebSourcesHandler(
 
 func DayOverviewHandler(
   app *pocketbase.PocketBase,
+  datacoll *core.Collection,
 ) func(*core.RequestEvent) error {
   return func(e *core.RequestEvent) error {
     weekdays := e.Request.URL.Query().Get("day")
@@ -147,33 +132,29 @@ func DayOverviewHandler(
     if err != nil { return err }
 
     res := struct{
-      Data map[string][]TimeTableHour `json:"data"`
+      Data map[string]TimeTableDay `json:"data"`
       Hours []TimeTableHourTitle `json:"hours"`
-    }{ Data: make(map[string][]TimeTableHour), }
+    }{ Data: make(map[string]TimeTableDay), }
 
     if len(classsrcs) < 1 { return e.JSON(200, res) }
 
     for _, classsrc := range classsrcs {
-      datarecs, err := app.FindRecordsByFilter(
-        DATA,
-        NAME + ` = "` + classsrc.GetString(NAME) + `" && ` + OWNER + ` = ""`,
-        `created`, 1, 0,
+      tt, err := QueryData[TimeTable](
+        app,
+        classsrc.GetString(NAME),
+        ttype, "",
       )
-      if err != nil { return err }
-
-      if len(datarecs) < 1 { continue }
-      datarec := datarecs[0]
-
-      var tt TimeTable
-      err = json.Unmarshal([]byte(datarec.GetString(DATA)), &tt)
-      if err != nil { return err }
+      if err != nil {
+        if err == sql.ErrNoRows { continue }
+        return err
+      }
 
       if res.Hours == nil { res.Hours = tt.Hours }
 
       if len(tt.Days) < weekday { continue }
       day := tt.Days[weekday - 1]
 
-      res.Data[classsrc.GetString(DESC)] = day.Hours
+      res.Data[classsrc.GetString(DESC)] = day
     }
 
     return e.JSON(200, res)
