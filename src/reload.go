@@ -66,11 +66,12 @@ func QueryData[T any](
   app core.App,
   name, ttype, owner string,
 ) (data T, err error) {
-  cdata, ok := DataCache[ResourceName{
+  resname := ResourceName{
     Name: name,
     Type: ttype,
     Owner: owner,
-  }]
+  }
+  cdata, ok := DataCache[resname]
 
   if ok {
     tdata, ok := cdata.(T)
@@ -90,6 +91,8 @@ func QueryData[T any](
   rest := new(T)
   err = json.Unmarshal([]byte(sdata), rest)
   if err != nil { return }
+
+  DataCache[resname] = *rest
 
   return *rest, nil
 }
