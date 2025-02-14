@@ -2,7 +2,7 @@
   import { pb } from '../pb_store.svelte.ts'
 </script>
 
-{#await pb.send("/api/kleo/endp", { query: { endp: "marks" } })}
+{#await pb.send("/api/kleo/marks", {})}
   <h1>Loading... 🙄</h1>
 {:then marks}
   {#each marks.Subjects as subject}

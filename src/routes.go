@@ -3,12 +3,22 @@ package src
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"strconv"
 
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/core"
+	"github.com/pocketbase/pocketbase/tools/hook"
 )
+
+var RequireBakaValid = &hook.Handler[*core.RequestEvent]{
+  Id: "requireBakaValid",
+  Func: func(re *core.RequestEvent) error {
+    user := re.Auth
+    if user == nil { return re.UnauthorizedError("not auth token", nil) }
+    if !user.GetBool(BAKAVALID) { return re.UnauthorizedError("not bakavalid", nil) }
+    return re.Next()
+  },
+}
 
 func EndpHandler(
   app *pocketbase.PocketBase,
@@ -16,26 +26,37 @@ func EndpHandler(
 ) func(*core.RequestEvent) error {
   return func(e *core.RequestEvent) error {
     user := e.Auth
-    if !user.GetBool(BAKAVALID) {
-      return e.UnauthorizedError("your baka login is not valid", nil)
-    }
     endp := e.Request.URL.Query().Get("endp")
-    status, resp, err := BakaQuery(app, user, "GET", endp, "")
+    resp, err := BakaQuery(app, user, "GET", endp, "")
     if err != nil { return err }
 
-    var res map[string]any
-    err = json.Unmarshal([]byte(resp), &res)
+    return e.String(200, string(resp))
+  }
+}
+
+func MarksHandler(
+  app *pocketbase.PocketBase,
+  datacoll *core.Collection,
+) func(*core.RequestEvent) error {
+  return func(e *core.RequestEvent) error {
+    user := e.Auth
+
+    resp, err := BakaQuery(app, user, GET, MARKS, "")
+    if err != nil { return err }
+    sresp := string(resp)
+
+    var marks BakaMark
+    err = json.Unmarshal(resp, &marks)
     if err != nil { return err }
 
     err = StoreData(
       app, datacoll,
-      endp, PRIVATE,
-      user.Id,
-      res, resp,
+      MARKS, PRIVATE, user.Id,
+      marks, sresp,
     )
     if err != nil { return err }
 
-    return e.String(status, resp)
+    return e.String(200, sresp)
   }
 }
 
@@ -66,11 +87,7 @@ func WebTimeTableHandler(
     if ttype != TEACHER && ttype != CLASS && ttype != ROOM {
       return e.Error(401, "invalid ttype", ttype)
     }
-    status, res, err := BakaTimeTableQuery(app, user, time, ttype, name)
-    if err != nil { return err }
-    if status != 200 { return fmt.Errorf("bad status code: %v", status) }
-
-    parsedtt, err := ParseTimeTableWeb(res)
+    parsedtt, err := BakaTimeTableQuery(app, user, time, ttype, name)
     if err != nil { return err }
 
     jsontt, err := json.Marshal(parsedtt)
@@ -98,8 +115,8 @@ func WebSourcesHandler(
   return func(e *core.RequestEvent) error {
     user := e.Auth
     
-    status, html, err := BakaWebQuery(app, user, TIMETABLE_PUBLIC)
-    if status != 200 { return fmt.Errorf("bad status code: %v", status) }
+    html, err := BakaWebQuery(app, user, TIMETABLE_PUBLIC)
+    if err != nil { return err }
 
     srcs, err := ParseSourcesWeb(html)
     if err != nil { return err }
@@ -149,7 +166,11 @@ func DayOverviewHandler(
         return err
       }
 
-      if res.Hours == nil { res.Hours = tt.Hours }
+      if res.Hours == nil {
+        res.Hours = tt.Hours
+      } else if len(tt.Hours) > len(res.Hours) {
+        res.Hours = tt.Hours
+      }
 
       if len(tt.Days) < weekday { continue }
       day := tt.Days[weekday - 1]

@@ -9,17 +9,27 @@ import (
 	"time"
 
 	"github.com/anteat3r/skrat-org/src"
+	"github.com/joho/godotenv"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/spf13/cobra"
 )
 
-var lastReloaded = time.Now()
+var (
+  lastReloaded = time.Now()
+)
 
 func main() {
-    app := pocketbase.New()
+  envmap, err := godotenv.Read()
+  if err != nil { panic(err) }
 
+  vapidPriv, ok := envmap["VAPID_PRIVKEY"]
+  if !ok { panic("vapid privkey not found") }
+
+  src.VAPID_PRIVKEY = vapidPriv
+
+  app := pocketbase.New()
 
     app.OnServe().BindFunc(func(se *core.ServeEvent) error {
         datacoll, _ := app.FindCollectionByNameOrId(src.DATA)
@@ -103,17 +113,23 @@ func main() {
         se.Router.GET(
           "/api/kleo/web/{time}/{ttype}/{name}",
           src.WebTimeTableHandler(app, datacoll),
-        ).Bind(apis.RequireAuth(src.USERS))
+        ).Bind(apis.RequireAuth(src.USERS)).Bind(src.RequireBakaValid)
 
         se.Router.GET(
           "/api/kleo/websrcs",
           src.WebSourcesHandler(app),
-        ).Bind(apis.RequireAuth(src.USERS))
+        ).Bind(apis.RequireAuth(src.USERS)).Bind(src.RequireBakaValid)
 
         se.Router.GET(
           "/api/kleo/daytt/{ttype}",
-          src.DayOverviewHandler(app),
-        ).Bind(apis.RequireAuth(src.USERS))
+          src.DayOverviewHandler(app, datacoll),
+        ).Bind(apis.RequireAuth(src.USERS)).Bind(src.RequireBakaValid)
+
+        se.Router.GET(
+          "/api/kleo/marks",
+          src.MarksHandler(app, datacoll),
+        ).Bind(apis.RequireAuth(src.USERS)).Bind(src.RequireBakaValid)
+
 
         app.Cron().MustAdd(
           "ttreload",

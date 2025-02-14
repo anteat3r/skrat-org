@@ -25,7 +25,7 @@ func BakaQuery(
   app core.App,
   user *core.Record,
   method, endpoint, body string,
-) (status int, res string, err error) {
+) (res []byte, err error) {
 
   defer func(){
     if err == nil { return }
@@ -61,7 +61,11 @@ func BakaQuery(
       resb, err = io.ReadAll(resp.Body)
       if err != nil { return }
       resp.Body.Close()
-      return resp.StatusCode, string(resb), nil
+
+      if resp.StatusCode != 200 {
+        return nil, fmt.Errorf("invalid status code: %v %v", resp.StatusCode, string(resb))
+      }
+      return resb, nil
     }
 
   try_refresh:
@@ -94,6 +98,9 @@ func BakaQuery(
       if err != nil { return }
 
       if attempts > 0 {
+        user.Set(BAKAVALID, false)
+        err = app.Save(user)
+        if err != nil { return }
         err = fmt.Errorf("invalid token for user %v\n", user.Id)
         return
       }
@@ -101,7 +108,7 @@ func BakaQuery(
       goto try_access
     }
 
-  return 0, "", nil
+  return nil, fmt.Errorf("idk bro tohle by se stát nemělo")
 }
 
 type BakaLoginResponse struct {
@@ -204,10 +211,12 @@ func BakaWebQuery(
   app core.App,
   user *core.Record,
   endpoint string,
-) (status int, res string, err error) {
+) (res string, err error) {
   if user.GetDateTime(BAKACOOKIE_EXPIRES).Time().Before(time.Now()) {
     user.Set(BAKAVALID, false)
     err = app.Save(user)
+    if err != nil { return }
+    err = fmt.Errorf("user cookie expired")
     return
   }
   
@@ -228,16 +237,34 @@ func BakaWebQuery(
   resb, err = io.ReadAll(resp.Body)
   if err != nil { return }
 
-  return resp.StatusCode, string(resb), nil
+  if resp.StatusCode != 200 {
+    err = fmt.Errorf("invalid status code %v %v", resp.StatusCode, resp)
+    return
+  }
+
+  return string(resb), nil
 }
 
 func BakaTimeTableQuery(
   app core.App,
   user *core.Record,
   time, ttype, name string,
-) (status int, res string, err error) {
-  return BakaWebQuery(
+) (tt TimeTable, err error) {
+  defer func(){
+    if err != nil {
+      user.Set(BAKAVALID, false)
+      errs := app.Save(user)
+      if errs != nil { err = errs }
+    }
+  }()
+  resp, err := BakaWebQuery(
     app, user,
     TIMETABLE_PUBLIC + "/" + time + "/" + ttype + "/" + name,
   )
+  if err != nil { return TimeTable{}, err }
+
+  res, err := ParseTimeTableWeb(resp)
+  if err != nil { return TimeTable{}, err }
+
+  return res, nil
 }

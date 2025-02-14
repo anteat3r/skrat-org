@@ -62,9 +62,9 @@
             <td>
               {#each hour.cells as cell}
                 <div
-                    class="bk-{cell.color} cell" 
-                    onclick={detailAlertCallback(cell.detail)} 
-                    role="button" tabindex="-1" onkeypress={forwardButtonPress}
+                  class="bk-{cell.color} cell" 
+                  onclick={detailAlertCallback(cell.detail)} 
+                  role="button" tabindex="-1" onkeypress={forwardButtonPress}
                 >
                   <div class="cell-top">
                     <div class="cell-topleft">{cell.group}</div>

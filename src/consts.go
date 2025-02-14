@@ -31,6 +31,19 @@ const (
   PERMANENT = "Permanent"
 
   PRIVATE = "Private"
+  VAPID = "vapid"
+  WANTS_REFRESH = "wants_refresh"
+
+  GET = "GET"
+  POST = "POST"
+
+  MARKS = "marks"
+  TIMETABLE_ACTUAL = "timetable/actual"
+  TIMETABLE_PERMANENT = "timetable/permanent"
+)
+
+var (
+  VAPID_PRIVKEY = ""
 )
 
 func GetTTime() string {

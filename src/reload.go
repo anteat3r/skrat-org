@@ -129,22 +129,17 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
       var tresp any
 
       if src.GetString(TYPE) == EVENTS {
-        status, resp, err := BakaQuery(txApp, user, "GET", "events", "")
+        resp, err := BakaQuery(txApp, user, "GET", "events", "")
         if err != nil { return err }
-        if status != 200 { return fmt.Errorf("invalid status code: %v %v", status, resp) }
 
-        jresp = resp
+        jresp = string(resp)
 
         evts := BakaEvents{}
         json.Unmarshal([]byte(resp), &evts)
 
         tresp = evts
       } else {
-        status, resp, err := BakaTimeTableQuery(txApp, user, GetTTime(), src.GetString(TYPE), src.GetString(NAME))
-        if err != nil { return err }
-        if status != 200 { return fmt.Errorf("invalid status code: %v %v", status, resp) }
-
-        tt, err := ParseTimeTableWeb(resp)
+        tt, err := BakaTimeTableQuery(txApp, user, GetTTime(), src.GetString(TYPE), src.GetString(NAME))
         if err != nil { return err }
 
         tresp = tt
@@ -201,9 +196,8 @@ func TimeTableSourcesReload(
       if len(users) < 1 { return fmt.Errorf("no suitable user found") }
       user := users[0]
 
-      status, resp, err := BakaWebQuery(txApp, user, TIMETABLE_PUBLIC)
+      resp, err := BakaWebQuery(txApp, user, TIMETABLE_PUBLIC)
       if err != nil { return err }
-      if status != 200 { return fmt.Errorf("invalid status code: %v %v", status, resp) }
 
       srcs, err := ParseSourcesWeb(resp)
       if err != nil { return err }
