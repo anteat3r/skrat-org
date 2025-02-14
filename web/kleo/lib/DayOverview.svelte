@@ -10,9 +10,12 @@
   }
 
   function detailAlertCallback(detail: string) {
-    return function() {
-      alert(detail);
-    }
+    //return function() {
+    //  alert(detail);
+    //}
+    document.getElementById('light').style.display='block';
+    document.getElementById('fade').style.display='block';
+    //document.innerHTML = detail
   }
 
   function forwardButtonPress(e: KeyboardEvent) {

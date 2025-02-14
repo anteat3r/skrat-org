@@ -21,7 +21,23 @@
   }
 
   let avatarUrl = $derived(pb.baseURL + "/api/files/users/" + pb.authStore.record.id + "/" + pb.authStore.record.avatar + "?thumb=50x50");
+  
+  function detailAlertCallback() {
+    document.getElementById('fade').style.display='none';
+    document.getElementById('light').style.display='none';
+
+  }
+  function forwardButtonPress(e: KeyboardEvent) {
+    e.preventDefault();
+    e.target.dispatchEvent(new MouseEvent("click")); 
+  }
 </script>
+
+<div id="fade" > </div>
+<div id="light" 
+    onclick={detailAlertCallback} 
+    role="button" tabindex="-1" onkeypress={forwardButtonPress}
+><div id="light2">kdsdfhjf</div> </div>
 
 {#key reload}
 {#if pb.authStore.isValid && ( pb.authStore.isSuperuser || pb.authStore.record.collectionName == "users" ) }
@@ -52,3 +68,37 @@
   </button>
 {/if}
 {/key}
+
+<style>
+
+  #fade{
+    display: none;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    opacity: 20%;
+  }
+  #light{
+    display: none;
+    position: fixed;
+    /*background-color: white;*/
+    color: black;
+    height: 100vw;
+    width: 100vw;
+  }
+  
+  #light2{
+    /*display: none;*/
+    position: relative;
+    background-color: white;
+    color: black;
+    height: auto;
+    min-width: none;
+    max-width: 1000px;
+    /*width: 50vw;*/
+    margin-left: auto;
+    margin-right: auto
+  }
+
+</style>
