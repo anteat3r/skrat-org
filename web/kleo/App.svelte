@@ -21,10 +21,10 @@
   }
 
   let avatarUrl = $derived(pb.baseURL + "/api/files/users/" + pb.authStore.record.id + "/" + pb.authStore.record.avatar + "?thumb=50x50");
-  
-  function detailAlertCallback() {
-    document.getElementById('fade').style.display='none';
-    document.getElementById('light').style.display='none';
+
+  function detailback() {
+    //document.getElementById('fade').style.display='none';
+    document.getElementById('popup').style.display='none';
 
   }
   function forwardButtonPress(e: KeyboardEvent) {
@@ -33,11 +33,23 @@
   }
 </script>
 
-<div id="fade" > </div>
-<div id="light" 
-    onclick={detailAlertCallback} 
+<div id="popup" 
+>
+  <div id="fade" 
+    onclick={detailback} 
     role="button" tabindex="-1" onkeypress={forwardButtonPress}
-><div id="light2">kdsdfhjf</div> </div>
+  > </div>
+  <div class="info" id="info">
+  <div class="info" id="infos"></div> 
+  <div class="info" id="infor"></div> 
+  <div class="info" id="infoth"></div> 
+  <div class="info" id="infou"></div> 
+  <div class="info" id="infog"></div> 
+  <div class="info" id="infoch"></div>
+  </div> 
+
+
+</div>
 
 {#key reload}
 {#if pb.authStore.isValid && ( pb.authStore.isSuperuser || pb.authStore.record.collectionName == "users" ) }
@@ -72,31 +84,42 @@
 <style>
 
   #fade{
-    display: none;
+    /*display: none;*/
     position: fixed;
     width: 100vw;
     height: 100vh;
     background-color: black;
     opacity: 20%;
   }
-  #light{
+  #popup{
     display: none;
     position: fixed;
     /*background-color: white;*/
-    color: black;
+    /*color: black;*/
     height: 100vw;
     width: 100vw;
   }
   
-  #light2{
+  #info{
+  /*margin: 0;*/
+  /*position: absolute;*/
+  top: 20%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+
+  }
+  .info{
     /*display: none;*/
     position: relative;
     background-color: white;
+    font-size: 20px;
     color: black;
     height: auto;
     min-width: none;
-    max-width: 1000px;
+    max-width: 20cm;
     /*width: 50vw;*/
+    /*margin-top: 200px;*/
+    /*margin: auto;*/
     margin-left: auto;
     margin-right: auto
   }

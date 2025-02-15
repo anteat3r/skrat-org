@@ -44,13 +44,20 @@
     e.target.dispatchEvent(new MouseEvent("click")); 
   }
 
-  function detailAlertCallback(detail: string) {
+  function detailAlertCallback(detail : string) {
     //return function() {
     //  alert(detail);
     //}
-    document.getElementById('light').style.display='block';
-    document.getElementById('fade').style.display='block';
-    document.getElementById("light2").innerHTML = detail;
+    var podrobnosti = JSON.parse(detail)
+    
+    document.getElementById('popup').style.display='block';
+    //document.getElementById('fade').style.display='block';
+    document.getElementById("infor").innerHTML = "místnost: " + podrobnosti.room ;
+    document.getElementById("infos").innerHTML =  podrobnosti.subjecttext ;
+    document.getElementById("infoth").innerHTML = "téma: " + podrobnosti.theme ;
+    document.getElementById("infou").innerHTML = "učitel: " + podrobnosti.teacher ;
+    document.getElementById("infog").innerHTML = "skupina: " + podrobnosti.group ;
+    document.getElementById("infoch").innerHTML = "změna: " + podrobnosti.changeinfo ;
     //document.innerHTML = detail
   }
 </script>
