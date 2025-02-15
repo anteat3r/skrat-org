@@ -101,22 +101,24 @@
   }
   
   #info{
-  /*margin: 0;*/
-  /*position: absolute;*/
-  top: 20%;
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
+    top: 20%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    border: white solid 2px;
+    padding: 20px;
 
   }
   .info{
     /*display: none;*/
     position: relative;
-    background-color: white;
-    font-size: 20px;
-    color: black;
+    background-color: black;
+    font-size: 22px;
+    color: white;
     height: auto;
     min-width: none;
     max-width: 20cm;
+    padding: 2px;
+    padding-left: 30px;
     /*width: 50vw;*/
     /*margin-top: 200px;*/
     /*margin: auto;*/

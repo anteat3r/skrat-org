@@ -44,7 +44,7 @@
     e.target.dispatchEvent(new MouseEvent("click")); 
   }
 
-  function detailAlertCallback(detail : string) {
+  function detailAlertCallback(detail: string) {
     //return function() {
     //  alert(detail);
     //}
