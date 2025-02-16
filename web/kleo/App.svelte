@@ -105,6 +105,7 @@
     transform: translateY(-50%);
     border: white solid 2px;
     padding: 20px;
+    padding-top: 20px;
 
   }
   .info{
@@ -123,6 +124,17 @@
     /*margin: auto;*/
     margin-left: auto;
     margin-right: auto
+  }
+  
+  @media(max-aspect-ratio: 1){
+    #info{
+      /*top: 50vw;*/
+      margin-top: 50%;
+    }
+    #fade{
+      width: 15300vw;
+      height: 15300vw;
+    }
   }
 
 </style>
