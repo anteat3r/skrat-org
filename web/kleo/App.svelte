@@ -118,6 +118,7 @@
     min-width: none;
     max-width: 20cm;
     padding: 2px;
+    padding-top: 20px;
     padding-left: 30px;
     /*width: 50vw;*/
     /*margin-top: 200px;*/
