@@ -3,6 +3,7 @@ package src
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"strconv"
 
 	"github.com/pocketbase/pocketbase"
@@ -154,6 +155,8 @@ func DayOverviewHandler(
     }{ Data: make(map[string]TimeTableDay), }
 
     if len(classsrcs) < 1 { return e.JSON(200, res) }
+
+    app.Logger().Info(fmt.Sprintf("%#v", DataCache))
 
     for _, classsrc := range classsrcs {
       tt, err := QueryData[TimeTable](
