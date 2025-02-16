@@ -106,6 +106,7 @@
     transform: translateY(-50%);
     border: white solid 2px;
     padding: 20px;
+    padding-top: 20px;
 
   }
   .info{
@@ -118,7 +119,6 @@
     min-width: none;
     max-width: 20cm;
     padding: 2px;
-    padding-top: 20px;
     padding-left: 30px;
     /*width: 50vw;*/
     /*margin-top: 200px;*/
