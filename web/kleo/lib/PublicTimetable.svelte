@@ -45,9 +45,8 @@
   }
 
   function detailAlertCallback(detail: string) {
-    //return function() {
+    return function() {
     //  alert(detail);
-    //}
     var podrobnosti = JSON.parse(detail)
     
     document.getElementById('popup').style.display='block';
@@ -59,6 +58,7 @@
     document.getElementById("infog").innerHTML = "skupina: " + podrobnosti.group ;
     document.getElementById("infoch").innerHTML = "změna: " + podrobnosti.changeinfo ;
     //document.innerHTML = detail
+    }
   }
 </script>
 

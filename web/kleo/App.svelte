@@ -126,5 +126,16 @@
     margin-left: auto;
     margin-right: auto
   }
+  
+  @media(max-aspect-ratio: 1){
+    #info{
+      /*top: 50vw;*/
+      margin-top: 50%;
+    }
+    #fade{
+      width: 300vw;
+      height: 300vw;
+    }
+  }
 
 </style>
