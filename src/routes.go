@@ -165,7 +165,10 @@ func DayOverviewHandler(
         ttype, "",
       )
       if err != nil {
-        if err == sql.ErrNoRows { continue }
+        if err == sql.ErrNoRows {
+          app.Logger().Info(err.Error())
+          continue
+        }
         return err
       }
 
@@ -175,7 +178,10 @@ func DayOverviewHandler(
         res.Hours = tt.Hours
       }
 
-      if len(tt.Days) < weekday { continue }
+      if len(tt.Days) < weekday {
+        app.Logger().Info(fmt.Sprintf("%#v", tt))
+        continue 
+      }
       day := tt.Days[weekday - 1]
 
       res.Data[classsrc.GetString(DESC)] = day
