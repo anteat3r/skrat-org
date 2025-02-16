@@ -1,7 +1,7 @@
 cd /root/skrat-org
 git pull origin main
 go build -v
-if [ "$#" -e 2 ]; then
+if [ "$#" -eq 2 ]; then
   cd web
   npx vite build
 fi

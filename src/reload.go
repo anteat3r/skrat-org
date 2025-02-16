@@ -3,6 +3,7 @@ package src
 import (
 	"encoding/json"
 	"fmt"
+	"sync"
 
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase"
@@ -18,6 +19,7 @@ type ResourceName struct {
 
 var (
   DataCache = map[ResourceName]any{}
+  DataCacheMu = sync.RWMutex{}
 )
 
 func StoreData(
@@ -53,11 +55,13 @@ func StoreData(
   err = app.Save(datarec)
   if err != nil { return err }
 
+  DataCacheMu.Lock()
   DataCache[ResourceName{
     Name: name,
     Type: ttype,
     Owner: owner,
   }] = parseddata
+  DataCacheMu.Unlock()
 
   return nil
 }
@@ -71,7 +75,9 @@ func QueryData[T any](
     Type: ttype,
     Owner: owner,
   }
+  DataCacheMu.RLock()
   cdata, ok := DataCache[resname]
+  DataCacheMu.RUnlock()
 
   if ok {
     tdata, ok := cdata.(T)
@@ -92,7 +98,9 @@ func QueryData[T any](
   err = json.Unmarshal([]byte(sDataRes), rest)
   if err != nil { return }
 
+  DataCacheMu.Lock()
   DataCache[resname] = *rest
+  DataCacheMu.Unlock()
 
   return *rest, nil
 }
