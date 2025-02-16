@@ -15,6 +15,7 @@
   }
 </script>
 
+<p>přihlášení do bakalářu</p>
 <input type="text" bind:value={username} placeholder="username">
 <br>
 <input type="password" bind:value={password} placeholder="password">

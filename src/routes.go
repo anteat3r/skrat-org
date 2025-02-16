@@ -4,8 +4,10 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"io"
 	"strconv"
 
+	webpush "github.com/SherClockHolmes/webpush-go"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/tools/hook"
@@ -58,6 +60,88 @@ func MarksHandler(
     if err != nil { return err }
 
     return e.String(200, sresp)
+  }
+}
+
+func TimeTableHandler(
+  app *pocketbase.PocketBase,
+  datacoll *core.Collection,
+) func(*core.RequestEvent) error {
+  return func(e *core.RequestEvent) error {
+    user := e.Auth
+
+    date := e.Request.URL.Query().Get("date")
+
+    qparam := ""
+    if date != "" {
+      qparam = "?date=" + date
+    }
+
+    resp, err := BakaQuery(app, user, GET, TIMETABLE_ACTUAL + qparam, "")
+    if err != nil { return err }
+    sresp := string(resp)
+
+    var marks BakaMark
+    err = json.Unmarshal(resp, &marks)
+    if err != nil { return err }
+
+    err = StoreData(
+      app, datacoll,
+      TIMETABLE_ACTUAL, PRIVATE, user.Id,
+      marks, sresp,
+    )
+    if err != nil { return err }
+
+    return e.String(200, sresp)
+  }
+}
+
+func StoreVapidEndpoint(
+  app *pocketbase.PocketBase,
+) func(*core.RequestEvent) error {
+  return func(e *core.RequestEvent) error {
+    body := struct{
+      Vapid string `json:"vapid"`
+    }{}
+    err := e.BindBody(&body)
+    if err != nil { return err }
+
+    user := e.Auth
+    user.Set(WANTS_REFRESH, true)
+    user.Set(VAPID, body.Vapid)
+
+    err = app.Save(user)
+    if err != nil { return err }
+
+    return e.String(200, "")
+  }
+}
+
+func VapidTestHandler(
+  app *pocketbase.PocketBase,
+) func(*core.RequestEvent) error {
+  return func(e *core.RequestEvent) error {
+    user := e.Auth
+
+    vapid := user.GetString(VAPID)
+
+    s := &webpush.Subscription{}
+    err := json.Unmarshal([]byte(vapid), s)
+    if err != nil { return err }
+
+    resp, err := webpush.SendNotification([]byte(`{"title":"test"}`), s, &webpush.Options{
+      VAPIDPublicKey: VAPID_PUBKEY,
+      VAPIDPrivateKey: VAPID_PRIVKEY,
+    })
+    if err != nil { return err }
+
+    resb, err := io.ReadAll(resp.Body)
+    defer resp.Body.Close()
+    if err != nil { return err }
+
+    app.Logger().Info(string(resb))
+
+    return e.String(200, "")
   }
 }
 

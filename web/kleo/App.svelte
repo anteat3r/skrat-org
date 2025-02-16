@@ -56,7 +56,6 @@
   <h1>
     Hello mr. {pb.authStore.record.name}
     <img src={avatarUrl} alt="avatar">
-    <button onclick={logout}>Logout</button>
   </h1>
   <br>
   {#await pb.collection("users").authRefresh()}

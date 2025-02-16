@@ -44,6 +44,7 @@ const (
 
 var (
   VAPID_PRIVKEY = ""
+  VAPID_PUBKEY = "BIJ29i59x2PSDgMBTTMnYW5lQjStAMrbRAGDmgcgT26iWcRmK5GFjJ1oUAVtL_oiOMwVxEsMjX2z5ASZ_PMziFE"
 )
 
 func GetTTime() string {
@@ -55,4 +56,9 @@ func GetTTime() string {
   wd := time.Now().Weekday()
   if wd == time.Sunday || wd == time.Sunday { return NEXT }
   return ACTUAL
+}
+
+func GetCDate() string {
+  nw := time.Now()
+  return nw.Add(time.Hour * -24 * time.Duration(nw.Weekday() - 1)).Format("2006-01-02")
 }

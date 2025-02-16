@@ -22,7 +22,7 @@
       return;
     }
     let resp = await pb.send(`/api/kleo/web/${ttime}/${last_ttype}/${src}`, {});
-  ttable = resp;
+    ttable = resp;
   }
 
   let ttable = $state(null);

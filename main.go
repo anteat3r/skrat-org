@@ -130,6 +130,16 @@ func main() {
           src.MarksHandler(app, datacoll),
         ).Bind(apis.RequireAuth(src.USERS)).Bind(src.RequireBakaValid)
 
+        se.Router.POST(
+          "/api/kleo/setupnotifs",
+          src.StoreVapidEndpoint(app),
+        ).Bind(apis.RequireAuth(src.USERS))
+
+        se.Router.POST(
+          "/api/kleo/vapidtest",
+          src.VapidTestHandler(app),
+        ).Bind(apis.RequireAuth(src.USERS))
+
 
         app.Cron().MustAdd(
           "ttreload",
