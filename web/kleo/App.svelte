@@ -133,8 +133,8 @@
       margin-top: 50%;
     }
     #fade{
-      width: 300vw;
-      height: 300vw;
+      width: 15300vw;
+      height: 15300vw;
     }
   }
 
