@@ -81,18 +81,15 @@ func QueryData[T any](
   app.Logger().Info( OWNER + ` = {:owner} && ` + NAME + ` = {:name} && ` + TYPE + ` = {:type}`,)
   app.Logger().Info(fmt.Sprintf("%#v", dbx.Params{"name": name, TYPE: ttype, OWNER: owner},))
 
-  var rec *core.Record
-  rec, err = app.FindFirstRecordByFilter(
-    DATA,
-    OWNER + ` = {:owner} && ` + NAME + ` = {:name} && ` + TYPE + ` = {:type}`,
-    dbx.Params{"name": name, TYPE: ttype, OWNER: owner},
-  )
+  var sDataRes string
+  err = app.DB().
+    NewQuery("select data from data where name = {:name} and type = {:type} and owner = {:owner} limit 1").
+    Bind(dbx.Params{"name": name, TYPE: ttype, OWNER: owner}).
+    Row(&sDataRes)
   if err != nil { return }
 
-  sdata := rec.GetString(DATA)
-
   rest := new(T)
-  err = json.Unmarshal([]byte(sdata), rest)
+  err = json.Unmarshal([]byte(sDataRes), rest)
   if err != nil { return }
 
   DataCache[resname] = *rest
