@@ -79,6 +79,7 @@ func QueryData[T any](
   }
 
   app.Logger().Info( OWNER + ` = {:owner} && ` + NAME + ` = {:name} && ` + TYPE + ` = {:type}`,)
+  app.Logger().Info(fmt.Sprintf("%#v", dbx.Params{"name": name, TYPE: ttype, OWNER: owner},))
 
   var rec *core.Record
   rec, err = app.FindFirstRecordByFilter(
