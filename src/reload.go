@@ -78,6 +78,8 @@ func QueryData[T any](
     if ok { return tdata, nil }
   }
 
+  app.Logger().Info( OWNER + ` = {:owner} && ` + NAME + ` = {:name} && ` + TYPE + ` = {:type}`,)
+
   var rec *core.Record
   rec, err = app.FindFirstRecordByFilter(
     DATA,
