@@ -26,7 +26,7 @@
     let resp = await pb.send("/api/kleo/setupnotifs", {
       method: "POST",
       body: {
-        vapid: subscription.toJSON()
+        vapid: JSON.stringify(subscription.toJSON())
       }
     });
     console.log(resp);
