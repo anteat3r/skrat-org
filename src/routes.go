@@ -141,7 +141,7 @@ func VapidTestHandler(
     if err != nil { return err }
 
     app.Logger().Info(string(resb))
-    app.Logger().Info(VAPID_PUBKEY + " " + VAPID_PRIVKEY)
+    app.Logger().Info(fmt.Sprintf("%#v", s))
 
     return e.String(200, "")
   }
