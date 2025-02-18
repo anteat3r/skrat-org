@@ -33,8 +33,7 @@
   }
 </script>
 
-<div id="popup" 
->
+<div id="popup">
   <div id="fade" 
     onclick={detailback} 
     role="button" tabindex="-1" onkeypress={forwardButtonPress}
@@ -47,8 +46,6 @@
   <div class="info" id="infog"></div> 
   <div class="info" id="infoch"></div>
   </div> 
-
-
 </div>
 
 {#key reload}
@@ -81,6 +78,15 @@
 {/key}
 
 <style>
+
+  button{
+    font-size: 30px;
+    margin: 20px 20px 20px 20px;
+  }
+
+  img{
+    width: 30px;
+  }
 
   #fade{
     /*display: none;*/
