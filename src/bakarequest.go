@@ -78,6 +78,7 @@ func BakaQuery(
     req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
     resp, err = http.DefaultClient.Do(req)
+    if err != nil { return }
 
     if resp.StatusCode == 200 {
       resb, err = io.ReadAll(resp.Body)
@@ -129,7 +130,7 @@ func BakaLoginPass(
 ) (err error) {
   req, err := http.NewRequest(
     "POST",
-    BAKA_PATH + "/api/login",
+    BAKA_PATH + "api/login",
     strings.NewReader("client_id=ANDR&grant_type=password&username=" + username + "&password=" + password),
   )
   if err != nil { return err }
