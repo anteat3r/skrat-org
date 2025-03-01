@@ -143,7 +143,7 @@ func main() {
 
         app.Cron().MustAdd(
           "ttreload",
-          "* 6-18 * * 1-6",
+          "* 6-18 * * 2-6",
           src.TimeTableReload(app, datacoll),
         )
 
