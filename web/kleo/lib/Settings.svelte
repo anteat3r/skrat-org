@@ -17,11 +17,12 @@
   async function setupNotifs() {
     await navigator.serviceWorker.register("/kleo/service-worker.js");
     let perm = await Notification.requestPermission();
+    console.log(perm);
     if (perm !== "granted") { return }
     let reg = await navigator.serviceWorker.ready;
     const subscription = await reg.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array("BIJ29i59x2PSDgMBTTMnYW5lQjStAMrbRAGDmgcgT26iWcRmK5GFjJ1oUAVtL_oiOMwVxEsMjX2z5ASZ_PMziFE"),
+      applicationServerKey: "BGl8lG0dFZxVzpEwgnPQlHaqDuaBojbFJHJzh2CMYi8mZshivG7RRkGDLKAC6E23E6ELtp3ikBXuepRJBMRlbwc",
     });
     let resp = await pb.send("/api/kleo/setupnotifs", {
       method: "POST",

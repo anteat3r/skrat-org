@@ -44,7 +44,7 @@ const (
 
 var (
   VAPID_PRIVKEY = ""
-  VAPID_PUBKEY = "BIJ29i59x2PSDgMBTTMnYW5lQjStAMrbRAGDmgcgT26iWcRmK5GFjJ1oUAVtL_oiOMwVxEsMjX2z5ASZ_PMziFE"
+  VAPID_PUBKEY = "BGl8lG0dFZxVzpEwgnPQlHaqDuaBojbFJHJzh2CMYi8mZshivG7RRkGDLKAC6E23E6ELtp3ikBXuepRJBMRlbwc"
 )
 
 func GetTTime() string {
