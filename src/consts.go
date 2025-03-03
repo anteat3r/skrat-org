@@ -25,6 +25,8 @@ const (
   CLASS = "Class"
   ROOM = "Room"
   EVENTS = "Events"
+  EVENTS_MY = "events/my"
+  EVENTS_ALL = "events/all"
 
   ACTUAL = "Actual"
   NEXT = "Next"
@@ -33,6 +35,8 @@ const (
   PRIVATE = "Private"
   VAPID = "vapid"
   WANTS_REFRESH = "wants_refresh"
+  LAST_REFRESHED = "last_refreshed"
+  REFRESH_INTERVAL = "refresh_interval"
 
   GET = "GET"
   POST = "POST"

@@ -1,6 +1,9 @@
 package src
 
-import "time"
+import (
+	"slices"
+	"time"
+)
 
 type BakaIdExpand struct {
   Id string
@@ -165,4 +168,30 @@ type BakaTimeTableChange struct {
   TypeAbbrev string
   TypeName string
   AtomType string
+}
+
+type Notif struct {
+  Title string
+  Text string
+}
+
+func (n Notif) JSONEncode() string {
+  return `{"type":"notif","title":"` + n.Title + `",options:{"body":"` + n.Text + `"}}`
+}
+
+func CompareBakaMarks(oldm, newm BakaMarks) []Notif {
+  res := make([]Notif, 0)
+  for _, subj := range newm.Subjects {
+    idx := slices.IndexFunc(oldm.Subjects, func(s BakaMarksSubject) bool { return s.Subject.Id == subj.Subject.Id })
+    if idx == -1 { continue }
+    oldsubj := oldm.Subjects[idx]
+    for _, mark := range subj.Marks {
+      if slices.ContainsFunc(oldsubj.Marks, func(m BakaMark) bool { return m.Id == mark.Id}) { continue }
+      res = append(res, Notif{
+        Title: mark.Caption + ": " + mark.MarkText,
+        Text: subj.Subject.Name + ": " + subj.AverageText,
+      })
+    }
+  }
+  return res
 }

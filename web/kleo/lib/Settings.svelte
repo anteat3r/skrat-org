@@ -31,6 +31,7 @@
       }
     });
     console.log(resp);
+    alert("alles OK, přihlásili jsme tě na notifkace");
   }
 
   async function vapidTest() {
@@ -39,15 +40,6 @@
     });
     console.log(resp);
   }
-
-  function urlBase64ToUint8Array(base64String: string): Uint8Array {
-      const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-      const base64 = (base64String + padding)
-        .replace(/\-/g, '+')
-        .replace(/_/g, '/');
-      const rawData = window.atob(base64);
-      return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
-    }
 </script>
 
 <button onclick={logout}>Logout</button>

@@ -3,8 +3,6 @@ package src
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
-	"io"
 	"strconv"
 
 	webpush "github.com/SherClockHolmes/webpush-go"
@@ -48,7 +46,7 @@ func MarksHandler(
     if err != nil { return err }
     sresp := string(resp)
 
-    var marks BakaMark
+    var marks BakaMarks
     err = json.Unmarshal(resp, &marks)
     if err != nil { return err }
 
@@ -129,19 +127,19 @@ func VapidTestHandler(
     err := json.Unmarshal([]byte(vapid), s)
     if err != nil { return err }
 
-    resp, err := webpush.SendNotification([]byte(`{"title":"test","type":"notif"}`), s, &webpush.Options{
+    _, err = webpush.SendNotification([]byte(`{"title":"test","type":"notif"}`), s, &webpush.Options{
       Subscriber: user.GetString("email"),
       VAPIDPublicKey: VAPID_PUBKEY,
       VAPIDPrivateKey: VAPID_PRIVKEY,
     })
     if err != nil { return err }
 
-    resb, err := io.ReadAll(resp.Body)
-    defer resp.Body.Close()
-    if err != nil { return err }
+    // resb, err := io.ReadAll(resp.Body)
+    // defer resp.Body.Close()
+    // if err != nil { return err }
 
-    app.Logger().Info(string(resb))
-    app.Logger().Info(fmt.Sprintf("%#v", s))
+    // app.Logger().Info(string(resb))
+    // app.Logger().Info(fmt.Sprintf("%#v", s))
 
     return e.String(200, "")
   }
@@ -242,7 +240,7 @@ func DayOverviewHandler(
 
     if len(classsrcs) < 1 { return e.JSON(200, res) }
 
-    app.Logger().Info(fmt.Sprintf("%#v", DataCache))
+    // app.Logger().Info(fmt.Sprintf("%#v", DataCache))
 
     for _, classsrc := range classsrcs {
       tt, err := QueryData[TimeTable](
@@ -265,7 +263,7 @@ func DayOverviewHandler(
       }
 
       if len(tt.Days) < weekday {
-        app.Logger().Info(fmt.Sprintf("%#v", tt))
+        // app.Logger().Info(fmt.Sprintf("%#v", tt))
         continue 
       }
       day := tt.Days[weekday - 1]

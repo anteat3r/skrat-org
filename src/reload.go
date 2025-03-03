@@ -1,10 +1,13 @@
 package src
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"sync"
+	"time"
 
+	"github.com/SherClockHolmes/webpush-go"
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/core"
@@ -29,12 +32,18 @@ func StoreData(
   parseddata any,
   stringdata string,
 ) error {
-  datarec, err := app.FindFirstRecordByFilter(
+  datarecs, err := app.FindRecordsByFilter(
     DATA,
     OWNER + ` = {:owner} && ` + NAME + ` = {:name} && ` + TYPE + ` = {:type}`,
+    "created", 0, 0,
     dbx.Params{"name": name, TYPE: ttype, OWNER: owner},
   )
-  if err != nil {
+  if err != nil { return err }
+
+  var datarec *core.Record
+  if len(datarecs) > 0 {
+    datarec = datarecs[0]
+  } else {
     datarec = core.NewRecord(datacoll)
     datarec.Set(OWNER, owner)
     datarec.Set(NAME, name)
@@ -69,7 +78,7 @@ func StoreData(
 func QueryData[T any](
   app core.App,
   name, ttype, owner string,
-) (data T, err error) {
+) (data T, dok bool, err error) {
   resname := ResourceName{
     Name: name,
     Type: ttype,
@@ -81,18 +90,26 @@ func QueryData[T any](
 
   if ok {
     tdata, ok := cdata.(T)
-    if ok { return tdata, nil }
+    if ok { return tdata, true, nil }
   }
 
-  app.Logger().Info( OWNER + ` = {:owner} && ` + NAME + ` = {:name} && ` + TYPE + ` = {:type}`,)
-  app.Logger().Info(fmt.Sprintf("%#v", dbx.Params{"name": name, TYPE: ttype, OWNER: owner},))
+  // app.Logger().Info( OWNER + ` = {:owner} && ` + NAME + ` = {:name} && ` + TYPE + ` = {:type}`,)
+  // app.Logger().Info(fmt.Sprintf("%#v", dbx.Params{"name": name, TYPE: ttype, OWNER: owner},))
 
   var sDataRes string
   err = app.DB().
     NewQuery("select data from data where name = {:name} and type = {:type} and owner = {:owner} limit 1").
     Bind(dbx.Params{"name": name, TYPE: ttype, OWNER: owner}).
     Row(&sDataRes)
-  if err != nil { return }
+  if err != nil {
+    if err == sql.ErrNoRows {
+      dok = false
+    } else {
+      return
+    }
+  }
+
+  if !dok { return }
 
   rest := new(T)
   err = json.Unmarshal([]byte(sDataRes), rest)
@@ -102,7 +119,7 @@ func QueryData[T any](
   DataCache[resname] = *rest
   DataCacheMu.Unlock()
 
-  return *rest, nil
+  return *rest, true, nil
 }
 
 func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func() {
@@ -210,7 +227,7 @@ func TimeTableSourcesReload(
       srcs, err := ParseSourcesWeb(resp)
       if err != nil { return err }
 
-      txApp.Logger().Info(fmt.Sprint(srcs.AsMap()))
+      // txApp.Logger().Info(fmt.Sprint(srcs.AsMap()))
 
       coll, _ := txApp.FindCollectionByNameOrId(SOURCES)
       for name, src := range srcs.AsMap() {
@@ -239,8 +256,95 @@ func TimeTableSourcesReload(
       return nil
     })
 
-    fmt.Print(err)
+    if err != nil { app.Logger().Error(err.Error(), err) }
+  }
+}
 
+func PersonalReload(
+  app core.App,
+  datacoll *core.Collection,
+) func() {
+  return func() {
+    err := app.RunInTransaction(func(txApp core.App) error {
+
+      users, err := txApp.FindRecordsByFilter(
+        USERS,
+        WANTS_REFRESH + " = true",
+        "updated", 0, 0,
+      )
+      if err != nil { return err }
+
+      for _, user := range users {
+        if time.Since(user.GetDateTime(LAST_REFRESHED).Time()).Minutes() > 
+          float64(user.GetInt(REFRESH_INTERVAL)) { continue }
+
+        total_notifs := make([]Notif, 0)
+
+        resp, err := BakaQuery(app, user, GET, MARKS, "")
+        if err != nil { return err }
+        sresp := string(resp)
+
+        var marks BakaMarks
+        err = json.Unmarshal(resp, &marks)
+        if err != nil { return err }
+
+        oldmarks, ok, err := QueryData[BakaMarks](app, MARKS, PRIVATE, user.Id)
+        if err != nil { return err }
+        
+        if ok {
+          notifs := CompareBakaMarks(oldmarks, marks)
+          total_notifs = append(total_notifs, notifs...)
+        }
+
+        err = StoreData(
+          app, datacoll,
+          MARKS, PRIVATE, user.Id,
+          marks, sresp,
+        )
+        if err != nil { return err }
+
+        // resp, err = BakaQuery(app, user, GET, EVENTS_MY, "")
+        // if err != nil { return err }
+        // sresp = string(resp)
+        //
+        // var events BakaEvents
+        // err = json.Unmarshal(resp, &marks)
+        // if err != nil { return err }
+        //
+        // err = StoreData(
+        //   app, datacoll,
+        //   EVENTS_MY, PRIVATE, user.Id,
+        //   events, sresp,
+        // )
+        // if err != nil { return err }
+        //
+
+        if len(total_notifs) > 0 {
+          for _, n := range total_notifs {
+            vapid := user.GetString(VAPID)
+
+            s := &webpush.Subscription{}
+            err := json.Unmarshal([]byte(vapid), s)
+            if err != nil { return err }
+
+            _, err = webpush.SendNotification([]byte(n.JSONEncode()), s, &webpush.Options{
+              Subscriber: user.GetString("email"),
+              VAPIDPublicKey: VAPID_PUBKEY,
+              VAPIDPrivateKey: VAPID_PRIVKEY,
+            })
+            if err != nil { return err }
+          }
+
+        }
+
+        user.Set(LAST_REFRESHED, types.NowDateTime())
+        err = txApp.Save(user)
+        if err != nil { return err }
+      }
+
+      return nil
+    })
+    
     if err != nil { app.Logger().Error(err.Error(), err) }
   }
 }
