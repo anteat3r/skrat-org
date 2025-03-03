@@ -243,18 +243,15 @@ func DayOverviewHandler(
     // app.Logger().Info(fmt.Sprintf("%#v", DataCache))
 
     for _, classsrc := range classsrcs {
-      tt, err := QueryData[TimeTable](
+      tt, ok, err := QueryData[TimeTable](
         app,
         classsrc.GetString(NAME),
         ttype, "",
       )
       if err != nil {
-        if err == sql.ErrNoRows {
-          app.Logger().Info(err.Error())
-          continue
-        }
         return err
       }
+      if !ok { continue }
 
       if res.Hours == nil {
         res.Hours = tt.Hours
