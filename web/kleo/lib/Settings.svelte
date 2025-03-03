@@ -56,6 +56,6 @@
 <button onclick={setupNotifs}>Setup Notifs</button>
 <button onclick={vapidTest}>Send Test Notif</button>
 
-
+verze JDU.SE.ZABÍT
 
 <p>{JSON.stringify(pb.authStore.record)}</p>
