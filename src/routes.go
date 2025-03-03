@@ -129,7 +129,7 @@ func VapidTestHandler(
     err := json.Unmarshal([]byte(vapid), s)
     if err != nil { return err }
 
-    resp, err := webpush.SendNotification([]byte(`{"title":"test"}`), s, &webpush.Options{
+    resp, err := webpush.SendNotification([]byte(`{"title":"test","type":"notif"}`), s, &webpush.Options{
       Subscriber: user.GetString("email"),
       VAPIDPublicKey: VAPID_PUBKEY,
       VAPIDPrivateKey: VAPID_PRIVKEY,
