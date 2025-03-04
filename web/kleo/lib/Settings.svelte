@@ -20,7 +20,10 @@
       await navigator.serviceWorker.register("/kleo/service-worker.js");
       let perm = await Notification.requestPermission();
       console.log(perm);
-      if (perm !== "granted") { return }
+      if (perm !== "granted") {
+        alert(perm);
+        return;
+      }
       let reg = await navigator.serviceWorker.ready;
       const subscription = await reg.pushManager.subscribe({
         userVisibleOnly: true,
