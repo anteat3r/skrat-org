@@ -295,7 +295,7 @@ func PersonalReload(
 
         txApp.Logger().Info("personal reload user " + user.GetString(NAME))
 
-        if time.Since(user.GetDateTime(LAST_REFRESHED).Time()).Minutes() > 
+        if time.Since(user.GetDateTime(LAST_REFRESHED).Time()).Minutes() < 
           float64(user.GetInt(REFRESH_INTERVAL)) { continue }
 
         total_notifs := make([]Notif, 0)
