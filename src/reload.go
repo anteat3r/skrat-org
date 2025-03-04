@@ -40,10 +40,14 @@ func StoreData(
   // )
   // if err != nil { return err }
 
-  datarecs, err := app.FindAllRecords(
-    DATA,
-    dbx.HashExp{OWNER: owner, NAME: name, TYPE: ttype},
-  )
+  // datarecs, err := app.FindAllRecords(
+  //   DATA,
+  //   dbx.HashExp{OWNER: owner, NAME: name, TYPE: ttype},
+  // )
+  // if err != nil { return err }
+
+  var datarecs []*core.Record
+  err := app.RecordQuery(DATA).Where(dbx.HashExp{OWNER: owner, NAME: name, TYPE: ttype},).Limit(1).All(&datarecs)
   if err != nil { return err }
 
   app.Logger().Info(OWNER + ` = {:owner} && ` + NAME + ` = {:name} && ` + TYPE + ` = {:type}`)
