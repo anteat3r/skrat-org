@@ -40,6 +40,9 @@ func StoreData(
   )
   if err != nil { return err }
 
+  app.Logger().Info(OWNER + ` = {:owner} && ` + NAME + ` = {:name} && ` + TYPE + ` = {:type}`)
+  app.Logger().Info(fmt.Sprintf("%#v", datarecs))
+
   var datarec *core.Record
   if len(datarecs) > 0 {
     datarec = datarecs[0]

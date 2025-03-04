@@ -1,6 +1,7 @@
 <script lang="ts">
   import { pb } from '../pb_store.svelte';
   import githubLogo from '/github.svg'
+  import CustomEndp from './CustomEndp.svelte';
 
   function logout() {
     pb.authStore.clear();
@@ -51,6 +52,9 @@
 <button onclick={discordLogin}>
   Login with Discord
 </button>
+<br>
+<br>
+<CustomEndp />
 <br>
 <br>
 <button onclick={setupNotifs}>Setup Notifs</button>

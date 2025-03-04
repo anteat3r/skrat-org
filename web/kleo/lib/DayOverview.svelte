@@ -67,6 +67,7 @@
           <th>
             <div class="cell">
               <h1>{title}</h1>
+              <p>{(day as any).special}</p>
             </div>
           </th>
           {#each (day as any).hours as hour}
