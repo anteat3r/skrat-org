@@ -35,12 +35,11 @@ func StoreData(
   datarecs, err := app.FindRecordsByFilter(
     DATA,
     OWNER + ` = {:owner} && ` + NAME + ` = {:name} && ` + TYPE + ` = {:type}`,
-    "created", 0, 0,
+    "created", 1, 0,
     dbx.Params{"name": name, TYPE: ttype, OWNER: owner},
   )
   if err != nil { return err }
 
-  // dbx.
   app.Logger().Info(OWNER + ` = {:owner} && ` + NAME + ` = {:name} && ` + TYPE + ` = {:type}`)
   app.Logger().Info(fmt.Sprintf("%#v, %#v, %#v, %#v", datarecs, name, ttype, owner))
 

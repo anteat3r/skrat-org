@@ -165,6 +165,7 @@ func WebTimeTableHandler(
 ) func(*core.RequestEvent) error {
   return func(e *core.RequestEvent) error {
     user := e.Auth
+
     time := e.Request.PathValue("time")
     ttype := e.Request.PathValue("ttype")
     name := e.Request.PathValue("name")
