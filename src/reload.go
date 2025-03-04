@@ -40,8 +40,9 @@ func StoreData(
   )
   if err != nil { return err }
 
+  // dbx.
   app.Logger().Info(OWNER + ` = {:owner} && ` + NAME + ` = {:name} && ` + TYPE + ` = {:type}`)
-  app.Logger().Info(fmt.Sprintf("%#v", datarecs))
+  app.Logger().Info(fmt.Sprintf("%#v, %#v, %#v, %#v", datarecs, name, ttype, owner))
 
   var datarec *core.Record
   if len(datarecs) > 0 {
