@@ -25,6 +25,11 @@
         return;
       }
       let reg = await navigator.serviceWorker.ready;
+      let old_sub = await reg.pushManager.getSubscription()
+      if (old_sub !== null) {
+        let res = await old_sub.unsubscribe()
+        console.log(res);
+      }
       const subscription = await reg.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: "BGl8lG0dFZxVzpEwgnPQlHaqDuaBojbFJHJzh2CMYi8mZshivG7RRkGDLKAC6E23E6ELtp3ikBXuepRJBMRlbwc",
@@ -67,6 +72,6 @@
 <button onclick={setupNotifs}>Setup Notifs</button>
 <button onclick={vapidTest}>Send Test Notif</button>
 
-verze JDU.SE.ZABÍT 3
+verze JDU.SE.ZABÍT č
 
 <p>{JSON.stringify(pb.authStore.record)}</p>
