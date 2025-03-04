@@ -172,7 +172,8 @@ func main() {
     app.RootCmd.AddCommand(&cobra.Command{
       Use: "cleardata",
       Run: func(cmd *cobra.Command, args []string) {
-        app.DB().NewQuery("delete * from data").Execute()
+        _, err := app.DB().NewQuery("delete * from data").Execute()
+        if err != nil { app.Logger().Error(err.Error(), err) }
       },
     })
 
