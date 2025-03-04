@@ -32,11 +32,17 @@ func StoreData(
   parseddata any,
   stringdata string,
 ) error {
-  datarecs, err := app.FindRecordsByFilter(
+  // datarecs, err := app.FindRecordsByFilter(
+  //   DATA,
+  //   OWNER + ` = {:owner} && ` + NAME + ` = {:name} && ` + TYPE + ` = {:type}`,
+  //   "created", 1, 0,
+  //   dbx.Params{"name": name, TYPE: ttype, OWNER: owner},
+  // )
+  // if err != nil { return err }
+
+  datarecs, err := app.FindAllRecords(
     DATA,
-    OWNER + ` = {:owner} && ` + NAME + ` = {:name} && ` + TYPE + ` = {:type}`,
-    "created", 1, 0,
-    dbx.Params{"name": name, TYPE: ttype, OWNER: owner},
+    dbx.HashExp{OWNER: owner, NAME: name, TYPE: ttype},
   )
   if err != nil { return err }
 
