@@ -291,7 +291,7 @@ func PersonalReload(
       )
       if err != nil { return err }
 
-      app.Logger().Info(fmt.Sprintf("%#v", users))
+      txApp.Logger().Info(fmt.Sprintf("%#v", users))
 
       for _, user := range users {
 
