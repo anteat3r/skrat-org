@@ -280,14 +280,21 @@ func PersonalReload(
   return func() {
     err := app.RunInTransaction(func(txApp core.App) error {
 
-      users, err := txApp.FindRecordsByFilter(
+      // users, err := txApp.FindRecordsByFilter(
+      //   USERS,
+      //   WANTS_REFRESH + " = true",
+      //   "updated", 0, 0,
+      // )
+      users, err := txApp.FindAllRecords(
         USERS,
-        WANTS_REFRESH + " = true",
-        "updated", 0, 0,
+        dbx.HashExp{WANTS_REFRESH: true},
       )
       if err != nil { return err }
 
       for _, user := range users {
+
+        txApp.Logger().Info("personal reload user " + user.GetString(NAME))
+
         if time.Since(user.GetDateTime(LAST_REFRESHED).Time()).Minutes() > 
           float64(user.GetInt(REFRESH_INTERVAL)) { continue }
 
