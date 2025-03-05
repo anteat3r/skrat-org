@@ -50,8 +50,8 @@ func StoreData(
   err := app.RecordQuery(DATA).Where(dbx.HashExp{OWNER: owner, NAME: name, TYPE: ttype},).Limit(1).All(&datarecs)
   if err != nil { return err }
 
-  app.Logger().Info(OWNER + ` = {:owner} && ` + NAME + ` = {:name} && ` + TYPE + ` = {:type}`)
-  app.Logger().Info(fmt.Sprintf("%#v, %#v, %#v, %#v", datarecs, name, ttype, owner))
+  // app.Logger().Info(OWNER + ` = {:owner} && ` + NAME + ` = {:name} && ` + TYPE + ` = {:type}`)
+  // app.Logger().Info(fmt.Sprintf("%#v, %#v, %#v, %#v", datarecs, name, ttype, owner))
 
   var datarec *core.Record
   if len(datarecs) > 0 {
@@ -278,9 +278,6 @@ func PersonalReload(
   datacoll *core.Collection,
 ) func() {
   return func() {
-
-    app.Logger().Info("personal reload")
-    return
 
     err := app.RunInTransaction(func(txApp core.App) error {
 
