@@ -109,7 +109,7 @@ func QueryData[T any](
   // app.Logger().Info( OWNER + ` = {:owner} && ` + NAME + ` = {:name} && ` + TYPE + ` = {:type}`,)
   // app.Logger().Info(fmt.Sprintf("%#v", dbx.Params{"name": name, TYPE: ttype, OWNER: owner},))
 
-  var sDataRes string
+  var sDataRes struct{ Data string `db:"data"` }
   err = app.DB().
     NewQuery("select data from data where name = {:name} and type = {:type} and owner = {:owner} limit 1").
     Bind(dbx.Params{"name": name, TYPE: ttype, OWNER: owner}).
@@ -125,7 +125,7 @@ func QueryData[T any](
   if !dok { return }
 
   rest := new(T)
-  err = json.Unmarshal([]byte(sDataRes), rest)
+  err = json.Unmarshal([]byte(sDataRes.Data), rest)
   if err != nil { return }
 
   DataCacheMu.Lock()
