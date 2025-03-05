@@ -109,23 +109,17 @@ func QueryData[T any](
   // app.Logger().Info( OWNER + ` = {:owner} && ` + NAME + ` = {:name} && ` + TYPE + ` = {:type}`,)
   // app.Logger().Info(fmt.Sprintf("%#v", dbx.Params{"name": name, TYPE: ttype, OWNER: owner},))
 
-  var sDataRes struct{ Data string `db:"data"` }
-  err = app.DB().
-    NewQuery("select data from data where name = {:name} and type = {:type} and owner = {:owner} limit 1").
-    Bind(dbx.Params{"name": name, TYPE: ttype, OWNER: owner}).
-    One(&sDataRes)
-  if err != nil {
-    if err == sql.ErrNoRows {
-      dok = false
-    } else {
-      return
-    }
+  var datarecs []*core.Record
+  err = app.RecordQuery(DATA).Where(dbx.HashExp{NAME: name, TYPE: ttype, OWNER: owner}).Limit(1).All(&datarecs)
+  if err != nil { return }
+  if len(datarecs) < 1 {
+    dok = false
+    return
   }
-
-  if !dok { return }
+  datarec := datarecs[0]
 
   rest := new(T)
-  err = json.Unmarshal([]byte(sDataRes.Data), rest)
+  err = json.Unmarshal([]byte(datarec.GetString(DATA)), rest)
   if err != nil { return }
 
   DataCacheMu.Lock()
