@@ -113,7 +113,7 @@ func QueryData[T any](
   err = app.DB().
     NewQuery("select data from data where name = {:name} and type = {:type} and owner = {:owner} limit 1").
     Bind(dbx.Params{"name": name, TYPE: ttype, OWNER: owner}).
-    Row(&sDataRes)
+    One(&sDataRes)
   if err != nil {
     if err == sql.ErrNoRows {
       dok = false
@@ -173,7 +173,8 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
         jresp = string(resp)
 
         evts := BakaEvents{}
-        json.Unmarshal([]byte(resp), &evts)
+        err = json.Unmarshal([]byte(resp), &evts)
+        if err != nil { return err }
 
         tresp = evts
       } else {
