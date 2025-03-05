@@ -322,6 +322,7 @@ func PersonalReload(
         
         if ok {
           notifs := CompareBakaMarks(oldmarks, marks)
+          fmt.Printf("notifs: %#v\n", notifs)
           total_notifs = append(total_notifs, notifs...)
         }
 
