@@ -1,7 +1,6 @@
 package src
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"sync"
