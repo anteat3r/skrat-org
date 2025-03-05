@@ -278,6 +278,10 @@ func PersonalReload(
   datacoll *core.Collection,
 ) func() {
   return func() {
+
+    app.Logger().Info("personal reload")
+    return
+
     err := app.RunInTransaction(func(txApp core.App) error {
 
       // users, err := txApp.FindRecordsByFilter(

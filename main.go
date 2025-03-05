@@ -153,11 +153,11 @@ func main() {
           src.TimeTableSourcesReload(app),
         )
 
-        // app.Cron().MustAdd(
-        //   "personalreload",
-        //   "* 6-23 * * 2-6",
-        //   src.PersonalReload(app, datacoll),
-        // )
+        app.Cron().MustAdd(
+          "personalreload",
+          "* 6-23 * * 2-6",
+          src.PersonalReload(app, datacoll),
+        )
 
         return se.Next()
     })
