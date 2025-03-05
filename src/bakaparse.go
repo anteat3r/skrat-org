@@ -171,12 +171,16 @@ type BakaTimeTableChange struct {
   AtomType string
 }
 
-type Notif struct {
+type SimpleNotif struct {
   Title string
   Text string
 }
 
-func (n Notif) JSONEncode() string {
+type Notif interface {
+  JSONEncode() string
+}
+
+func (n SimpleNotif) JSONEncode() string {
   return `{"type":"notif","title":"` + n.Title + `","options":{"body":"` + n.Text + `"}}`
 }
 
@@ -190,15 +194,11 @@ func CompareBakaMarks(oldm, newm BakaMarks) []Notif {
     fmt.Printf("%#v\n", oldsubj)
     for _, mark := range subj.Marks {
       if slices.ContainsFunc(oldsubj.Marks, func(m BakaMark) bool { return m.Id == mark.Id }) { continue }
-      res = append(res, Notif{
+      res = append(res, SimpleNotif{
         Title: mark.Caption + ": " + mark.MarkText,
         Text: subj.Subject.Name + ": " + subj.AverageText,
       })
     }
   }
-  res = append(res, Notif{
-    Title: "test",
-    Text: "bruh hihihiah",
-  })
   return res
 }
