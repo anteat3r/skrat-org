@@ -373,6 +373,6 @@ func PersonalReload(
       return nil
     })
     
-    if err != nil { app.Logger().Error(err.Error(), err) }
+    if err != nil { app.Logger().Error(err.Error(), err); fmt.Println(err) }
   }
 }
