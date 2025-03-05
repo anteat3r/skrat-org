@@ -348,6 +348,8 @@ func PersonalReload(
         // if err != nil { return err }
         //
 
+        fmt.Printf("%#v", total_notifs)
+
         if len(total_notifs) > 0 {
           for _, n := range total_notifs {
             vapid := user.GetString(VAPID)
