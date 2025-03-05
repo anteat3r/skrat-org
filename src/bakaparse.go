@@ -177,7 +177,7 @@ type Notif struct {
 }
 
 func (n Notif) JSONEncode() string {
-  return `{"type":"notif","title":"` + n.Title + `",options:{"body":"` + n.Text + `"}}`
+  return `{"type":"notif","title":"` + n.Title + `","options":{"body":"` + n.Text + `"}}`
 }
 
 func CompareBakaMarks(oldm, newm BakaMarks) []Notif {
