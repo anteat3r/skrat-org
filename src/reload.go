@@ -301,7 +301,7 @@ func PersonalReload(
         fmt.Println("shiver me timbers, " + user.GetString(NAME))
 
         if !user.GetDateTime(LAST_REFRESHED).IsZero() {
-          if time.Since(user.GetDateTime(LAST_REFRESHED).Time()).Minutes() > 
+          if time.Since(user.GetDateTime(LAST_REFRESHED).Time()).Minutes() < 
             float64(user.GetInt(REFRESH_INTERVAL)) { continue }
         }
 
