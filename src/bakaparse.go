@@ -186,12 +186,16 @@ func CompareBakaMarks(oldm, newm BakaMarks) []Notif {
     if idx == -1 { continue }
     oldsubj := oldm.Subjects[idx]
     for _, mark := range subj.Marks {
-      if slices.ContainsFunc(oldsubj.Marks, func(m BakaMark) bool { return m.Id == mark.Id}) { continue }
+      if slices.ContainsFunc(oldsubj.Marks, func(m BakaMark) bool { return m.Id == mark.Id }) { continue }
       res = append(res, Notif{
         Title: mark.Caption + ": " + mark.MarkText,
         Text: subj.Subject.Name + ": " + subj.AverageText,
       })
     }
   }
+  res = append(res, Notif{
+    Title: "test",
+    Text: "bruh hihihiah",
+  })
   return res
 }
