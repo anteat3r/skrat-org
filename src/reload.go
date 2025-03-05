@@ -283,6 +283,8 @@ func PersonalReload(
 
     err := app.RunInTransaction(func(txApp core.App) error {
 
+    fmt.Println("personal reload hit trans")
+
       // users, err := txApp.FindRecordsByFilter(
       //   USERS,
       //   WANTS_REFRESH + " = true",
