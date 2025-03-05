@@ -1,6 +1,7 @@
 package src
 
 import (
+	"fmt"
 	"slices"
 	"time"
 )
@@ -182,9 +183,11 @@ func (n Notif) JSONEncode() string {
 func CompareBakaMarks(oldm, newm BakaMarks) []Notif {
   res := make([]Notif, 0)
   for _, subj := range newm.Subjects {
+    fmt.Printf("%#v\n", subj)
     idx := slices.IndexFunc(oldm.Subjects, func(s BakaMarksSubject) bool { return s.Subject.Id == subj.Subject.Id })
     if idx == -1 { continue }
     oldsubj := oldm.Subjects[idx]
+    fmt.Printf("%#v\n", oldsubj)
     for _, mark := range subj.Marks {
       if slices.ContainsFunc(oldsubj.Marks, func(m BakaMark) bool { return m.Id == mark.Id }) { continue }
       res = append(res, Notif{
