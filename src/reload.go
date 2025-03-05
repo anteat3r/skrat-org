@@ -283,7 +283,7 @@ func PersonalReload(
 
     err := app.RunInTransaction(func(txApp core.App) error {
 
-    fmt.Println("personal reload hit trans")
+      fmt.Println("personal reload hit trans")
 
       // users, err := txApp.FindRecordsByFilter(
       //   USERS,
@@ -309,7 +309,7 @@ func PersonalReload(
 
         total_notifs := make([]Notif, 0)
 
-        resp, err := BakaQuery(app, user, GET, MARKS, "")
+        resp, err := BakaQuery(txApp, user, GET, MARKS, "")
         if err != nil { return err }
         sresp := string(resp)
 
@@ -317,7 +317,7 @@ func PersonalReload(
         err = json.Unmarshal(resp, &marks)
         if err != nil { return err }
 
-        oldmarks, ok, err := QueryData[BakaMarks](app, MARKS, PRIVATE, user.Id)
+        oldmarks, ok, err := QueryData[BakaMarks](txApp, MARKS, PRIVATE, user.Id)
         if err != nil { return err }
         
         if ok {
@@ -326,7 +326,7 @@ func PersonalReload(
         }
 
         err = StoreData(
-          app, datacoll,
+          txApp, datacoll,
           MARKS, PRIVATE, user.Id,
           marks, sresp,
         )
