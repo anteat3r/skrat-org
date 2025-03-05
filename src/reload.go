@@ -279,6 +279,8 @@ func PersonalReload(
 ) func() {
   return func() {
 
+    fmt.Println("personal reload hit")
+
     err := app.RunInTransaction(func(txApp core.App) error {
 
       // users, err := txApp.FindRecordsByFilter(
