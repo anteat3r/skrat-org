@@ -296,18 +296,16 @@ func PersonalReload(
       )
       if err != nil { return err }
 
-      txApp.Logger().Info(fmt.Sprintf("%#v", users))
-      fmt.Printf("%#v", users)
-
       for _, user := range users {
 
-        txApp.Logger().Info("personal reload user " + user.GetString(NAME))
-        txApp.Logger().Info(fmt.Sprintf("%#v", user.PublicExport()))
+        fmt.Println("shiver me timbers, " + user.GetString(NAME))
 
         if !user.GetDateTime(LAST_REFRESHED).IsZero() {
           if time.Since(user.GetDateTime(LAST_REFRESHED).Time()).Minutes() > 
             float64(user.GetInt(REFRESH_INTERVAL)) { continue }
         }
+
+        fmt.Println("gigity gigity goo")
 
         total_notifs := make([]Notif, 0)
 
