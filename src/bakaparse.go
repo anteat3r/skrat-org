@@ -1,8 +1,8 @@
 package src
 
 import (
-	"fmt"
 	"slices"
+	"strings"
 	"time"
 )
 
@@ -174,6 +174,7 @@ type BakaTimeTableChange struct {
 type SimpleNotif struct {
   Title string
   Text string
+  Num string
 }
 
 type Notif interface {
@@ -181,22 +182,41 @@ type Notif interface {
 }
 
 func (n SimpleNotif) JSONEncode() string {
-  return `{"type":"notif","title":"` + n.Title + `","options":{"body":"` + n.Text + `"}}`
+  imageStr := map[string]string{
+    "1": "https://finakademie.cz/wp-content/uploads/2016/09/jednicka.jpg",
+    "2": "http://www2.rozhlas.cz/podcast/img/podcast-dvojka.jpg",
+    "3": "https://www.good-drinks.ch/media/image/2f/0f/28/295.png",
+    "4": "https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/1F0D2A03B3EC79C06674F6CEF4D264A8EA2A31A8712385069789066FF594D9A2/scale?width=1200&aspectRatio=1.78&format=jpeg",
+    "5": "https://onehotbook.cz/cdn/shop/products/spravna_petka-4_web_grande.jpg?v=1607959695",
+  }[n.Num]
+  if imageStr != "" {
+    imageStr = `,"image":"` + imageStr + `"`
+  }
+  return `{"type":"notif","title":"` + n.Title + `","options":{"body":"` + n.Text + `" ` + imageStr + `}}`
+}
+
+func (m BakaMark) Notif(subj BakaMarksSubject) Notif {
+  return SimpleNotif{
+    Title: m.Caption + ": " + m.MarkText,
+    Text: subj.Subject.Name + ": " + subj.AverageText,
+    Num: strings.TrimSuffix(m.MarkText, "-"),
+  }
 }
 
 func CompareBakaMarks(oldm, newm BakaMarks) []Notif {
   res := make([]Notif, 0)
   for _, subj := range newm.Subjects {
     idx := slices.IndexFunc(oldm.Subjects, func(s BakaMarksSubject) bool { return s.Subject.Id == subj.Subject.Id })
-    if idx == -1 { continue }
+    if idx == -1 {
+      for _, mark := range subj.Marks {
+        res = append(res, mark.Notif(subj))
+      }
+      continue
+    }
     oldsubj := oldm.Subjects[idx]
-    fmt.Printf("%v: %v %v\n", subj.Subject.Name, len(subj.Marks), len(oldsubj.Marks))
     for _, mark := range subj.Marks {
       if slices.ContainsFunc(oldsubj.Marks, func(m BakaMark) bool { return m.Id == mark.Id }) { continue }
-      res = append(res, SimpleNotif{
-        Title: mark.Caption + ": " + mark.MarkText,
-        Text: subj.Subject.Name + ": " + subj.AverageText,
-      })
+      res = append(res, mark.Notif(subj))
     }
   }
   return res
