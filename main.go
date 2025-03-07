@@ -155,7 +155,7 @@ func main() {
 
         app.Cron().MustAdd(
           "personalreload",
-          "* 6-23 * * 2-6",
+          "* 6-23 * * 1-7",
           src.PersonalReload(app, datacoll),
         )
 

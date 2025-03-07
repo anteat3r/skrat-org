@@ -187,11 +187,10 @@ func (n SimpleNotif) JSONEncode() string {
 func CompareBakaMarks(oldm, newm BakaMarks) []Notif {
   res := make([]Notif, 0)
   for _, subj := range newm.Subjects {
-    fmt.Printf("%#v\n", subj)
     idx := slices.IndexFunc(oldm.Subjects, func(s BakaMarksSubject) bool { return s.Subject.Id == subj.Subject.Id })
     if idx == -1 { continue }
     oldsubj := oldm.Subjects[idx]
-    fmt.Printf("%#v\n", oldsubj)
+    fmt.Printf("%v: %v %v\n", subj.Subject.Name, len(subj.Marks), len(oldsubj.Marks))
     for _, mark := range subj.Marks {
       if slices.ContainsFunc(oldsubj.Marks, func(m BakaMark) bool { return m.Id == mark.Id }) { continue }
       res = append(res, SimpleNotif{
