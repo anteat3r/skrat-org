@@ -140,6 +140,17 @@ func main() {
           src.VapidTestHandler(app),
         ).Bind(apis.RequireAuth(src.USERS))
 
+        se.Router.GET(
+          "/api/kleo/uncache",
+          func(e *core.RequestEvent) error {
+            name := e.Request.URL.Query().Get(src.NAME)
+            ttype := e.Request.URL.Query().Get(src.TYPE)
+            owner := e.Request.URL.Query().Get(src.OWNER)
+            src.UnCacheData(app, name, ttype, owner)
+            return e.String(200, "")
+          },
+        )
+
 
         app.Cron().MustAdd(
           "ttreload",

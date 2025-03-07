@@ -31,26 +31,10 @@ func StoreData(
   parseddata any,
   stringdata string,
 ) error {
-  // datarecs, err := app.FindRecordsByFilter(
-  //   DATA,
-  //   OWNER + ` = {:owner} && ` + NAME + ` = {:name} && ` + TYPE + ` = {:type}`,
-  //   "created", 1, 0,
-  //   dbx.Params{"name": name, TYPE: ttype, OWNER: owner},
-  // )
-  // if err != nil { return err }
-
-  // datarecs, err := app.FindAllRecords(
-  //   DATA,
-  //   dbx.HashExp{OWNER: owner, NAME: name, TYPE: ttype},
-  // )
-  // if err != nil { return err }
 
   var datarecs []*core.Record
   err := app.RecordQuery(DATA).Where(dbx.HashExp{OWNER: owner, NAME: name, TYPE: ttype},).Limit(1).All(&datarecs)
   if err != nil { return err }
-
-  // app.Logger().Info(OWNER + ` = {:owner} && ` + NAME + ` = {:name} && ` + TYPE + ` = {:type}`)
-  // app.Logger().Info(fmt.Sprintf("%#v, %#v, %#v, %#v", datarecs, name, ttype, owner))
 
   var datarec *core.Record
   if len(datarecs) > 0 {
@@ -105,9 +89,6 @@ func QueryData[T any](
     if ok { return tdata, true, nil }
   }
 
-  // app.Logger().Info( OWNER + ` = {:owner} && ` + NAME + ` = {:name} && ` + TYPE + ` = {:type}`,)
-  // app.Logger().Info(fmt.Sprintf("%#v", dbx.Params{"name": name, TYPE: ttype, OWNER: owner},))
-
   var datarecs []*core.Record
   err = app.RecordQuery(DATA).Where(dbx.HashExp{NAME: name, TYPE: ttype, OWNER: owner}).Limit(1).All(&datarecs)
   if err != nil { return }
@@ -126,6 +107,15 @@ func QueryData[T any](
   DataCacheMu.Unlock()
 
   return *rest, true, nil
+}
+
+func UnCacheData(
+  app core.App,
+  name, ttype, owner string,
+) {
+  DataCacheMu.Lock()
+  delete(DataCache, ResourceName{Name: name, Type: ttype, Owner: owner})
+  DataCacheMu.Unlock()
 }
 
 func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func() {
