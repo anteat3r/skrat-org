@@ -3,13 +3,14 @@
 
   let endpoint = $state("");
 
-  function login() {
-    pb.send("/api/kleo/endp", {
+  async function login() {
+    let resp = await pb.send("/api/kleo/endp", {
       query: {
         endp: endpoint,
       },
       method: "GET",
     })
+    alert(resp);
   }
 </script>
 

@@ -53,6 +53,15 @@
     });
     console.log(resp);
   }
+
+  let personalReloadInterval = $state(pb.authStore.record.refresh_interval);
+
+  async function setPersonalReloadInterval() {
+    await pb.collection("users").update(pb.authStore.record.id, {
+      refresh_interval: personalReloadInterval,
+    });
+    alert("ok");
+  }
 </script>
 
 <button onclick={logout}>Logout</button>
@@ -64,14 +73,14 @@
 <button onclick={discordLogin}>
   Login with Discord
 </button>
-<br>
-<br>
-<CustomEndp />
-<br>
-<br>
+<br><br>
 <button onclick={setupNotifs}>Setup Notifs</button>
 <button onclick={vapidTest}>Send Test Notif</button>
-
-verze JDU.SE.ZABÍT č
+<br><br>
+<label for="refresh_interval">refresh_interval</label>
+<input type="number" id="refresh_interval" bind:value={personalReloadInterval}>
+<button onclick={setPersonalReloadInterval}>Nastavit</button>
+<br><br>
+<CustomEndp />
 
 <p>{JSON.stringify(pb.authStore.record)}</p>
