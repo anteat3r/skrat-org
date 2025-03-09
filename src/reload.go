@@ -263,18 +263,14 @@ func PersonalReload(
 ) func() {
   return func() {
 
-    fmt.Println("personal reload hit")
-
-    err := app.RunInTransaction(func(txApp core.App) error {
-
-      fmt.Println("personal reload hit trans")
+    err := func() error {
 
       // users, err := txApp.FindRecordsByFilter(
       //   USERS,
       //   WANTS_REFRESH + " = true",
       //   "updated", 0, 0,
       // )
-      users, err := txApp.FindAllRecords(
+      users, err := app.FindAllRecords(
         USERS,
         dbx.HashExp{WANTS_REFRESH: true},
       )
@@ -293,7 +289,7 @@ func PersonalReload(
 
         total_notifs := make([]Notif, 0)
 
-        resp, err := BakaQuery(txApp, user, GET, MARKS, "")
+        resp, err := BakaQuery(app, user, GET, MARKS, "")
         if err != nil { return err }
         sresp := string(resp)
 
@@ -301,39 +297,45 @@ func PersonalReload(
         err = json.Unmarshal(resp, &marks)
         if err != nil { return err }
 
-        oldmarks, ok, err := QueryData[BakaMarks](txApp, MARKS, PRIVATE, user.Id)
+        oldmarks, ok, err := QueryData[BakaMarks](app, MARKS, PRIVATE, user.Id)
         if err != nil { return err }
         
         if ok {
           notifs := CompareBakaMarks(oldmarks, marks)
-          fmt.Printf("notifs: %#v\n", notifs)
           total_notifs = append(total_notifs, notifs...)
         }
 
         err = StoreData(
-          txApp, datacoll,
+          app, datacoll,
           MARKS, PRIVATE, user.Id,
           marks, sresp,
         )
         if err != nil { return err }
 
-        // resp, err = BakaQuery(app, user, GET, EVENTS_MY, "")
-        // if err != nil { return err }
-        // sresp = string(resp)
-        //
-        // var events BakaEvents
-        // err = json.Unmarshal(resp, &marks)
-        // if err != nil { return err }
-        //
-        // err = StoreData(
-        //   app, datacoll,
-        //   EVENTS_MY, PRIVATE, user.Id,
-        //   events, sresp,
-        // )
-        // if err != nil { return err }
-        //
+        resp, err = BakaQuery(app, user, GET, MARKS, "")
+        if err != nil { return err }
+        sresp = string(resp)
 
-        fmt.Printf("%#v", total_notifs)
+        var ttable BakaTimeTable
+        err = json.Unmarshal(resp, &ttable)
+        if err != nil { return err }
+
+        oldttable, ok, err := QueryData[BakaTimeTable](app, TIMETABLE_ACTUAL, PRIVATE, user.Id)
+        if err != nil { return err }
+        
+        if ok {
+          if len(oldttable.Days) > 0 && len(oldttable.Days) > 0 && oldttable.Days[0].Date == ttable.Days[0].Date {
+            notifs := CompareBakaTimeTables(oldttable, ttable)
+            total_notifs = append(total_notifs, notifs...)
+          }
+        }
+
+        err = StoreData(
+          app, datacoll,
+          TIMETABLE_ACTUAL, PRIVATE, user.Id,
+          ttable, sresp,
+        )
+        if err != nil { return err }
 
         if len(total_notifs) > 0 {
           for _, n := range total_notifs {
@@ -354,13 +356,80 @@ func PersonalReload(
         }
 
         user.Set(LAST_REFRESHED, types.NowDateTime())
-        err = txApp.Save(user)
+        err = app.Save(user)
         if err != nil { return err }
       }
 
       return nil
-    })
+    }()
     
+    if err != nil { app.Logger().Error(err.Error(), err); fmt.Printf("%#v, %v, %T", err, err, err) }
+  }
+}
+
+func EveningRefresh(
+  app core.App,
+  datacoll *core.Collection,
+) func() {
+  return func() {
+    err := func() error {
+
+      users, err := app.FindAllRecords(
+        USERS,
+        dbx.HashExp{WANTS_REFRESH: true},
+      )
+      if err != nil { return err }
+
+      for _, user := range users {
+        if !user.GetBool(WANTS_REFRESH) { continue }
+
+        total_notifs := make([]Notif, 0)
+
+        resp, err := BakaQuery(app, user, GET, ABSENCE_STUDENT, "")
+        if err != nil { return err }
+        sresp := string(resp)
+
+        var absence BakaAbsence
+        err = json.Unmarshal(resp, &absence)
+        if err != nil { return err }
+
+        err = StoreData(
+          app, datacoll,
+          ABSENCE_STUDENT, PRIVATE, user.Id,
+          absence, sresp,
+        )
+        if err != nil { return err }
+        
+        notifs := FindPendingAbsences(absence)
+        total_notifs = append(total_notifs, notifs...)
+
+        if len(total_notifs) > 0 {
+          for _, n := range total_notifs {
+            vapid := user.GetString(VAPID)
+
+            s := &webpush.Subscription{}
+            err := json.Unmarshal([]byte(vapid), s)
+            if err != nil { return err }
+
+            _, err = webpush.SendNotification([]byte(n.JSONEncode()), s, &webpush.Options{
+              Subscriber: user.GetString("email"),
+              VAPIDPublicKey: VAPID_PUBKEY,
+              VAPIDPrivateKey: VAPID_PRIVKEY,
+            })
+            if err != nil { return err }
+          }
+
+        }
+
+        user.Set(LAST_REFRESHED, types.NowDateTime())
+        err = app.Save(user)
+        if err != nil { return err }
+
+      }
+
+      return nil
+    }()
+
     if err != nil { app.Logger().Error(err.Error(), err); fmt.Printf("%#v, %v, %T", err, err, err) }
   }
 }

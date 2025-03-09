@@ -1,9 +1,17 @@
 package src
 
 import (
+	"fmt"
 	"slices"
 	"strings"
 	"time"
+
+	"github.com/pocketbase/pocketbase/tools/types"
+)
+
+var (
+  czechDayNames = []string{"po", "út", "st", "čt", "pá"}
+  czechIsoDayNames = []string{"ne", "po", "út", "st", "čt", "pá", "so"}
 )
 
 type BakaIdExpand struct {
@@ -171,7 +179,7 @@ type BakaTimeTableChange struct {
   AtomType string
 }
 
-type SimpleNotif struct {
+type MarkNotif struct {
   Title string
   Text string
   Num string
@@ -181,7 +189,7 @@ type Notif interface {
   JSONEncode() string
 }
 
-func (n SimpleNotif) JSONEncode() string {
+func (n MarkNotif) JSONEncode() string {
   imageStr := map[string]string{
     "1": "https://finakademie.cz/wp-content/uploads/2016/09/jednicka.jpg",
     "2": "http://www2.rozhlas.cz/podcast/img/podcast-dvojka.jpg",
@@ -196,9 +204,9 @@ func (n SimpleNotif) JSONEncode() string {
 }
 
 func (m BakaMark) Notif(subj BakaMarksSubject) Notif {
-  return SimpleNotif{
-    Title: m.Caption + ": " + m.MarkText,
-    Text: subj.Subject.Name + ": " + subj.AverageText,
+  return MarkNotif{
+    Title: "nová známka: " + subj.Subject.Abbrev,
+    Text: m.Caption + ": " + m.MarkText + " (" + m.TypeNote + ")\n" + subj.Subject.Name + ": " + subj.AverageText,
     Num: strings.TrimSuffix(m.MarkText, "-"),
   }
 }
@@ -217,6 +225,172 @@ func CompareBakaMarks(oldm, newm BakaMarks) []Notif {
     for _, mark := range subj.Marks {
       if slices.ContainsFunc(oldsubj.Marks, func(m BakaMark) bool { return m.Id == mark.Id }) { continue }
       res = append(res, mark.Notif(subj))
+    }
+  }
+  return res
+}
+
+type TimeTableNotif struct {
+  Title string
+  Text string
+}
+
+func (n TimeTableNotif) JSONEncode() string {
+  return `{"type":"notif","title":"` + n.Title + `","options":{"body":"` + n.Text + `"}}`
+}
+
+func FindBakaExpand(list []BakaIdExpand, id string) BakaIdExpand {
+  idx := slices.IndexFunc(list, func(e BakaIdExpand) bool { return e.Id == id })
+  if idx == -1 { return BakaIdExpand{ "?", "?", "?" } }
+  return list[idx]
+}
+
+func FindBakaExpandGroup(list []BakaIdExpandGroup, id string) BakaIdExpandGroup {
+  idx := slices.IndexFunc(list, func(e BakaIdExpandGroup) bool { return e.Id == id })
+  if idx == -1 { return BakaIdExpandGroup{ "?", "?", "?", "?" } }
+  return list[idx]
+}
+
+func CompareBakaTimeTables(oldt, newt BakaTimeTable) []Notif {
+  res := make([]Notif, 0)
+  hours := make(map[int]BakaTimeTableHour)
+  for _, hour := range oldt.Hours {
+    hours[hour.Id] = hour
+  }
+  for _, hour := range newt.Hours {
+    hours[hour.Id] = hour
+  }
+  for i := range 5 {
+    olddi := slices.IndexFunc(oldt.Days, func(d BakaTimeTableDay) bool { return d.DayOfWeek == i })
+    newdi := slices.IndexFunc(newt.Days, func(d BakaTimeTableDay) bool { return d.DayOfWeek == i })
+    if olddi == -1 && newdi == -1 { continue }
+    if olddi == -1 {
+      newd := newt.Days[newdi]
+      res = append(res, TimeTableNotif{
+        Title: "změna rozvrhu " + czechDayNames[newd.DayOfWeek],
+        Text: "den přidán",
+      })
+      continue
+    }
+    if newdi == -1 {
+      oldd := oldt.Days[olddi]
+      res = append(res, TimeTableNotif{
+        Title: "změna rozvrhu " + czechDayNames[oldd.DayOfWeek],
+        Text: "den odebrán",
+      })
+      continue
+    }
+    oldd := oldt.Days[olddi]
+    newd := newt.Days[newdi]
+    daynotifs := make([]string, 0)
+    for _, hour := range hours {
+      oldhi := slices.IndexFunc(oldd.Atoms, func(a BakaTimeTableAtom) bool { return a.HourId == hour.Id })
+      newhi := slices.IndexFunc(newd.Atoms, func(a BakaTimeTableAtom) bool { return a.HourId == hour.Id })
+      if oldhi == -1 && newhi == -1 { continue }
+      if oldhi == -1 {
+        newh := newd.Atoms[newhi]
+        groups := make([]string, len(newh.GroupIds))
+        for i, gid := range newh.GroupIds {
+          groups[i] = FindBakaExpandGroup(newt.Groups, gid).Abbrev
+        }
+        daynotifs = append(daynotifs, fmt.Sprintf(
+          "%d. hodina přidána: %s s %s v %s g %s",
+          newh.HourId,
+          FindBakaExpand(newt.Subjects, newh.SubjectId).Abbrev,
+          FindBakaExpand(newt.Teachers, newh.TeacherId).Abbrev,
+          FindBakaExpand(newt.Rooms, newh.RoomId).Abbrev,
+          strings.Join(groups, ", "),
+        ))
+        continue
+      }
+      if newhi == -1 {
+        oldh := oldd.Atoms[oldhi]
+        daynotifs = append(daynotifs, fmt.Sprintf(
+          "%d. hodina odebrána (%s)",
+          oldh.HourId,
+          FindBakaExpand(oldt.Subjects, oldh.SubjectId),
+        ))
+        continue
+      }
+      oldh := oldd.Atoms[oldhi]
+      newh := newd.Atoms[newhi]
+      nstr := FindBakaExpand(newt.Subjects, newh.SubjectId).Abbrev
+      ostr := nstr
+      if oldh.SubjectId != newh.SubjectId {
+        nstr += " (" + FindBakaExpand(oldt.Subjects, oldh.SubjectId).Abbrev + ")"
+      }
+      if oldh.TeacherId != newh.TeacherId {
+        nstr += "s " + FindBakaExpand(newt.Teachers, newh.TeacherId).Abbrev +
+                " (" + FindBakaExpand(oldt.Teachers, oldh.TeacherId).Abbrev + ")"
+      }
+      if oldh.RoomId != newh.RoomId {
+        nstr += "v " + FindBakaExpand(newt.Teachers, newh.TeacherId).Abbrev +
+                " (" + FindBakaExpand(oldt.Teachers, oldh.TeacherId).Abbrev + ")"
+      }
+      if !slices.Equal(oldh.GroupIds, newh.GroupIds) {
+        oldgs := make([]string, len(oldh.GroupIds))
+        for i, gid := range newh.GroupIds {
+          oldgs[i] = FindBakaExpandGroup(newt.Groups, gid).Abbrev
+        }
+        newgs := make([]string, len(newh.GroupIds))
+        for i, gid := range newh.GroupIds {
+          newgs[i] = FindBakaExpandGroup(newt.Groups, gid).Abbrev
+        }
+        nstr += "g " + strings.Join(newgs, ", ") + " (" + strings.Join(oldgs, ", ") + ")"
+      }
+      if nstr == ostr { continue }
+      daynotifs = append(daynotifs, fmt.Sprintf(
+        "%d. hodina změna: %s",
+        newh.HourId, nstr,
+      ))
+    }
+    res = append(res, TimeTableNotif{
+      Title: "změna rozvrhu " + czechDayNames[oldd.DayOfWeek],
+      Text: strings.Join(daynotifs, "\n"),
+    })
+  }
+  return res
+}
+
+type AbsenceNotif struct {
+  Title string
+  Text string
+}
+
+func (n AbsenceNotif) JSONEncode() string {
+  return `{"type": "notif","title":"","options":{"body":""}}`
+}
+
+func FindPendingAbsences(abs BakaAbsence) []Notif {
+  res := make([]Notif, 0)
+  for _, au := range abs.Absences {
+    if au.Unsolved > 0 {
+      res = append(res, AbsenceNotif{
+        Title: "neomluvená absence",
+        Text: fmt.Sprintf(
+          "%s %d. %d. %d: %d h",
+          czechIsoDayNames[au.Date.Weekday()],
+          au.Date.Day(),
+          au.Date.Month(),
+          au.Date.Year(),
+          au.Unsolved,
+        ),
+      })
+      continue
+    }
+    if au.Late > 0 && time.Since(au.Date) < ABSENCE_STATUE_OF_REPOSE {
+      res = append(res, AbsenceNotif{
+        Title: "neomluvený pozdní příchod",
+        Text: fmt.Sprintf(
+          "%s %d. %d. %d: %d h",
+          czechIsoDayNames[au.Date.Weekday()],
+          au.Date.Day(),
+          au.Date.Month(),
+          au.Date.Year(),
+          au.Unsolved,
+        ),
+      })
+      continue
     }
   }
   return res

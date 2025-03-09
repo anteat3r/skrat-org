@@ -37,6 +37,9 @@ const (
   WANTS_REFRESH = "wants_refresh"
   LAST_REFRESHED = "last_refreshed"
   REFRESH_INTERVAL = "refresh_interval"
+  ABSENCE_STUDENT = "absence/student"
+
+  ABSENCE_STATUE_OF_REPOSE = time.Hour * 24 * 7
 
   GET = "GET"
   POST = "POST"
