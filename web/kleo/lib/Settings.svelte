@@ -62,6 +62,13 @@
     });
     alert("ok");
   }
+
+  async function unsubscribeNotifs() {
+    await pb.collection("users").update(pb.authStore.record.id, {
+      wants_refresh: false,
+    });
+    alert("ok když myslíš 😒");
+  }
 </script>
 
 <button onclick={logout}>Logout</button>
@@ -74,8 +81,14 @@
   Login with Discord
 </button>
 <br><br>
+{#if pb.authStore.record.wants_refresh}
+  <p>přihlášen na notifikace yipeeee 🤩</p>
+{:else}
+  <p>nepřihlášen na notifikace 😨</p>
+{/if}
 <button onclick={setupNotifs}>Setup Notifs</button>
 <button onclick={vapidTest}>Send Test Notif</button>
+<button onclick={unsubscribeNotifs}>Odhlásit</button>
 <br><br>
 <label for="refresh_interval">refresh_interval</label>
 <input type="number" id="refresh_interval" bind:value={personalReloadInterval}>
