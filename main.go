@@ -155,7 +155,7 @@ func main() {
 
         app.Cron().MustAdd(
           "ttreload",
-          "* 5-17 * * 1-6",
+          "* 5-17 * * 0-6",
           src.TimeTableReload(app, datacoll),
         )
 
@@ -167,13 +167,13 @@ func main() {
 
         app.Cron().MustAdd(
           "personalreload",
-          "* 6-16 * * 1-5",
+          "* 6-16 * * 0-5",
           src.PersonalReload(app, datacoll),
         )
 
         app.Cron().MustAdd(
           "eveningrefresh",
-          "0 17 * * 1-5",
+          "0 17 * * 0-5",
           src.EveningRefresh(app, datacoll),
         )
 
