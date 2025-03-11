@@ -405,7 +405,7 @@ func (n BakaInvalidNotif) JSONEncode() string {
 func (e BakaEvent) ContainsDay(day time.Time) bool {
   for _, t := range e.Times {
     std, stm, sty := t.StartTime.Date()
-    diddy, dm, dy := t.StartTime.Date()
+    diddy, dm, dy := day.Date()
     if diddy == std && stm == dm && sty == dy { return true }
   }
   return false
