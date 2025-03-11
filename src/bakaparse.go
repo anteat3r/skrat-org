@@ -25,7 +25,9 @@ type BakaIdExpandGroup struct {
   Name string
 }
 
-type BakaEvents []BakaEvent
+type BakaEvents struct {
+  Events []BakaEvent
+}
 
 type BakaEvent struct {
   Id string
