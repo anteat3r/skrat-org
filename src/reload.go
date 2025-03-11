@@ -150,7 +150,7 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
       var tresp any
 
       if src.GetString(TYPE) == EVENTS {
-        resp, err := BakaQuery(txApp, user, "GET", "events", "")
+        resp, err := BakaQuery(txApp, user, "GET", "events/all", "")
         if err != nil { return err }
         if !user.GetBool(BAKAVALID) {
           vapid := user.GetString(VAPID)
@@ -359,7 +359,7 @@ func PersonalReload(
         )
         if err != nil { return err }
 
-        resp, err = BakaQuery(app, user, GET, MARKS, "")
+        resp, err = BakaQuery(app, user, GET, TIMETABLE_ACTUAL, "")
         if err != nil { return err }
         if !user.GetBool(BAKAVALID) {
           total_notifs = append(total_notifs, BakaInvalidNotif{})
