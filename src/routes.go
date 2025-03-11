@@ -191,7 +191,7 @@ func WebTimeTableHandler(
             if ttype == CLASS && !BakaIdExpandListContainsId(e.Classes, name) { continue }
             if ttype == ROOM && !BakaIdExpandListContainsId(e.Rooms, name) { continue }
             if !e.ContainsDay(dday) { continue }
-            day.JoinedEvents = append(day.JoinedEvents, e)
+            parsedtt.Days[i].JoinedEvents = append(day.JoinedEvents, e)
           }
         }
       }
