@@ -406,6 +406,7 @@ func (e BakaEvent) ContainsDay(day time.Time) bool {
   for _, t := range e.Times {
     std, stm, sty := t.StartTime.Date()
     diddy, dm, dy := day.Date()
+    fmt.Printf("%d %d %d == %d %d %d\n", std, stm, sty, diddy, dm, dy)
     if diddy == std && stm == dm && sty == dy { return true }
   }
   return false

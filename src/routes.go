@@ -185,8 +185,6 @@ func WebTimeTableHandler(
       if ok {
         for i, day := range parsedtt.Days {
           dday := nweek.AddDate(0, 0, i) 
-          app.Logger().Info(dday.String())
-          nw := time.Now()
           for _, e := range evts.Events {
             if ttype == TEACHER && !BakaIdExpandListContainsId(e.Teachers, name) { continue }
             if ttype == CLASS && !BakaIdExpandListContainsId(e.Classes, name) { continue }
@@ -194,7 +192,6 @@ func WebTimeTableHandler(
             if !e.ContainsDay(dday) { continue }
             day.JoinedEvents = append(day.JoinedEvents, e)
           }
-          app.Logger().Info(time.Since(nw).String() + " " + fmt.Sprint(len(evts.Events)))
         }
       }
     }
