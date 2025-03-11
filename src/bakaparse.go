@@ -410,3 +410,10 @@ func (e BakaEvent) ContainsDay(day time.Time) bool {
   }
   return false
 }
+
+func BakaIdExpandListContainsId(lst []BakaIdExpand, id string) bool {
+  for _, e := range lst {
+    if e.Id == id { return true }
+  }
+  return false
+}

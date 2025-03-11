@@ -2,7 +2,6 @@ package src
 
 import (
 	"encoding/json"
-	"fmt"
 	"strconv"
 	"time"
 
@@ -186,9 +185,11 @@ func WebTimeTableHandler(
         for i, day := range parsedtt.Days {
           dday := nweek.AddDate(0, 0, i) 
           for _, e := range evts.Events {
-            if e.ContainsDay(dday) {
-              day.JoinedEvents = append(day.JoinedEvents, e)
-            }
+            if ttype == TEACHER && !BakaIdExpandListContainsId(e.Teachers, name) { continue }
+            if ttype == CLASS && !BakaIdExpandListContainsId(e.Classes, name) { continue }
+            if ttype == ROOM && !BakaIdExpandListContainsId(e.Rooms, name) { continue }
+            if !e.ContainsDay(dday) { continue }
+            day.JoinedEvents = append(day.JoinedEvents, e)
           }
         }
       }
