@@ -2,6 +2,7 @@ package src
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -193,7 +194,7 @@ func WebTimeTableHandler(
             if !e.ContainsDay(dday) { continue }
             day.JoinedEvents = append(day.JoinedEvents, e)
           }
-          app.Logger().Info(time.Since(nw).String())
+          app.Logger().Info(time.Since(nw).String() + " " + fmt.Sprint(len(evts.Events)))
         }
       }
     }
