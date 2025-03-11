@@ -401,3 +401,12 @@ type BakaInvalidNotif struct {}
 func (n BakaInvalidNotif) JSONEncode() string {
   return `{"type":"notif","title":"vypršela cookieska 🍪","options":{"body":"přihlaš se prosím znovu nebo ti vytrhám všechny zuby díky 🦷"}}`
 }
+
+func (e BakaEvent) ContainsDay(day time.Time) bool {
+  for _, t := range e.Times {
+    std, stm, sty := t.StartTime.Date()
+    diddy, dm, dy := t.StartTime.Date()
+    if diddy == std && stm == dm && sty == dy { return true }
+  }
+  return false
+}

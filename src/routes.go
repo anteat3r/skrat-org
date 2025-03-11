@@ -2,7 +2,9 @@ package src
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
+	"time"
 
 	webpush "github.com/SherClockHolmes/webpush-go"
 	"github.com/pocketbase/pocketbase"
@@ -166,21 +168,38 @@ func WebTimeTableHandler(
   return func(e *core.RequestEvent) error {
     user := e.Auth
 
-    time := e.Request.PathValue("time")
+    ttime := e.Request.PathValue("time")
     ttype := e.Request.PathValue("ttype")
     name := e.Request.PathValue("name")
     if ttype != TEACHER && ttype != CLASS && ttype != ROOM {
       return e.Error(401, "invalid ttype", ttype)
     }
-    parsedtt, err := BakaTimeTableQuery(app, user, time, ttype, name)
+    parsedtt, err := BakaTimeTableQuery(app, user, ttime, ttype, name)
     if err != nil { return err }
+
+    if ttime != PERMANENT {
+      evts, ok, err := QueryData[BakaEvents](app, EVENTS, EVENTS, "")
+      if err != nil { return err }
+      nw := time.Now()
+      nweek := nw.AddDate(0, 0, int(nw.Weekday() - 1))
+      if ok {
+        for i, day := range parsedtt.Days {
+          dday := nweek.AddDate(0, 0, i) 
+          for _, e := range evts.Events {
+            if e.ContainsDay(dday) {
+              day.JoinedEvents = append(day.JoinedEvents, e)
+            }
+          }
+        }
+      }
+    }
 
     jsontt, err := json.Marshal(parsedtt)
     if err != nil { return err }
 
     stringtt := string(jsontt)
 
-    if time == GetTTime() {
+    if ttime == GetTTime() {
       err = StoreData(
         app,
         datacoll,

@@ -316,14 +316,10 @@ func PersonalReload(
 
       for _, user := range users {
 
-        fmt.Println("shiver me timbers, " + user.GetString(NAME))
-
         if !user.GetDateTime(LAST_REFRESHED).IsZero() {
           if time.Since(user.GetDateTime(LAST_REFRESHED).Time()).Minutes() < 
             float64(user.GetInt(REFRESH_INTERVAL)) { continue }
         }
-
-        fmt.Println("gigity gigity goo")
 
         total_notifs := make([]Notif, 0)
         var marks BakaMarks

@@ -35,6 +35,7 @@ type TimeTableDay struct {
   Special string `json:"special"`
   Hours []TimeTableHour `json:"hours"`
   Guards []TimeTableGuard `json:"guards"`
+  JoinedEvents []BakaEvent `json:"events"`
 }
 
 type TimeTableHourTitle struct {
@@ -88,6 +89,7 @@ func ParseTimeTableWeb(htmldoc string) (tt TimeTable, err error) {
     rowres := TimeTableDay{
       Hours: make([]TimeTableHour, 0),
       Guards: make([]TimeTableGuard, 0),
+      JoinedEvents: make([]BakaEvent, 0),
     }
 
     dayel := dom.QuerySelector(row, ".bk-day-day")
