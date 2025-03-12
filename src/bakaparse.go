@@ -344,6 +344,7 @@ func CompareBakaTimeTables(oldt, newt BakaTimeTable) []Notif {
         newh.HourId, nstr,
       ))
     }
+    if len(daynotifs) == 0 { continue }
     res = append(res, TimeTableNotif{
       Title: "změna rozvrhu " + czechDayNames[oldd.DayOfWeek],
       Text: strings.Join(daynotifs, "\n"),
