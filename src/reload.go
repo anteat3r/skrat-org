@@ -151,7 +151,7 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
       var tresp any
 
       if src.GetString(TYPE) == EVENTS {
-        resp, err := BakaQuery(txApp, user, "GET", "events/all", "")
+        resp, err := BakaQuery(txApp, user, "GET", "events", "")
         if err != nil { return err }
         if !user.GetBool(BAKAVALID) {
           if user.GetString(VAPID) != "" {
