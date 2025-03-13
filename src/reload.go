@@ -120,6 +120,7 @@ func UnCacheData(
 
 func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func() {
   return func() {
+    fmt.Println("ttreload hit")
     defer func(){
       r := recover()
       if r == nil { return }
