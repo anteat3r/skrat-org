@@ -152,19 +152,21 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
       if src.GetString(TYPE) == EVENTS {
         resp, err := BakaQuery(txApp, user, "GET", "events/all", "")
         if err != nil { return err }
-        if !user.GetBool(BAKAVALID) && user.GetString(VAPID) != "" {
-          vapid := user.GetString(VAPID)
+        if !user.GetBool(BAKAVALID) {
+          if user.GetString(VAPID) != "" {
+            vapid := user.GetString(VAPID)
 
-          s := &webpush.Subscription{}
-          err := json.Unmarshal([]byte(vapid), s)
-          if err != nil { return err }
+            s := &webpush.Subscription{}
+            err := json.Unmarshal([]byte(vapid), s)
+            if err != nil { return err }
 
-          _, err = webpush.SendNotification([]byte(BakaInvalidNotif{}.JSONEncode()), s, &webpush.Options{
-            Subscriber: user.GetString("email"),
-            VAPIDPublicKey: VAPID_PUBKEY,
-            VAPIDPrivateKey: VAPID_PRIVKEY,
-          })
-          if err != nil { return err }
+            _, err = webpush.SendNotification([]byte(BakaInvalidNotif{}.JSONEncode()), s, &webpush.Options{
+              Subscriber: user.GetString("email"),
+              VAPIDPublicKey: VAPID_PUBKEY,
+              VAPIDPrivateKey: VAPID_PRIVKEY,
+            })
+            if err != nil { return err }
+          }
           return nil
         }
 
@@ -175,6 +177,7 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
         if err != nil {
           if _, ok := err.(*json.SyntaxError); ok {
             app.Logger().Info(jresp)
+            app.Logger().Info("cant laod evetns")
           }
           return err
         }
