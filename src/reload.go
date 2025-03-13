@@ -152,7 +152,7 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
       if src.GetString(TYPE) == EVENTS {
         resp, err := BakaQuery(txApp, user, "GET", "events/all", "")
         if err != nil { return err }
-        if !user.GetBool(BAKAVALID) {
+        if !user.GetBool(BAKAVALID) && user.GetString(VAPID) != "" {
           vapid := user.GetString(VAPID)
 
           s := &webpush.Subscription{}
@@ -171,14 +171,19 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
         jresp = string(resp)
 
         evts := BakaEvents{}
-        err = json.Unmarshal([]byte(resp), &evts)
-        if err != nil { return err }
+        err = json.Unmarshal(resp, &evts)
+        if err != nil {
+          if _, ok := err.(*json.SyntaxError); ok {
+            app.Logger().Info(jresp)
+          }
+          return err
+        }
 
         tresp = evts
       } else {
         tt, err := BakaTimeTableQuery(txApp, user, GetTTime(), src.GetString(TYPE), src.GetString(NAME))
         if err != nil { return err }
-        if !user.GetBool(BAKAVALID) {
+        if !user.GetBool(BAKAVALID) && user.GetString(VAPID) != "" {
           vapid := user.GetString(VAPID)
 
           s := &webpush.Subscription{}
@@ -250,7 +255,7 @@ func TimeTableSourcesReload(
 
       resp, err := BakaWebQuery(txApp, user, TIMETABLE_PUBLIC)
       if err != nil { return err }
-      if !user.GetBool(BAKAVALID) {
+      if !user.GetBool(BAKAVALID) && user.GetString(VAPID) != "" {
         vapid := user.GetString(VAPID)
 
         s := &webpush.Subscription{}
