@@ -30,6 +30,7 @@ func BakaQuery(
   defer func(){
     if err == nil { return }
     user.Set(BAKAVALID, false)
+    fmt.Printf("%v %#v %T\n", err, err, err)
     err = app.Save(user)
   }()
 
