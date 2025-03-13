@@ -176,7 +176,7 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
         err = json.Unmarshal(resp, &evts)
         if err != nil {
           if _, ok := err.(*json.SyntaxError); ok {
-            app.Logger().Info(jresp)
+            app.Logger().Info(fmt.Sprintf("%#v", jresp))
             app.Logger().Info("cant laod evetns")
           }
           return err
