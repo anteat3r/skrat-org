@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { stopPropagation } from "svelte/legacy";
   import { pb } from "../pb_store.svelte";
+  import DayComp from "./DayComp.svelte";
 
   function srcChange(ttype: string) {
     return async function() {
@@ -62,31 +62,24 @@
     }
   }
 
-  let overlayEvt = $state(null);
+  let selDayIdx: number | null = $state(null);
 
-  function dayOnclick(day: any) {
+  function dayOnclick(idx: number) {
     return function() {
-      overlayEvt = day;
+      if (selDayIdx === idx) {
+        selDayIdx = null;
+      } else {
+        selDayIdx = idx;
+      }
     }
   }
 
-  function closeDayOverlay() {
-    overlayEvt = null;
-  }
-
-  function stopPropagationClick(e: Event) {
-    e.stopPropagation();
+  function getWeekDayByIdx(idx: number): Date {
+    let nw = new Date();
+    nw.setDate(nw.getDate() - nw.getDay() + 1 + idx);
+    return nw;
   }
 </script>
-
-{#if overlayEvt !== null}
-  <div class="overlay" onclick={closeDayOverlay}>
-    <div class="sidepanel" onclick={stopPropagationClick}>
-      <button onclick={closeDayOverlay}>Close</button>
-      <p style="max-width: 200px; max-height: 600px; word-wrap: break-word;">{JSON.stringify(overlayEvt)}</p>
-    </div>
-  </div>
-{/if}
 
 {#await pb.send("/api/kleo/websrcs", {})}
   <h1>Loading... 🙄</h1>
@@ -121,16 +114,19 @@
             </th>
           {/each}
         </tr>
-        {#each ttable.days as day}
+        {#each ttable.days as day, dayIdx}
           <tr>
             <th>
               <div class="cell"
-                  onclick={dayOnclick(day)}
+                  onclick={dayOnclick(dayIdx)}
                   role="button" tabindex="-1"
                   onkeypress={forwardButtonPress}
               >
                 <h1>{day.title.split(" ")[0]}</h1>
                 <h1>{day.title.split(" ")[1]}</h1>
+                {#if day.events.length > 0}
+                  <p>{day.events.length} evts</p>
+                {/if}
               </div>
             </th>
             {#each day.hours as hour}
@@ -156,6 +152,9 @@
               </td>
             {/each}
           </tr>
+          {#if selDayIdx === dayIdx}
+              <DayComp events={day.events} type="personal" date={getWeekDayByIdx(dayIdx)} />
+          {/if}
         {/each}
       </tbody>
     </table>
@@ -243,37 +242,5 @@
   }
   .bk-green {
     background-color: darkgreen;
-  }
-
-  .overlay {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    @media (min-width: 600px ) and (orientation: landscape) {
-      flex-direction: row;
-    }
-    align-items: center;
-    justify-content: end;
-    margin: 0;
-    padding: 0;
-  }
-
-  .sidepanel {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: black;
-    padding: 10px;
-    overflow-y: scroll;
-    min-height: 30%;
-    min-width: 100%;
-    @media (min-width: 600px ) and (orientation: landscape) {
-      min-height: 100%;
-      min-width: 30%;
-    }
   }
 </style>
