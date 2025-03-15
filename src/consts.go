@@ -61,7 +61,7 @@ func GetTTime() string {
 
   
   wd := time.Now().Weekday()
-  if wd == time.Sunday || wd == time.Sunday { return NEXT }
+  if wd == time.Saturday || wd == time.Sunday { return NEXT }
   return ACTUAL
 }
 
