@@ -61,7 +61,7 @@
     {#if value.record.bakavalid}
         <Home />
     {:else}
-        <BakaLogin />
+        <BakaLogin reload={reload} />
     {/if}
   {/await}
 {:else}

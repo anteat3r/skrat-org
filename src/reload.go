@@ -120,7 +120,6 @@ func UnCacheData(
 
 func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func() {
   return func() {
-    fmt.Println("ttreload hit")
     defer func(){
       r := recover()
       if r == nil { return }
@@ -185,6 +184,7 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
 
         tresp = evts
       } else {
+        app.Logger().Info(fmt.Sprintf("ttreload %s %s %s", GetTTime(), src.GetString(TYPE), src.GetString(NAME)))
         tt, err := BakaTimeTableQuery(txApp, user, GetTTime(), src.GetString(TYPE), src.GetString(NAME))
         if err != nil { return err }
         if !user.GetBool(BAKAVALID) && user.GetString(VAPID) != "" {
