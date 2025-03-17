@@ -294,3 +294,29 @@ func DayOverviewHandler(
     return e.JSON(200, res)
   }
 }
+
+func EventsHandler(
+  app *pocketbase.PocketBase,
+  datacoll *core.Collection,
+) func(*core.RequestEvent) error {
+  return func(e *core.RequestEvent) error {
+    user := e.Auth
+
+    resp, err := BakaQuery(app, user, GET, EVENTS_ALL, "")
+    if err != nil { return err }
+    sresp := string(resp)
+
+    var events BakaEvents
+    err = json.Unmarshal(resp, &events)
+    if err != nil { return err }
+
+    err = StoreData(
+      app, datacoll,
+      EVENTS, EVENTS, "",
+      events, sresp,
+    )
+    if err != nil { return err }
+
+    return e.String(200, sresp)
+  }
+}

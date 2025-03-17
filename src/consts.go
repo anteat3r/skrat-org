@@ -26,7 +26,7 @@ const (
   ROOM = "Room"
   EVENTS = "Events"
   EVENTS_MY = "events/my"
-  EVENTS_ALL = "events/all"
+  EVENTS_ALL = "events"
 
   ACTUAL = "Actual"
   NEXT = "Next"

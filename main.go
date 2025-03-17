@@ -149,6 +149,11 @@ func main() {
           src.MarksHandler(app, datacoll),
         ).Bind(apis.RequireAuth(src.USERS)).Bind(src.RequireBakaValid)
 
+        se.Router.GET(
+          "/api/kleo/events",
+          src.EventsHandler(app, datacoll),
+        ).Bind(apis.RequireAuth(src.USERS)).Bind(src.RequireBakaValid)
+
         se.Router.POST(
           "/api/kleo/setupnotifs",
           src.StoreVapidEndpoint(app),

@@ -77,6 +77,7 @@
   function getWeekDayByIdx(idx: number, next: boolean = true): Date {
     let nw = new Date();
     nw.setDate(nw.getDate() - nw.getDay() + 1 + idx + (next ? 7 : 0));
+    console.log(idx, next, nw);
     return nw;
   }
 </script>
@@ -153,7 +154,7 @@
             {/each}
           </tr>
           {#if selDayIdx === dayIdx}
-              <DayComp events={day.events} type="personal" date={getWeekDayByIdx(dayIdx, ttime == "Next")} />
+            <DayComp events={day.events} type="personal" date={getWeekDayByIdx(dayIdx, ttime == "Next")} />
           {/if}
         {/each}
       </tbody>
