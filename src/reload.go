@@ -394,6 +394,7 @@ func PersonalReload(
 
         sendnotifs:
         if len(total_notifs) > 0 {
+          app.Logger().Info(fmt.Sprintf("sending notifs to %s: %#v", user.GetString(NAME), total_notifs))
           for _, n := range total_notifs {
             vapid := user.GetString(VAPID)
 
