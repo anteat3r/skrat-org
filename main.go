@@ -76,10 +76,12 @@ func main() {
           if key == "" { return e.Error(400, "invalid key", nil ) }
           rec, err := app.FindFirstRecordByData("urls", "name", key)
           if err != nil { return err }
-          rec.Set("count", rec.GetInt("count"))
+          err = e.Redirect(301, rec.GetString("value"))
+          if err != nil { return err }
+          rec.Set("count", rec.GetInt("count") + 1)
           err = app.Save(rec)
           if err != nil { return err }
-          return e.Redirect(301, rec.GetString("value"))
+          return nil
         })
         se.Router.GET("/s", func(e *core.RequestEvent) error {
           if len(e.Request.URL.Query()) != 1 { return e.Error(400, "key not specified", nil) }
@@ -88,10 +90,12 @@ func main() {
           if key == "" { return e.Error(400, "invalid key", nil ) }
           rec, err := app.FindFirstRecordByData("urls", "name", key)
           if err != nil { return err }
-          rec.Set("count", rec.GetInt("count"))
+          err = e.Redirect(301, rec.GetString("value"))
+          if err != nil { return err }
+          rec.Set("count", rec.GetInt("count") + 1)
           err = app.Save(rec)
           if err != nil { return err }
-          return e.Redirect(301, rec.GetString("value"))
+          return nil
         })
         se.Router.GET("/s/{key}/", func(e *core.RequestEvent) error {
           return e.Redirect(301, "https://skrat.org/s/" + e.Request.PathValue("key"))
