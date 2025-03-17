@@ -359,7 +359,7 @@ type AbsenceNotif struct {
 }
 
 func (n AbsenceNotif) JSONEncode() string {
-  return `{"type": "notif","title":"","options":{"body":""}}`
+  return `{"type":"notif","title":"` + n.Title + `","options":{"body":"` + n.Text + `"}}`
 }
 
 func FindPendingAbsences(abs BakaAbsence) []Notif {

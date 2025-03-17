@@ -76,6 +76,21 @@ func main() {
           if key == "" { return e.Error(400, "invalid key", nil ) }
           rec, err := app.FindFirstRecordByData("urls", "name", key)
           if err != nil { return err }
+          rec.Set("count", rec.GetInt("count"))
+          err = app.Save(rec)
+          if err != nil { return err }
+          return e.Redirect(301, rec.GetString("value"))
+        })
+        se.Router.GET("/s", func(e *core.RequestEvent) error {
+          if len(e.Request.URL.Query()) != 1 { return e.Error(400, "key not specified", nil) }
+          var key string
+          for k, _ := range e.Request.URL.Query() { key = k }
+          if key == "" { return e.Error(400, "invalid key", nil ) }
+          rec, err := app.FindFirstRecordByData("urls", "name", key)
+          if err != nil { return err }
+          rec.Set("count", rec.GetInt("count"))
+          err = app.Save(rec)
+          if err != nil { return err }
           return e.Redirect(301, rec.GetString("value"))
         })
         se.Router.GET("/s/{key}/", func(e *core.RequestEvent) error {

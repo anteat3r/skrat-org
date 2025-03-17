@@ -379,7 +379,7 @@ func PersonalReload(
         if err != nil { return err }
         
         if ok {
-          if len(oldttable.Days) > 0 && len(oldttable.Days) > 0 && oldttable.Days[0].Date == ttable.Days[0].Date {
+          if len(oldttable.Days) > 0 && len(ttable.Days) > 0 && oldttable.Days[0].Date == ttable.Days[0].Date {
             notifs := CompareBakaTimeTables(oldttable, ttable)
             total_notifs = append(total_notifs, notifs...)
           }
