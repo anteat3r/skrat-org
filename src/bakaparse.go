@@ -214,7 +214,9 @@ func (m BakaMark) Notif(subj BakaMarksSubject) Notif {
 func CompareBakaMarks(oldm, newm BakaMarks) []Notif {
   res := make([]Notif, 0)
   for _, subj := range newm.Subjects {
-    idx := slices.IndexFunc(oldm.Subjects, func(s BakaMarksSubject) bool { return s.Subject.Id == subj.Subject.Id })
+    idx := slices.IndexFunc(oldm.Subjects, func(s BakaMarksSubject) bool {
+      return strings.TrimSpace(s.Subject.Id) == strings.TrimSpace(subj.Subject.Id)
+    })
     if idx == -1 {
       for _, mark := range subj.Marks {
         res = append(res, mark.Notif(subj))

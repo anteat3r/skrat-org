@@ -181,6 +181,9 @@ func WebTimeTableHandler(
       if err != nil { return err }
       nw := time.Now()
       nweek := nw.AddDate(0, 0, -int(nw.Weekday() - 1))
+      if ttime == NEXT {
+        nweek = nweek.AddDate(0, 0, 7)
+      }
       if ok {
         for i, day := range parsedtt.Days {
           dday := nweek.AddDate(0, 0, i) 
