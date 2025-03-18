@@ -317,6 +317,7 @@ func PersonalReload(
 
     err := func() error {
 
+
       users, err := app.FindAllRecords(
         USERS,
         dbx.HashExp{WANTS_REFRESH: true},
@@ -329,6 +330,8 @@ func PersonalReload(
           if time.Since(user.GetDateTime(LAST_REFRESHED).Time()).Minutes() < 
             float64(user.GetInt(REFRESH_INTERVAL)) { continue }
         }
+
+        app.Logger().Info(fmt.Sprintf("reloading user %s", user.GetString(NAME)))
 
         total_notifs := make([]Notif, 0)
         var marks BakaMarks

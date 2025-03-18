@@ -38,7 +38,7 @@
       {event.Rooms.map((e: { Abbrev: any; }) => e.Abbrev).join(", ")}
       <br>
       {#if event.Students.length > 0} <span style="font-weight: bold;">Studenti:</span> {/if}
-      {event.Students.map((e: { Abbrev: any; }) => e.Abbrev).join(", ")}
+      {event.Students.map((e: { Name: any; }) => e.Name).join(", ")}
     </p>
   {/if}
 </div>

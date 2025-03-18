@@ -6,7 +6,7 @@
 {#await pb.send("/api/kleo/events", {})}
   <h1>Loading... 🙄</h1>
 {:then events}
-  {#each events as event}
+  {#each events.Events as event}
     <EventComp eventRaw={event} />
   {/each}
 {:catch error}
