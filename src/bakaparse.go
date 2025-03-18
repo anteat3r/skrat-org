@@ -331,7 +331,7 @@ func CompareBakaTimeTables(oldt, newt BakaTimeTable) []Notif {
       }
       if !slices.Equal(oldh.GroupIds, newh.GroupIds) {
         oldgs := make([]string, len(oldh.GroupIds))
-        for i, gid := range newh.GroupIds {
+        for i, gid := range oldh.GroupIds {
           oldgs[i] = FindBakaExpandGroup(newt.Groups, gid).Abbrev
         }
         newgs := make([]string, len(newh.GroupIds))
