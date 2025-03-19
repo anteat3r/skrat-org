@@ -39,6 +39,7 @@
     role="button" tabindex="-1" onkeypress={forwardButtonPress}
   > </div>
   <div class="info" id="info">
+  <div class="info" id="infotst"></div> 
   <div class="info" id="infos"></div> 
   <div class="info" id="infor"></div> 
   <div class="info" id="infoth"></div> 
