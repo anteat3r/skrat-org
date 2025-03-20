@@ -52,12 +52,42 @@
     
     document.getElementById('popup').style.display='block';
     //document.getElementById('fade').style.display='block';
-    document.getElementById("infor").innerHTML = "místnost: " + podrobnosti.room ;
-    document.getElementById("infos").innerHTML =  podrobnosti.subjecttext ;
-    document.getElementById("infoth").innerHTML = "téma: " + podrobnosti.theme ;
-    document.getElementById("infou").innerHTML = "učitel: " + podrobnosti.teacher ;
-    document.getElementById("infog").innerHTML = "skupina: " + podrobnosti.group ;
-    document.getElementById("infoch").innerHTML = "změna: " + podrobnosti.changeinfo ;
+    //document.getElementById("infotst").innerHTML = detail;
+    if( podrobnosti.type == "atom"){
+      document.getElementById("infor").innerHTML = "místnost: " + podrobnosti.room ;
+      document.getElementById("infos").innerHTML =  podrobnosti.subjecttext ;
+      document.getElementById("infoth").innerHTML = "téma: " + podrobnosti.theme ;
+      if (podrobnosti.teacher != null){
+        document.getElementById("infou").innerHTML = "učitel: " + podrobnosti.teacher ;
+      }
+      else{
+        document.getElementById("infou").innerHTML = "" ;
+      }
+      document.getElementById("infog").innerHTML = "skupina: " + podrobnosti.group ;
+      if (podrobnosti.changeinfo != ""){
+        document.getElementById("infoch").innerHTML = "změna: " + podrobnosti.changeinfo ;
+      }
+      else{
+        document.getElementById("infoch").innerHTML = "" ;
+      }
+    }
+    if(podrobnosti.type == "removed"){
+      document.getElementById("infor").innerHTML = "" ;
+      document.getElementById("infos").innerHTML =  podrobnosti.subjecttext ;
+      document.getElementById("infoth").innerHTML = "popis: " + podrobnosti.absentinfo ;
+      document.getElementById("infou").innerHTML = "" ;
+      document.getElementById("infog").innerHTML = "" ;
+      document.getElementById("infoch").innerHTML = "změna: " + podrobnosti.removedinfo ;
+    }
+    if(podrobnosti.type == "absent"){
+      document.getElementById("infor").innerHTML = "" ;
+      document.getElementById("infos").innerHTML =  podrobnosti.subjecttext ;
+      document.getElementById("infoth").innerHTML = "popis: " + podrobnosti.InfoAbsentName ;
+      document.getElementById("infou").innerHTML = "zkratka: " + podrobnosti.absentinfo ;
+      document.getElementById("infog").innerHTML = "" ;
+      document.getElementById("infoch").innerHTML = "" ;
+    }
+    
     //document.innerHTML = detail
     }
   }
