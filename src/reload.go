@@ -353,7 +353,7 @@ func PersonalReload(
         
         if ok {
           notifs := CompareBakaMarks(oldmarks, marks)
-          app.Logger().Info(fmt.Sprintf("notifs marks user %s: %#v", user.GetString(NAME), notifs))
+          app.Logger().Info(fmt.Sprintf("notifs marks user %s: %#v", user.GetString(NAME), notifs), oldmarks, marks)
           total_notifs = append(total_notifs, notifs...)
         }
 
