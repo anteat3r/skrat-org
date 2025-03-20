@@ -3,6 +3,7 @@ package src
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"sync"
 	"time"
 
@@ -152,21 +153,9 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
       if src.GetString(TYPE) == EVENTS {
         resp, err := BakaQuery(txApp, user, "GET", EVENTS_ALL, "")
         if err != nil { return err }
-        if !user.GetBool(BAKAVALID) {
-          if user.GetString(VAPID) != "" {
-            vapid := user.GetString(VAPID)
-
-            s := &webpush.Subscription{}
-            err := json.Unmarshal([]byte(vapid), s)
-            if err != nil { return err }
-
-            _, err = webpush.SendNotification([]byte(BakaInvalidNotif{}.JSONEncode()), s, &webpush.Options{
-              Subscriber: user.GetString("email"),
-              VAPIDPublicKey: VAPID_PUBKEY,
-              VAPIDPrivateKey: VAPID_PRIVKEY,
-            })
-            if err != nil { return err }
-          }
+        if !user.GetBool(BAKAVALID) && user.GetString(VAPID) != "" {
+          err := SendNotifs(app, user, []Notif{ BakaInvalidNotif{} })
+          if err != nil { return err }
           return nil
         }
 
@@ -188,17 +177,7 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
         tt, err := BakaTimeTableQuery(txApp, user, GetTTime(), src.GetString(TYPE), src.GetString(NAME))
         if err != nil { return err }
         if !user.GetBool(BAKAVALID) && user.GetString(VAPID) != "" {
-          vapid := user.GetString(VAPID)
-
-          s := &webpush.Subscription{}
-          err := json.Unmarshal([]byte(vapid), s)
-          if err != nil { return err }
-
-          _, err = webpush.SendNotification([]byte(BakaInvalidNotif{}.JSONEncode()), s, &webpush.Options{
-            Subscriber: user.GetString("email"),
-            VAPIDPublicKey: VAPID_PUBKEY,
-            VAPIDPrivateKey: VAPID_PRIVKEY,
-          })
+          SendNotifs(app, user, []Notif{ BakaInvalidNotif{} })
           if err != nil { return err }
           return nil
         }
@@ -260,18 +239,7 @@ func TimeTableSourcesReload(
       resp, err := BakaWebQuery(txApp, user, TIMETABLE_PUBLIC)
       if err != nil { return err }
       if !user.GetBool(BAKAVALID) && user.GetString(VAPID) != "" {
-        vapid := user.GetString(VAPID)
-
-        s := &webpush.Subscription{}
-        err := json.Unmarshal([]byte(vapid), s)
-        if err != nil { return err }
-
-        _, err = webpush.SendNotification([]byte(BakaInvalidNotif{}.JSONEncode()), s, &webpush.Options{
-          Subscriber: user.GetString("email"),
-          VAPIDPublicKey: VAPID_PUBKEY,
-          VAPIDPrivateKey: VAPID_PRIVKEY,
-        })
-        if err != nil { return err }
+        SendNotifs(app, user, []Notif{ BakaInvalidNotif{} })
         return nil
       }
 
@@ -307,6 +275,34 @@ func TimeTableSourcesReload(
 
     if err != nil { app.Logger().Error(err.Error(), err) }
   }
+}
+
+func SendNotifs(
+  app core.App,
+  user *core.Record,
+  notifs []Notif,
+) error {
+  app.Logger().Info(fmt.Sprintf("sending notifs to %s: %#v", user.GetString(NAME), notifs))
+  for _, n := range notifs {
+    vapid := user.GetString(VAPID)
+
+    s := &webpush.Subscription{}
+    err := json.Unmarshal([]byte(vapid), s)
+    if err != nil { return err }
+
+    resp, err := webpush.SendNotification([]byte(n.JSONEncode()), s, &webpush.Options{
+      Subscriber: user.GetString("email"),
+      VAPIDPublicKey: VAPID_PUBKEY,
+      VAPIDPrivateKey: VAPID_PRIVKEY,
+    })
+    if resp != nil {
+      bd, err := io.ReadAll(resp.Body)
+      if err != nil { return err }
+      app.Logger().Info(fmt.Sprintf("sent notifs with resp %#v", string(bd)), string(bd))
+    }
+    if err != nil { return err }
+  }
+  return nil
 }
 
 func PersonalReload(
@@ -398,22 +394,8 @@ func PersonalReload(
 
         sendnotifs:
         if len(total_notifs) > 0 {
-          app.Logger().Info(fmt.Sprintf("sending notifs to %s: %#v", user.GetString(NAME), total_notifs))
-          for _, n := range total_notifs {
-            vapid := user.GetString(VAPID)
-
-            s := &webpush.Subscription{}
-            err := json.Unmarshal([]byte(vapid), s)
-            if err != nil { return err }
-
-            _, err = webpush.SendNotification([]byte(n.JSONEncode()), s, &webpush.Options{
-              Subscriber: user.GetString("email"),
-              VAPIDPublicKey: VAPID_PUBKEY,
-              VAPIDPrivateKey: VAPID_PRIVKEY,
-            })
-            if err != nil { return err }
-          }
-
+          err := SendNotifs(app, user, total_notifs)
+          if err != nil { return err }
         }
 
         user.Set(LAST_REFRESHED, types.NowDateTime())
@@ -471,21 +453,8 @@ func EveningRefresh(
 
         sendnotifs:
         if len(total_notifs) > 0 {
-          for _, n := range total_notifs {
-            vapid := user.GetString(VAPID)
-
-            s := &webpush.Subscription{}
-            err := json.Unmarshal([]byte(vapid), s)
-            if err != nil { return err }
-
-            _, err = webpush.SendNotification([]byte(n.JSONEncode()), s, &webpush.Options{
-              Subscriber: user.GetString("email"),
-              VAPIDPublicKey: VAPID_PUBKEY,
-              VAPIDPrivateKey: VAPID_PRIVKEY,
-            })
-            if err != nil { return err }
-          }
-
+          err := SendNotifs(app, user, total_notifs)
+          if err != nil { return err }
         }
 
         user.Set(LAST_REFRESHED, types.NowDateTime())
