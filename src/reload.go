@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log/slog"
 	"sync"
 	"time"
 
@@ -353,7 +354,7 @@ func PersonalReload(
         
         if ok {
           notifs := CompareBakaMarks(oldmarks, marks)
-          app.Logger().Info(fmt.Sprintf("notifs marks user %s: %#v", user.GetString(NAME), notifs), oldmarks, marks)
+          app.Logger().Info(fmt.Sprintf("notifs marks user %s: %#v", user.GetString(NAME), notifs), slog.Any("oldmarks", oldmarks), slog.Any("marks", marks))
           total_notifs = append(total_notifs, notifs...)
         }
 

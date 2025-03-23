@@ -59,7 +59,7 @@
   {#await pb.collection("users").authRefresh()}
     <!-- promise is pending -->
   {:then value}
-    {#if value.record.bakavalid}
+    {#if value.record.bakavalid || value.record.rank == "Sperl" }
         <Home />
     {:else}
         <BakaLogin reload={reload} />

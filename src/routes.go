@@ -16,7 +16,7 @@ var RequireBakaValid = &hook.Handler[*core.RequestEvent]{
   Func: func(re *core.RequestEvent) error {
     user := re.Auth
     if user == nil { return re.UnauthorizedError("not auth token", nil) }
-    if !user.GetBool(BAKAVALID) { return re.UnauthorizedError("not bakavalid", nil) }
+    if !user.GetBool(BAKAVALID) && user.GetString(RANK) != SPERL { return re.UnauthorizedError("not bakavalid", nil) }
     return re.Next()
   },
 }

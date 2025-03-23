@@ -47,6 +47,9 @@ const (
   MARKS = "marks"
   TIMETABLE_ACTUAL = "timetable/actual"
   TIMETABLE_PERMANENT = "timetable/permanent"
+
+  RANK = "rank"
+  SPERL = "Sperl"
 )
 
 var (
