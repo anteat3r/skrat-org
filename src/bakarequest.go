@@ -218,7 +218,7 @@ func BakaWebQuery(
     user.Set(BAKAVALID, false)
     err = app.Save(user)
     if err != nil { return }
-    err = fmt.Errorf("user cookie expired")
+    err = fmt.Errorf("user cookie expired %s", user.GetString(NAME))
     return
   }
   
