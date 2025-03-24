@@ -66,7 +66,7 @@
 
   let selDayIdx: number | null = $state(null);
 
-  function getWeekDayByIdx(idx: number, next: boolean = true): Date {
+  function getWeekDayByIdx(idx: number, next: boolean = false): Date {
     let nw = new Date();
     nw.setDate(nw.getDate() - nw.getDay() + 1 + idx + (next ? 7 : 0));
     console.log(idx, next, nw);
@@ -103,7 +103,9 @@
   <table>
     <tbody>
       <tr>
-        <th></th>
+        <th>
+          <h1 class="cell">{Object.values(tt.data).map((e: any) => e.title)[Math.floor(Math.random() * Object.keys(tt.data).length)]}</h1>
+        </th>
         {#each tt.hours as hour}
           <th>
             <h1>{hour.idx}</h1>
@@ -112,11 +114,11 @@
           </th>
         {/each}
       </tr>
-      {#each tt.data as day, dayIdx }
+      {#each (Object.values(tt.data) as any[]) as day, ttIdx }
         <tr>
           <th>
             <div class="cell"
-                onclick={dayOnclick(dayIdx)}
+                onclick={dayOnclick(ttIdx)}
                 role="button" tabindex="-1"
                 onkeypress={forwardButtonPress}
             >
@@ -150,8 +152,8 @@
             </td>
           {/each}
         </tr>
-        {#if selDayIdx === dayIdx }
-          <DayComp events={day.events} type="personal" date={getWeekDayByIdx(dayIdx)} />
+        {#if selDayIdx === ttIdx }
+          <DayComp events={day.events} type="personal" date={getWeekDayByIdx(dayIdx - 1)} />
         {/if}
       {/each}
     </tbody>
