@@ -2,7 +2,10 @@ package src
 
 import (
 	"encoding/json"
+	"fmt"
+	"slices"
 	"strconv"
+	"strings"
 	"time"
 
 	webpush "github.com/SherClockHolmes/webpush-go"
@@ -350,22 +353,118 @@ func EventsHandler(
 ) func(*core.RequestEvent) error {
   return func(e *core.RequestEvent) error {
     user := e.Auth
+    qp := e.Request.URL.Query()
 
-    resp, err := BakaQuery(app, user, GET, EVENTS_ALL, "")
-    if err != nil { return err }
-    sresp := string(resp)
+    teacher := qp.Get("teacher")
+    class := qp.Get("class")
+    room := qp.Get("room")
+    str := qp.Get("string")
+    student := qp.Get("student")
+    date := qp.Get("date")
+    var tdate time.Time
+    if date != "" {
+      var err error
+      tdate, err = time.Parse("2006-01-02", date)
+      if err != nil { return err }
+    }
+    cached := qp.Get("cached") != ""
+
+    etype := qp.Get(TYPE)
 
     var events BakaEvents
-    err = json.Unmarshal(resp, &events)
+    if cached {
+      switch etype {
+      case "all":
+        evts, ok, err := QueryData[BakaEvents](app, EVENTS, EVENTS, "")
+        if err != nil { return err }
+        if !ok { return fmt.Errorf("data not cached") }
+        events = evts
+      case "public":
+        return fmt.Errorf("data not cached")
+      case "my":
+        evts, ok, err := QueryData[BakaEvents](app, EVENTS_MY, PRIVATE, user.Id)
+        if err != nil { return err }
+        if !ok { return fmt.Errorf("data not cached") }
+        events = evts
+      }
+    } else {
+      switch etype {
+      case "all":
+        resp, err := BakaQuery(app, user, GET, EVENTS, "")
+        if err != nil { return err }
+        sresp := string(resp)
+
+        err = json.Unmarshal(resp, &events)
+        if err != nil { return err }
+
+        err = StoreData(
+          app, datacoll,
+          EVENTS, EVENTS, "",
+          events, sresp,
+        )
+        if err != nil { return err }
+      case "public":
+        resp, err := BakaQuery(app, user, GET, EVENTS_PUBLIC, "")
+        if err != nil { return err }
+
+        err = json.Unmarshal(resp, &events)
+        if err != nil { return err }
+      case "my":
+        resp, err := BakaQuery(app, user, GET, EVENTS_MY, "")
+        if err != nil { return err }
+        sresp := string(resp)
+
+        err = json.Unmarshal(resp, &events)
+        if err != nil { return err }
+
+        err = StoreData(
+          app, datacoll,
+          EVENTS_MY, PRIVATE, user.Id,
+          events, sresp,
+        )
+        if err != nil { return err }
+      }
+    }
+
+
+    fevts := BakaEvents{Events: make([]BakaEvent, 0, len(events.Events))}
+    for _, evt := range events.Events {
+      if teacher != "" {
+        if !slices.ContainsFunc(evt.Teachers, func(e BakaIdExpand) bool {
+          return e.Id == teacher || e.Abbrev == teacher || strings.Contains(e.Name, teacher)
+        }) { continue }
+      }
+      if class != "" {
+        if !slices.ContainsFunc(evt.Classes, func(e BakaIdExpand) bool {
+          return e.Id == class || e.Abbrev == class || strings.Contains(e.Name, class)
+        }) { continue }
+      }
+      if room != "" {
+        if !slices.ContainsFunc(evt.Rooms, func(e BakaIdExpand) bool {
+          return e.Id == room || e.Abbrev == room || strings.Contains(e.Name, room)
+        }) { continue }
+      }
+      if student != "" {
+        if !slices.ContainsFunc(evt.Students, func(e BakaIdExpand) bool {
+          return e.Id == student || e.Abbrev == student || strings.Contains(e.Name, student)
+        }) { continue }
+      }
+      if str != "" {
+        if !strings.Contains(evt.Title, str) &&
+           !strings.Contains(evt.Description, str) &&
+           !strings.Contains(evt.Note, str) {
+          continue
+        }
+      }
+      if date != "" {
+        if !evt.ContainsDay(tdate) { continue }
+      }
+      fevts.Events = append(fevts.Events, evt)
+    }
+
+    fresp, err := json.Marshal(fevts)
     if err != nil { return err }
 
-    err = StoreData(
-      app, datacoll,
-      EVENTS, EVENTS, "",
-      events, sresp,
-    )
-    if err != nil { return err }
-
-    return e.String(200, sresp)
+    return e.String(200, string(fresp))
   }
 }

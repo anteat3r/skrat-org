@@ -27,6 +27,7 @@ const (
   EVENTS = "Events"
   EVENTS_MY = "events/my"
   EVENTS_ALL = "events"
+  EVENTS_PUBLIC = "events/public"
 
   ACTUAL = "Actual"
   NEXT = "Next"
