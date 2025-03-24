@@ -104,10 +104,9 @@
     }
   }
 
-  function getWeekDayByIdx(idx: number, next: boolean = true): Date {
+  function getWeekDayByIdx(idx: number, next: boolean = false): Date {
     let nw = new Date();
     nw.setDate(nw.getDate() - nw.getDay() + 1 + idx + (next ? 7 : 0));
-    console.log(idx, next, nw);
     return nw;
   }
 </script>

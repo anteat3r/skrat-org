@@ -175,6 +175,11 @@ func main() {
           },
         )
 
+        se.Router.GET(
+          "/api/kleo/mytt",
+          src.MyTimeTableHandler(app, datacoll),
+        ).Bind(apis.RequireAuth(src.USERS)).Bind(src.RequireBakaValid)
+
 
         app.Cron().MustAdd(
           "ttreload",

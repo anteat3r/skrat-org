@@ -468,3 +468,29 @@ func EventsHandler(
     return e.String(200, string(fresp))
   }
 }
+
+func MyTimeTableHandler(
+  app *pocketbase.PocketBase,
+  datacoll *core.Collection,
+) func(*core.RequestEvent) error {
+  return func(e *core.RequestEvent) error {
+    user := e.Auth
+
+    resp, err := BakaQuery(app, user, GET, TIMETABLE_ACTUAL, "")
+    if err != nil { return err }
+    sresp := string(resp)
+
+    var ttable BakaTimeTable
+    err = json.Unmarshal(resp, &ttable)
+    if err != nil { return err }
+
+    err = StoreData(
+      app, datacoll,
+      TIMETABLE_ACTUAL, PRIVATE, user.Id,
+      ttable, sresp,
+    )
+    if err != nil { return err }
+
+    return e.String(200, sresp)
+  }
+}

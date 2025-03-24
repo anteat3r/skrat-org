@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { pb } from '../pb_store.svelte.ts'
+  import { pb } from "../pb_store.svelte";
 </script>
 
 {#await pb.send("/api/kleo/marks", {})}

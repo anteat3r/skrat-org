@@ -5,6 +5,7 @@
   import DayOverview from './DayOverview.svelte';
   import Events from './Events.svelte';
   import Settings from './Settings.svelte';
+  import MyTimeTable from './MyTimeTable.svelte';
 
   let page = $state(0);
 </script>
@@ -14,7 +15,8 @@
 <button onclick={() => { page = 2; }}>PublicTimetable</button>
 <button onclick={() => { page = 3; }}>DayOverview</button>
 <button onclick={() => { page = 4; }}>Events</button>
-<button onclick={() => { page = 5; }}>Settings</button>
+<button onclick={() => { page = 5; }}>MyTimeTable</button>
+<button onclick={() => { page = 6; }}>Settings</button>
 <br> <br> <br>
 {#if page == 0}
   cs lil bro
@@ -27,5 +29,7 @@
 {:else if page == 4}
   <Events />
 {:else if page == 5}
+  <MyTimeTable />
+{:else if page == 6}
   <Settings />
 {/if}
