@@ -299,7 +299,7 @@ func DayOverviewHandler(
     if GetTTime() == NEXT {
       nweek = nweek.AddDate(0, 0, 7)
     }
-    dday := nweek.AddDate(0, 0, weekday) 
+    dday := nweek.AddDate(0, 0, weekday - 1) 
     if ok {
       fmt.Printf("ttype %s date %v\n", ttype, dday)
       for _, e := range evts.Events {
