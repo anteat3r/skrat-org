@@ -109,7 +109,6 @@
             <h1>{hour.idx}</h1>
             <p>{hour.dur.split(" - ")[0]}</p>
             <p>{hour.dur.split(" - ")[1]}</p>
-            <p class="spacer"></p>
           </th>
         {/each}
       </tr>
@@ -122,6 +121,9 @@
                 onkeypress={forwardButtonPress}
             >
               <h1>{title}</h1>
+              {#if (day as any).events.length > 0}
+                <p>{(day as any).events.length} evts</p>
+              {/if}
               <p>{(day as any).special}</p>
             </div>
           </th>
@@ -147,10 +149,10 @@
               {/each}
             </td>
           {/each}
-          {#if selDayIdx === dayIdx }
-            <DayComp events={(day as any).events} type="personal" date={getWeekDayByIdx(dayIdx)} />
-          {/if}
         </tr>
+        {#if selDayIdx === dayIdx }
+          <DayComp events={(day as any).events} type="personal" date={getWeekDayByIdx(dayIdx)} />
+        {/if}
       {/each}
     </tbody>
   </table>

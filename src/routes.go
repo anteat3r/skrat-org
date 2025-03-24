@@ -313,6 +313,8 @@ func DayOverviewHandler(
             }
             res.Data[teacher.Name] = tday
           }
+        }
+        if ttype == CLASS {
           for _, class := range e.Classes {
             tday, ok := res.Data[class.Abbrev]
             if !ok { continue }
@@ -323,6 +325,8 @@ func DayOverviewHandler(
             }
             res.Data[class.Abbrev] = tday
           }
+        }
+        if ttype == ROOM {
           for _, room := range e.Rooms {
             tday, ok := res.Data[room.Abbrev]
             if !ok { continue }
