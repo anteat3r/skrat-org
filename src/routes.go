@@ -301,6 +301,7 @@ func DayOverviewHandler(
     }
     dday := nweek.AddDate(0, 0, weekday) 
     if ok {
+      fmt.Printf("ttype %s\n", ttype)
       for _, e := range evts.Events {
         if !e.ContainsDay(dday) { continue }
         if ttype == TEACHER {
