@@ -17,9 +17,10 @@
   let useString = $state(false);
   let etype = $state("all");
   let useCached = $state(false);
+  let refreshKey = $state({});
 
   async function getEvts() {
-    let res = await pb.send("/api/kleo/events", {
+    evts = await pb.send("/api/kleo/events", {
       query: {
         type: etype,
         ...(useDate) && { "date" : date },
@@ -30,8 +31,8 @@
         ...(useStudent) && { student },
         ...(useCached) && { cached: "true" }
       },
-    })
-    evts = res.Events;
+    });
+    refreshKey = {};
   }
 </script>
 
@@ -75,7 +76,7 @@
 <input type="text" bind:value={string}>
 <br>
 <input type="checkbox" bind:checked={useCached} id="cached-check">
-<label for="cached-check">Cached</label>
+<label for="cached-check">cached</label>
 <br>
 <br>
 <select bind:value={etype}>
@@ -84,8 +85,10 @@
   <option value="public">Public</option>
 </select>
 <button onclick={getEvts}>Send</button>
+{#key refreshKey}
 {#if evts !== null }
-  {#each evts as event}
+  {#each evts.Events as event}
     <EventComp eventRaw={event} />
   {/each}
 {/if}
+{/key}
