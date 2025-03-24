@@ -8,6 +8,7 @@
   async function dayIdxChange() {
     if (dayIdx == 0) return;
     tt = await pb.send(`/api/kleo/daytt/${ttype}`, { query: { day: dayIdx } });
+    tt.data = Object.values(tt.data).toSorted((a: { owner: string; },b: { owner: any; }) => a.owner.localeCompare(b.owner));
   }
 
   function detailAlertCallback(detail: string) {
