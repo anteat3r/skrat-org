@@ -36,6 +36,7 @@ type TimeTableDay struct {
   Hours []TimeTableHour `json:"hours"`
   Guards []TimeTableGuard `json:"guards"`
   JoinedEvents []BakaEvent `json:"events"`
+  Owner string `json:"owner"`
 }
 
 type TimeTableHourTitle struct {

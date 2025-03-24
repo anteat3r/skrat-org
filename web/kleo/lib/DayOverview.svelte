@@ -112,7 +112,7 @@
           </th>
         {/each}
       </tr>
-      {#each Object.entries(tt.data) as [title, day], dayIdx }
+      {#each tt.data as day, dayIdx }
         <tr>
           <th>
             <div class="cell"
@@ -120,14 +120,14 @@
                 role="button" tabindex="-1"
                 onkeypress={forwardButtonPress}
             >
-              <h1>{title}</h1>
-              {#if (day as any).events.length > 0}
-                <p>{(day as any).events.length} evts</p>
+              <h1>{day.owner}</h1>
+              {#if day.events.length > 0}
+                <p>{day.events.length} evts</p>
               {/if}
-              <p>{(day as any).special}</p>
+              <p>{day.special}</p>
             </div>
           </th>
-          {#each (day as any).hours as hour}
+          {#each day.hours as hour}
             <td>
               {#each hour.cells as cell}
                 <div
@@ -151,7 +151,7 @@
           {/each}
         </tr>
         {#if selDayIdx === dayIdx }
-          <DayComp events={(day as any).events} type="personal" date={getWeekDayByIdx(dayIdx)} />
+          <DayComp events={day.events} type="personal" date={getWeekDayByIdx(dayIdx)} />
         {/if}
       {/each}
     </tbody>

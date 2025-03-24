@@ -2,7 +2,6 @@ package src
 
 import (
 	"encoding/json"
-	"fmt"
 	"strconv"
 	"time"
 
@@ -264,8 +263,6 @@ func DayOverviewHandler(
 
     if len(classsrcs) < 1 { return e.JSON(200, res) }
 
-    // app.Logger().Info(fmt.Sprintf("%#v", DataCache))
-
     for _, classsrc := range classsrcs {
       tt, ok, err := QueryData[TimeTable](
         app,
@@ -284,12 +281,13 @@ func DayOverviewHandler(
       }
 
       if len(tt.Days) < weekday {
-        // app.Logger().Info(fmt.Sprintf("%#v", tt))
         continue 
       }
       day := tt.Days[weekday - 1]
 
-      res.Data[classsrc.GetString(DESC)] = day
+      day.Owner = classsrc.GetString(DESC)
+
+      res.Data[classsrc.GetString(NAME)] = day
     }
 
     evts, ok, err := QueryData[BakaEvents](app, EVENTS, EVENTS, "")
@@ -301,46 +299,42 @@ func DayOverviewHandler(
     }
     dday := nweek.AddDate(0, 0, weekday - 1) 
     if ok {
-      fmt.Printf("ttype %s date %v\n", ttype, dday)
       for _, e := range evts.Events {
         if !e.ContainsDay(dday) { continue }
         if ttype == TEACHER {
           for _, teacher := range e.Teachers {
-            fmt.Printf("evt %s teacher '%s'\n", e.Title, teacher.Name)
-            tday, ok := res.Data[teacher.Name]
+            tday, ok := res.Data[teacher.Id]
             if !ok { continue }
             if tday.JoinedEvents == nil {
               tday.JoinedEvents = []BakaEvent{ e }
             } else {
               tday.JoinedEvents = append(tday.JoinedEvents, e)
             }
-            res.Data[teacher.Name] = tday
+            res.Data[teacher.Id] = tday
           }
         }
         if ttype == CLASS {
-          fmt.Printf("class ttype clss %s %#v\n", e.Title, e.Classes)
           for _, class := range e.Classes {
-            fmt.Printf("evt %s class '%s'\n", e.Title, class.Abbrev)
-            tday, ok := res.Data[class.Abbrev]
+            tday, ok := res.Data[class.Id]
             if !ok { continue }
             if tday.JoinedEvents == nil {
               tday.JoinedEvents = []BakaEvent{ e }
             } else {
               tday.JoinedEvents = append(tday.JoinedEvents, e)
             }
-            res.Data[class.Abbrev] = tday
+            res.Data[class.Id] = tday
           }
         }
         if ttype == ROOM {
           for _, room := range e.Rooms {
-            tday, ok := res.Data[room.Abbrev]
+            tday, ok := res.Data[room.Id]
             if !ok { continue }
             if tday.JoinedEvents == nil {
               tday.JoinedEvents = []BakaEvent{ e }
             } else {
               tday.JoinedEvents = append(tday.JoinedEvents, e)
             }
-            res.Data[room.Abbrev] = tday
+            res.Data[room.Id] = tday
           }
         }
       }
