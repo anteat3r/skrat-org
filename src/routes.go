@@ -291,6 +291,52 @@ func DayOverviewHandler(
       res.Data[classsrc.GetString(DESC)] = day
     }
 
+    evts, ok, err := QueryData[BakaEvents](app, EVENTS, EVENTS, "")
+    if err != nil { return err }
+    nw := time.Now()
+    nweek := nw.AddDate(0, 0, -int(nw.Weekday() - 1))
+    if GetTTime() == NEXT {
+      nweek = nweek.AddDate(0, 0, 7)
+    }
+    dday := nweek.AddDate(0, 0, weekday) 
+    if ok {
+      for _, e := range evts.Events {
+        if !e.ContainsDay(dday) { continue }
+        if ttype == TEACHER {
+          for _, teacher := range e.Teachers {
+            tday, ok := res.Data[teacher.Name]
+            if !ok { continue }
+            if tday.JoinedEvents == nil {
+              tday.JoinedEvents = []BakaEvent{ e }
+            } else {
+              tday.JoinedEvents = append(tday.JoinedEvents, e)
+            }
+            res.Data[teacher.Name] = tday
+          }
+          for _, class := range e.Classes {
+            tday, ok := res.Data[class.Abbrev]
+            if !ok { continue }
+            if tday.JoinedEvents == nil {
+              tday.JoinedEvents = []BakaEvent{ e }
+            } else {
+              tday.JoinedEvents = append(tday.JoinedEvents, e)
+            }
+            res.Data[class.Abbrev] = tday
+          }
+          for _, room := range e.Rooms {
+            tday, ok := res.Data[room.Abbrev]
+            if !ok { continue }
+            if tday.JoinedEvents == nil {
+              tday.JoinedEvents = []BakaEvent{ e }
+            } else {
+              tday.JoinedEvents = append(tday.JoinedEvents, e)
+            }
+            res.Data[room.Abbrev] = tday
+          }
+        }
+      }
+    }
+
     return e.JSON(200, res)
   }
 }

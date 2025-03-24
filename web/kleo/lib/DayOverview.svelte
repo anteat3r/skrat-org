@@ -1,5 +1,6 @@
 <script lang="ts">
   import { pb } from "../pb_store.svelte";
+  import DayComp from "./DayComp.svelte";
   
   let dayIdx = $state(0)
   let tt = $state(null)
@@ -62,6 +63,26 @@
   }
 
   let ttype = $state("Class");
+
+  let selDayIdx: number | null = $state(null);
+
+  function getWeekDayByIdx(idx: number, next: boolean = true): Date {
+    let nw = new Date();
+    nw.setDate(nw.getDate() - nw.getDay() + 1 + idx + (next ? 7 : 0));
+    console.log(idx, next, nw);
+    return nw;
+  }
+
+  function dayOnclick(idx: number) {
+    return function() {
+      if (selDayIdx === idx) {
+        selDayIdx = null;
+      } else {
+        selDayIdx = idx;
+      }
+    }
+  }
+
 </script>
 
 
@@ -92,10 +113,14 @@
           </th>
         {/each}
       </tr>
-      {#each Object.entries(tt.data) as [title, day]}
+      {#each Object.entries(tt.data) as [title, day], dayIdx }
         <tr>
           <th>
-            <div class="cell">
+            <div class="cell"
+                onclick={dayOnclick(dayIdx)}
+                role="button" tabindex="-1"
+                onkeypress={forwardButtonPress}
+            >
               <h1>{title}</h1>
               <p>{(day as any).special}</p>
             </div>
@@ -122,6 +147,9 @@
               {/each}
             </td>
           {/each}
+          {#if selDayIdx === dayIdx }
+            <DayComp events={(day as any).events} type="personal" date={getWeekDayByIdx(dayIdx)} />
+          {/if}
         </tr>
       {/each}
     </tbody>
