@@ -318,6 +318,7 @@ func DayOverviewHandler(
           }
         }
         if ttype == CLASS {
+          fmt.Printf("class ttype clss %v\n", e.Classes)
           for _, class := range e.Classes {
             fmt.Printf("evt %s class '%s'\n", e.Title, class.Abbrev)
             tday, ok := res.Data[class.Abbrev]
