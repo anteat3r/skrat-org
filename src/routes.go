@@ -2,6 +2,7 @@ package src
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -316,6 +317,7 @@ func DayOverviewHandler(
         }
         if ttype == CLASS {
           for _, class := range e.Classes {
+            fmt.Printf("evt %s class '%s'\n", e.Title, class.Abbrev)
             tday, ok := res.Data[class.Abbrev]
             if !ok { continue }
             if tday.JoinedEvents == nil {
