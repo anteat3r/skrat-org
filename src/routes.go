@@ -305,6 +305,7 @@ func DayOverviewHandler(
         if !e.ContainsDay(dday) { continue }
         if ttype == TEACHER {
           for _, teacher := range e.Teachers {
+            fmt.Printf("evt %s teacher '%s'\n", e.Title, teacher.Name)
             tday, ok := res.Data[teacher.Name]
             if !ok { continue }
             if tday.JoinedEvents == nil {
