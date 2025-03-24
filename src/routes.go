@@ -301,7 +301,7 @@ func DayOverviewHandler(
     }
     dday := nweek.AddDate(0, 0, weekday) 
     if ok {
-      fmt.Printf("ttype %s\n", ttype)
+      fmt.Printf("ttype %s date %v\n", ttype, dday)
       for _, e := range evts.Events {
         if !e.ContainsDay(dday) { continue }
         if ttype == TEACHER {
@@ -318,7 +318,7 @@ func DayOverviewHandler(
           }
         }
         if ttype == CLASS {
-          fmt.Printf("class ttype clss %#v\n", e)
+          fmt.Printf("class ttype clss %s %#v\n", e.Title, e.Classes)
           for _, class := range e.Classes {
             fmt.Printf("evt %s class '%s'\n", e.Title, class.Abbrev)
             tday, ok := res.Data[class.Abbrev]
