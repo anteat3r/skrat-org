@@ -21,18 +21,30 @@ var doNotRedirectClient = http.Client{
   },
 }
 
+var _ error = (*BakaInvalidError)(nil)
+
+type BakaInvalidError struct {
+  user string
+  t time.Time
+}
+
+func (e BakaInvalidError) Error() string {
+  return fmt.Sprintf("baka cookie expired for user %s (%v)", e.user, e.t)
+}
+
 func BakaQuery(
   app core.App,
   user *core.Record,
   method, endpoint, body string,
 ) (res []byte, err error) {
 
-  defer func(){
-    if err == nil { return }
-    user.Set(BAKAVALID, false)
-    fmt.Printf("%v %#v %T\n", err, err, err)
-    err = app.Save(user)
-  }()
+  // defer func(){
+  //   if err == nil { return }
+  //   user.Set(BAKAVALID, false)
+  //   fmt.Printf("%v %#v %T\n", err, err, err)
+  //   err = app.Save(user)
+  //   if err != nil { return }
+  // }()
 
   attempts := 0
   var resp *http.Response
@@ -215,10 +227,11 @@ func BakaWebQuery(
   endpoint string,
 ) (res string, err error) {
   if user.GetDateTime(BAKACOOKIE_EXPIRES).Time().Before(time.Now()) {
-    user.Set(BAKAVALID, false)
-    err = app.Save(user)
-    if err != nil { return }
-    err = fmt.Errorf("user cookie expired %s", user.GetString(NAME))
+    // user.Set(BAKAVALID, false)
+    // err = app.Save(user)
+    // if err != nil { return }
+    // err = fmt.Errorf("user cookie expired %s", user.GetString(NAME))
+    err = BakaInvalidError{user: user.GetString(NAME), t: time.Now()}
     return
   }
   

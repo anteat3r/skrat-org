@@ -153,10 +153,12 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
 
       if src.GetString(TYPE) == EVENTS {
         resp, err := BakaQuery(txApp, user, "GET", EVENTS_ALL, "")
-        if err != nil { return err }
-        if !user.GetBool(BAKAVALID) && user.GetString(VAPID) != "" {
-          err := SendNotifs(app, user, []Notif{ BakaInvalidNotif{} })
+        if err != nil {
+          if _, ok := err.(BakaInvalidError); !ok { return err }
+          user.Set(BAKAVALID, false)
+          err = txApp.Save(user)
           if err != nil { return err }
+          SendNotifs(app, user, []Notif{ BakaInvalidNotif{} })
           return nil
         }
 
@@ -238,8 +240,11 @@ func TimeTableSourcesReload(
       user := users[0]
 
       resp, err := BakaWebQuery(txApp, user, TIMETABLE_PUBLIC)
-      if err != nil { return err }
-      if !user.GetBool(BAKAVALID) && user.GetString(VAPID) != "" {
+      if err != nil {
+        if _, ok := err.(BakaInvalidError); !ok { return err }
+        user.Set(BAKAVALID, false)
+        err = txApp.Save(user)
+        if err != nil { return err }
         SendNotifs(app, user, []Notif{ BakaInvalidNotif{} })
         return nil
       }
@@ -284,13 +289,13 @@ func SendNotifs(
   notifs []Notif,
 ) error {
   app.Logger().Info(fmt.Sprintf("sending notifs to %s: %#v", user.GetString(NAME), notifs))
+  vapid := user.GetString(VAPID)
+  if vapid == "" { return nil }
+
+  s := &webpush.Subscription{}
+  err := json.Unmarshal([]byte(vapid), s)
+  if err != nil { return err }
   for _, n := range notifs {
-    vapid := user.GetString(VAPID)
-
-    s := &webpush.Subscription{}
-    err := json.Unmarshal([]byte(vapid), s)
-    if err != nil { return err }
-
     resp, err := webpush.SendNotification([]byte(n.JSONEncode()), s, &webpush.Options{
       Subscriber: user.GetString("email"),
       VAPIDPublicKey: VAPID_PUBKEY,
@@ -340,11 +345,14 @@ func PersonalReload(
         var sresp string
 
         resp, err := BakaQuery(app, user, GET, MARKS, "")
-        if !user.GetBool(BAKAVALID) {
+        if err != nil {
+          if _, ok := err.(BakaInvalidError); !ok { return err }
+          user.Set(BAKAVALID, false)
+          err = app.Save(user)
+          if err != nil { return err }
           total_notifs = append(total_notifs, BakaInvalidNotif{})
           goto sendnotifs
         }
-        if err != nil { return err }
         sresp = string(resp)
 
         err = json.Unmarshal(resp, &marks)
@@ -367,8 +375,11 @@ func PersonalReload(
         if err != nil { return err }
 
         resp, err = BakaQuery(app, user, GET, TIMETABLE_ACTUAL, "")
-        if err != nil { return err }
-        if !user.GetBool(BAKAVALID) {
+        if err != nil {
+          if _, ok := err.(BakaInvalidError); !ok { return err }
+          user.Set(BAKAVALID, false)
+          err = app.Save(user)
+          if err != nil { return err }
           total_notifs = append(total_notifs, BakaInvalidNotif{})
           goto sendnotifs
         }
@@ -434,8 +445,11 @@ func EveningRefresh(
         var sresp string
 
         resp, err := BakaQuery(app, user, GET, ABSENCE_STUDENT, "")
-        if err != nil { return err }
-        if !user.GetBool(BAKAVALID) {
+        if err != nil {
+          if _, ok := err.(BakaInvalidError); !ok { return err }
+          user.Set(BAKAVALID, false)
+          err = app.Save(user)
+          if err != nil { return err }
           total_notifs = append(total_notifs, BakaInvalidNotif{})
           goto sendnotifs
         }

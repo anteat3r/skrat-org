@@ -31,7 +31,7 @@
         console.log(res);
       }
       const subscription = await reg.pushManager.subscribe({
-        userVisibleOnly: true,
+        userVisibleOnly: false,
         applicationServerKey: "BGl8lG0dFZxVzpEwgnPQlHaqDuaBojbFJHJzh2CMYi8mZshivG7RRkGDLKAC6E23E6ELtp3ikBXuepRJBMRlbwc",
       });
       let resp = await pb.send("/api/kleo/setupnotifs", {
