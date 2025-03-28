@@ -54,39 +54,39 @@
                 role="button" tabindex="-1"
                 onkeypress={forwardButtonPress}
             >
-              <h1>{day.DayOfWeek}</h1>
-              <h1>{day.Date}</h1>
-              {#if day.events.length > 0}
-                <p>{day.events.length} evts</p>
-              {/if}
+              <h1>{new Date(Date.UTC(2025, 11, parseInt(day.DayOfWeek))).toLocaleDateString('cs-CZ', { weekday: "short" })}</h1>
+              <h1>{new Date(day.Date).toLocaleDateString("cs-CZ", {day: "numeric", month: "numeric" })}</h1>
+              <!-- {#if day.events.length > 0} -->
+              <!--   <p>{day.events.length} evts</p> -->
+              <!-- {/if} -->
             </div>
           </th>
           {#each ttable.Hours.map((hour: { Id: any; }) => day.Atoms.filter((atom: { HourId: any; }) => atom.HourId == hour.Id)) as atoms}
             <td>
               {#each atoms as atom}
                 <div
-                    class="bk-{atom.color} cell" 
+                    class="bk-{atom.Change === null ? 'white' : (atom.Change.TypeAbbrev === null ? 'pink' : 'green')} cell" 
                     onclick={detailAlertCallback(atom)} 
                     role="button" tabindex="-1" onkeypress={forwardButtonPress}
                 >
                   <div class="cell-top">
-                    <div class="cell-topleft">{atom.GroupIds}</div>
-                    <div class="cell-topright">{atom.RoomId}</div>
+                    <div class="cell-topleft">{atom.GroupIds.map((f) => ttable.Groups.find((e: { Id: string; }) => e.Id === f)?.Abbrev).join(", ")}</div>
+                    <div class="cell-topright">{ttable.Rooms.find((e: { Id: string; }) => e.Id === atom.RoomId)?.Abbrev}</div>
                   </div>
                   <div class="cell-middle">
-                    <div> {atom.SubjectId} </div>
+                    <div> {atom.Change !== null && atom.Change.TypeAbbrev !== null ? atom.Change.TypeAbbrev : ttable.Subjects.find((e: { Id: string; }) => e.Id === atom.SubjectId)?.Abbrev} </div>
                   </div>
                   <div class="cell-bottom">
-                    <div> {atom.TeacherId} </div>
+                    <div> {ttable.Teachers.find((e: { Id: string; }) => e.Id === atom.TeacherId)?.Abbrev} </div>
                   </div>
                 </div>
               {/each}
             </td>
           {/each}
         </tr>
-        {#if selDayIdx === dayIdx}
-          <DayComp events={day.events} type="personal" date={getWeekDayByIdx(dayIdx)} />
-        {/if}
+        <!-- {#if selDayIdx === dayIdx} -->
+        <!--   <DayComp events={day.events} type="personal" date={getWeekDayByIdx(dayIdx)} /> -->
+        <!-- {/if} -->
       {/each}
     </tbody>
   </table>
