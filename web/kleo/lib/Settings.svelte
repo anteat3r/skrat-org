@@ -96,4 +96,4 @@
 <br><br>
 <CustomEndp />
 
-<p>{JSON.stringify(pb.authStore.record)}</p>
+<p>{__COMMIT_HASH__}</p>

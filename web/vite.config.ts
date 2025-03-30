@@ -1,7 +1,9 @@
 import { defineConfig } from 'vite'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
 
-// https://vite.dev/config/
+import * as child from "child_process";
+const commitHash = child.execSync("git rev-parse --short HEAD").toString();
+
 export default defineConfig({
   build: {
     emptyOutDir: false,
@@ -11,6 +13,9 @@ export default defineConfig({
         "kleo/index.html": "kleo/index.html",
       }
     }
+  },
+  define: {
+    __COMMIT_HASH__: JSON.stringify(commitHash),
   },
   // root: "/home/rosta/skrat-org/web/",
   plugins: [svelte()],

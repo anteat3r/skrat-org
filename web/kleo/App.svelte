@@ -52,7 +52,7 @@
 {#key reload}
 {#if pb.authStore.isValid && ( pb.authStore.isSuperuser || pb.authStore.record.collectionName == "users" ) }
   <h1>
-    Hello mr. {pb.authStore.record.name}
+    Hello mr. {pb.authStore.record.name} 
     <img src={avatarUrl} alt="avatar">
   </h1>
   <br>
