@@ -305,7 +305,7 @@ func SendNotifs(
       bd, err := io.ReadAll(resp.Body)
       defer resp.Body.Close()
       if err != nil { return err }
-      app.Logger().Info(fmt.Sprintf("sent notifs user %s", user.GetString(NAME)), slog.String("resp.Body", string(bd)), slog.Int("resp.StatusCode", resp.StatusCode))
+      app.Logger().Info(fmt.Sprintf("sent notifs user %s", user.GetString(NAME)), slog.String("resp.Body", string(bd)), slog.Int("resp.StatusCode", resp.StatusCode), slog.String("body", n.JSONEncode()))
     }
     if err != nil { return err }
   }
