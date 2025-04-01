@@ -10,8 +10,7 @@ sw.addEventListener('install', () => {
 })
 
 sw.addEventListener('push', (evt) => {
-  const datatext = evt.data.text();
-  const data = JSON.parse(datatext);
+  const data = evt.data.json();
 
   if (data.type === "notif") {
     evt.waitUntil(
