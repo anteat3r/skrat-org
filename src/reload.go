@@ -180,7 +180,7 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
         tt, err := BakaTimeTableQuery(txApp, user, GetTTime(), src.GetString(TYPE), src.GetString(NAME))
         if err != nil { return err }
         if !user.GetBool(BAKAVALID) && user.GetString(VAPID) != "" {
-          SendNotifs(app, user, []Notif{ BakaInvalidNotif{} })
+          err = SendNotifs(app, user, []Notif{ BakaInvalidNotif{} })
           if err != nil { return err }
           return nil
         }
