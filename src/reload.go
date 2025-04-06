@@ -241,12 +241,13 @@ func TimeTableSourcesReload(
 
       resp, err := BakaWebQuery(txApp, user, TIMETABLE_PUBLIC)
       if err != nil {
-        if _, ok := err.(BakaInvalidError); !ok { return err }
+				ierr, ok := err.(BakaInvalidError)
+				if !ok { return err }
         user.Set(BAKAVALID, false)
         err = txApp.Save(user)
         if err != nil { return err }
         SendNotifs(app, user, []Notif{ BakaInvalidNotif{} })
-        return err
+        return ierr
       }
 
       srcs, err := ParseSourcesWeb(resp)
@@ -279,7 +280,7 @@ func TimeTableSourcesReload(
       return nil
     })
 
-    if err != nil { app.Logger().Error(err.Error(), err) }
+    if err != nil { app.Logger().Error(err.Error(), slog.Any("error", err)) }
   }
 }
 
