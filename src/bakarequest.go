@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -26,10 +27,11 @@ var _ error = (*BakaInvalidError)(nil)
 type BakaInvalidError struct {
   user string
   t time.Time
+	msg string
 }
 
 func (e BakaInvalidError) Error() string {
-  return fmt.Sprintf("baka cookie expired for user %s (%v)", e.user, e.t)
+	return fmt.Sprintf("baka cookie expired for user %s (%v): %s", e.user, e.t, e.msg)
 }
 
 func BakaQuery(
@@ -76,7 +78,11 @@ func BakaQuery(
       resp.Body.Close()
 
       if resp.StatusCode != 200 {
-        return nil, fmt.Errorf("invalid status code: %v %v", resp.StatusCode, string(resb))
+				return nil, BakaInvalidError{
+					user: user.GetString(NAME),
+					t: time.Now(),
+					msg: strconv.Itoa(resp.StatusCode) + " = " + string(resb),
+				}
       }
       return resb, nil
     }
@@ -112,10 +118,11 @@ func BakaQuery(
       if err != nil { return }
 
       if attempts > 0 {
-        user.Set(BAKAVALID, false)
-        err = app.Save(user)
-        if err != nil { return }
-        err = fmt.Errorf("invalid token for user %v\n", user.Id)
+				err = BakaInvalidError{
+					user: user.GetString(NAME),
+					t: time.Now(),
+					msg: strconv.Itoa(resp.StatusCode) + " = " + string(resb),
+				}
         return
       }
       attempts++
@@ -253,7 +260,11 @@ func BakaWebQuery(
   if err != nil { return }
 
   if resp.StatusCode != 200 {
-    err = fmt.Errorf("invalid status code %v %v", resp.StatusCode, resp)
+    err = BakaInvalidError{
+			user: user.GetString(NAME),
+			t: time.Now(),
+			msg: strconv.Itoa(resp.StatusCode) + " = " + string(resb),
+		}
     return
   }
 
