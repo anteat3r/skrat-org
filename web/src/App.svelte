@@ -57,11 +57,46 @@
   <div class="spacer"></div>
   <div id="about">
     <h1>Kdo jsme?</h1>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias explicabo facilis, rerum repudiandae voluptatibus suscipit nisi dolorem neque? Doloribus quo odit aut. Commodi dignissimos eius in itaque sequi aspernatur mollitia? Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptatibus, optio harum doloremque nihil quia a neque minima consequuntur delectus quisquam ipsa cumque. Molestiae magni voluptatibus ut iste incidunt. Asperiores, alias.</p>
+    <p>Jsme šestičlenný tým, poznali jsme se na Gymnáziu Christiana Dopplera v Praze, kam chodíme všichni do jedné třídy zaměřené na matematiku, fyziku a informatiku. Rádi se
+účastníme fyzikálních, matematických a zejména robotických soutěží.</p>
     {@render carImg("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpleated-jeans.com%2Fwp-content%2Fuploads%2F2023%2F05%2Ffunny-random-pictures-may13.jpg&f=1&nofb=1&ipt=cbcaa87d2fecd633c978bda634cc21e6323a8ccfd0976d91d2718cac4cfaf5da&ipo=images", "fyziklani")}
   </div>
   <div class="spacer"></div>
-  <div class="article">
+  <div id="members">
+    <h1 id="robotitle">Členové týmu</h1>
+    <br>
+    <div class="medallion" id="simon">
+      <img src="/simon.png" alt="simon">
+      <p class="medallion-text">Šimon Vecka, kapitán týmu, konstruktér, hrdý uživatel Neovimu</p>
+    </div>
+    <div class="medallion" id="ondra">
+      <img src="/ondra.png" alt="ondra">
+      <p class="medallion-text">Ondra Urban, programátor, grafik, konstruktér, hrdý uživatel MS Windows</p>
+    </div>
+    <div class="medallion" id="rosta">
+      <img src="/rosta.png" alt="rosta">
+      <p class="medallion-text">Rosťa Kozlík, programátor, konstruktér, hrdý uživatel Arch Linuxu</p>
+    </div>
+    <div class="medallion" id="tomas">
+      <img src="/tomas.png" alt="tomas">
+      <p class="medallion-text">Tomáš Jodl, fotograf, hrdý uživatel Fujitsu Limited</p>
+    </div>
+    <div class="medallion" id="filip">
+      <img src="/filip.png" alt="filip">
+      <p class="medallion-text">Filip Týc, designér, konstruktér, hrdý uživatel VS Code</p>
+    </div>
+    <div class="medallion" id="vojta">
+      <img src="/vojta.png" alt="vojta">
+      <p class="medallion-text">Vojta Sršeň, americký špion, hrdý uživatel pasu</p>
+    </div>
+    <div class="medallion" id="sperl">
+      <img src="/sperl.png" alt="sperl">
+      <p class="medallion-text">Mgr. Jiří Šperl, kouč</p>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <h1>Naše úspěchy</h1>
+  <div class="article" id="achievments">
     <h1>Fyziklani</h1>
     <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quasi sed voluptatum, deserunt ea nobis distinctio natus quo placeat magnam ut expedita dicta corporis obcaecati nostrum nihil soluta eum doloremque quis.</p>
     {@render carImg("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpleated-jeans.com%2Fwp-content%2Fuploads%2F2023%2F05%2Ffunny-random-pictures-may13.jpg&f=1&nofb=1&ipt=cbcaa87d2fecd633c978bda634cc21e6323a8ccfd0976d91d2718cac4cfaf5da&ipo=images", "fyziklani")}
@@ -73,41 +108,43 @@
     <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpleated-jeans.com%2Fwp-content%2Fuploads%2F2023%2F05%2Ffunny-random-pictures-may13.jpg&f=1&nofb=1&ipt=cbcaa87d2fecd633c978bda634cc21e6323a8ccfd0976d91d2718cac4cfaf5da&ipo=images" alt="fyziklani">
   </div>
   <div class="spacer"></div>
-  <div id="members">
-    <h1 id="robotitle">Robotický tým ze srdce Prahy</h1>
-    <br>
-    <div class="medallion" id="simon">
-      <img src="/simon.png" alt="simon">
-      <p class="medallion-text">proste simon</p>
-    </div>
-    <div class="medallion" id="ondra">
-      <img src="/simon.png" alt="ondra">
-      <p class="medallion-text">proste simon</p>
-    </div>
-    <div class="medallion" id="rosta">
-      <img src="/simon.png" alt="rosta">
-      <p class="medallion-text">proste simon</p>
-    </div>
-    <div class="medallion" id="tomas">
-      <img src="/simon.png" alt="tomas">
-      <p class="medallion-text">proste simon</p>
-    </div>
-    <div class="medallion" id="filip">
-      <img src="/simon.png" alt="filip">
-      <p class="medallion-text">proste simon</p>
-    </div>
-    <div class="medallion" id="vojta">
-      <img src="/simon.png" alt="vojta">
-      <p class="medallion-text">proste simon</p>
-    </div>
+  <div id="photos">
+    <h1>Fotky ze soutěží:</h1>
+    <a class="link" href="https://eu.zonerama.com/SimonVecka/Album/12824474">FLL regionální 2025 (Šimon)</a> <br>
+    <a class="link" href="https://eu.zonerama.com/gchd-tomjodl/Album/12797750">FLL regionální 2025 (Tomáš)</a> <br>
+    <a class="link" href="https://eu.zonerama.com/SimonVecka/Album/12505402">Robosoutěž základní kolo 2024 (Šimon)</a> <br>
+    <a class="link" href="https://eu.zonerama.com/gchd-tomjodl/Album/12797740">Robosoutěž základní kolo 2024 (Tomáš)</a> <br>
+    <a class="link" href="https://eu.zonerama.com/SimonVecka/Album/12620676">Robosoutěž finále 2024 (Šimon)</a> <br>
   </div>
   <div class="spacer"></div>
   <hr>
   <div id="footer">
-    <a href="https://instagram.com/skrat_org">
-      <img src="https://strela-vlna.gchd.cz/images/instagram_icon.png" alt="instagram">
-    </a>
+    <div class="section">
+      <h2>Kontakty</h2>
+      <p id="footer-text">
+        <span class="bold">Email:</span> skrat.org@gmail.com
+        <br> <br>
+        <span class="bold">Naše škola:</span>
+        <br>
+        Gymnázium Christiana Dopplera
+        <br>
+        Zborovská 621/45
+        <br>
+        150 00 Praha 5 - Malá Strana
+      </p>
+    </div>
+    <div class="section">
+      <img id="skrat" src="https://strela-vlna.gchd.cz/images/skrat.png" alt="skrat">
+      <p>&copy; Skrat 2025</p>
+    </div>
+    <div class="section">
+      <h2>Sledujte nás</h2>
+      <a href="https://instagram.com/skrat_org">
+        <img id="ig" src="https://strela-vlna.gchd.cz/images/instagram_icon.png" alt="instagram">
+      </a>
+    </div>
   </div>
+  <div class="spacer"></div>
 </main>
 
 <style>
@@ -188,6 +225,7 @@
   #tomas { grid-area: tomas; }
   #filip { grid-area: filip; }
   #vojta { grid-area: vojta; }
+  #sperl { grid-area: sperl; }
   #robotitle {
     grid-area: robotitle;
     @media (max-width: 700px) {
@@ -198,11 +236,16 @@
     padding-inline: 50px;
     padding-top: 40px;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+  }
+  .medallion > img {
+    @media (max-width: 800px) {
+      width: calc(100vw - 100px);
+    }
   }
   .medallion-text {
     padding-left: 10px;
-    width: 100px;
+    width: 300px;
   }
   #members {
     display: grid;
@@ -213,19 +256,22 @@
       'rosta'
       'tomas'
       'filip'
-      'vojta';
+      'vojta'
+      'sperl';
     @media (min-width: 800px) {
       grid-template-areas: 
         'robotitle robotitle'
         'simon ondra'
         'rosta tomas'
-        'filip vojta';
+        'filip vojta'
+        'sperl sperl';
     }
     @media (min-width: 1300px) {
       grid-template-areas: 
         'robotitle robotitle robotitle'
         'simon ondra rosta'
-        'tomas filip vojta';
+        'tomas filip vojta'
+        'sperl sperl sperl';
     }
   }
   hr {
@@ -291,8 +337,32 @@
     margin-inline: 100px;
     width: 70vw;
   }
-  #footer > a > img {
+  #ig {
     width: 30px;
     height: 30px;
+  }
+  #footer {
+    width: 100vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .bold {
+    font-weight: bold;
+  }
+  #footer-text {
+    text-align: left;
+  }
+  #skrat {
+    width: 100px;
+    height: 100px;
+  }
+  .link {
+    text-decoration: underline;
+  }
+  .section {
+    padding: 30px;
   }
 </style>
