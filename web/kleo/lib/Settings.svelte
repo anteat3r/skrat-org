@@ -69,6 +69,10 @@
     });
     alert("ok když myslíš 😒");
   }
+
+  async function triggerTTSrcsreload() {
+    await pb.send("/api/reloadsrcs", {});
+  }
 </script>
 
 <button onclick={logout}>Logout</button>
@@ -95,5 +99,6 @@
 <button onclick={setPersonalReloadInterval}>Nastavit</button>
 <br><br>
 <CustomEndp />
+<button onclick={triggerTTSrcsreload}>Trigger TTSrcsReload</button>
 
 <p>{__COMMIT_HASH__}</p>
