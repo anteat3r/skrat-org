@@ -295,12 +295,28 @@ func DayOverviewHandler(
 
     evts, ok, err := QueryData[BakaEvents](app, EVENTS, EVENTS, "")
     if err != nil { return err }
-    nw := time.Now()
-    nweek := nw.AddDate(0, 0, -int(nw.Weekday() - 1))
-    if GetTTime() == NEXT {
-      nweek = nweek.AddDate(0, 0, 7)
-    }
-    dday := nweek.AddDate(0, 0, weekday - 1) 
+
+		rdayn := ""
+		for k := range res.Data {
+			rdayn = k
+			break
+		}
+
+		dday := time.Now()
+
+		rdayt := res.Data[rdayn].Title
+		rdayst1 := strings.Split(rdayt, "\n")
+		if len(rdayst1) == 2 {
+			rdst2 := strings.Split(rdayst1[1], ".")
+			if len(rdst2) == 3 {
+				dn, err := strconv.Atoi(rdst2[0])
+				if err != nil { return err }
+				mn, err := strconv.Atoi(rdst2[1])
+				if err != nil { return err }
+				dday = time.Date(dday.Year(), time.Month(mn), dn, 10, 0, 0, 0, time.UTC)
+			}
+		}
+
     if ok {
       for _, e := range evts.Events {
         if !e.ContainsDay(dday) { continue }
