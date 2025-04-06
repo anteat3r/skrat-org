@@ -228,6 +228,7 @@ func TimeTableSourcesReload(
     err := app.RunInTransaction(func(txApp core.App) error {
       _, err := txApp.DB().NewQuery("delete from " + SOURCES).Execute()
       if err != nil { return err }
+			fmt.Println("10202")
 
       users, err := txApp.FindRecordsByFilter(
         USERS,
@@ -235,23 +236,28 @@ func TimeTableSourcesReload(
         LAST_USED, 1, 0,
       )
       if err != nil { return err }
+			fmt.Println("10203")
 
       if len(users) < 1 { return fmt.Errorf("no suitable user found") }
+			fmt.Println("10204")
       user := users[0]
 
       resp, err := BakaWebQuery(txApp, user, TIMETABLE_PUBLIC)
       if err != nil {
 				ierr, ok := err.(BakaInvalidError)
 				if !ok { return err }
+				fmt.Println("10205")
         user.Set(BAKAVALID, false)
         err = txApp.Save(user)
         if err != nil { return err }
-        SendNotifs(app, user, []Notif{ BakaInvalidNotif{} })
+				fmt.Println("10206")
+        SendNotifs(txApp, user, []Notif{ BakaInvalidNotif{} })
         return ierr
       }
 
       srcs, err := ParseSourcesWeb(resp)
       if err != nil { return err }
+			fmt.Println("10207")
 
       coll, _ := txApp.FindCollectionByNameOrId(SOURCES)
       for name, src := range srcs.AsMap() {
@@ -262,6 +268,7 @@ func TimeTableSourcesReload(
           rec.Set(TYPE, name)
           err := txApp.Save(rec)
           if err != nil { return err }
+					fmt.Println("10208")
         }
       }
 
@@ -271,14 +278,17 @@ func TimeTableSourcesReload(
       rec.Set(TYPE, EVENTS)
       err = txApp.Save(rec)
       if err != nil { return err }
+			fmt.Println("10209")
 
       user.Set(LAST_USED, types.NowDateTime())
 
       err = txApp.Save(user)
       if err != nil { return err }
+			fmt.Println("10211")
 
       return nil
     })
+		fmt.Println("10221")
 
     if err != nil { app.Logger().Error(err.Error(), slog.Any("error", err)) }
   }
