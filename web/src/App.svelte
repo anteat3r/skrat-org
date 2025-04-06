@@ -50,8 +50,8 @@
     <div class="navbar">
       <a class="menu" href="#title" onclick={scrollIntoView}>Domů</a>
       <a class="menu" href="#about" onclick={scrollIntoView}>O nás</a>
-      <a class="menu" href="#photos" onclick={scrollIntoView}>Fotky</a>
       <a class="menu" href="#achievments" onclick={scrollIntoView}>Úspěchy</a>
+      <a class="menu" href="#photos" onclick={scrollIntoView}>Fotky</a>
     </div>
   </div>
   <div class="spacer"></div>
