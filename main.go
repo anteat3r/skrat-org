@@ -183,7 +183,7 @@ func main() {
 				se.Router.POST(
 					"/api/reloadsrcs",
 					func(e *core.RequestEvent) error {
-						src.TimeTableSourcesReload(app)
+						src.TimeTableSourcesReload(app)()
 						return e.String(200, "")
 					},
 				).Bind(apis.RequireAuth(src.USERS))
