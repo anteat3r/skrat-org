@@ -246,7 +246,7 @@ func TimeTableSourcesReload(
         err = txApp.Save(user)
         if err != nil { return err }
         SendNotifs(app, user, []Notif{ BakaInvalidNotif{} })
-        return nil
+        return err
       }
 
       srcs, err := ParseSourcesWeb(resp)

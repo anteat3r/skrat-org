@@ -200,6 +200,8 @@ func (n MarkNotif) JSONEncode() string {
   if imageStr != "" {
     imageStr = `,"image":"` + imageStr + `"`
   }
+	// TODO: remove
+	imageStr = ""
   return `{"type":"notif","title":"` + n.Title + `","options":{"body":"` + n.Text + `" ` + imageStr + `}}`
 }
 

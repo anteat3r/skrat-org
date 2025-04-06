@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "pocketbase": "^0.25.0",
-    "svelte-carousel": "^1.0.25",
     "svelte-routing": "^2.13.0"
   }
 }
