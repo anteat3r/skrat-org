@@ -64,39 +64,6 @@ func MarksHandler(
   }
 }
 
-func TimeTableHandler(
-  app *pocketbase.PocketBase,
-  datacoll *core.Collection,
-) func(*core.RequestEvent) error {
-  return func(e *core.RequestEvent) error {
-    user := e.Auth
-
-    date := e.Request.URL.Query().Get("date")
-
-    qparam := ""
-    if date != "" {
-      qparam = "?date=" + date
-    }
-
-    resp, err := BakaQuery(app, user, GET, TIMETABLE_ACTUAL + qparam, "")
-    if err != nil { return err }
-    sresp := string(resp)
-
-    var marks BakaMark
-    err = json.Unmarshal(resp, &marks)
-    if err != nil { return err }
-
-    err = StoreData(
-      app, datacoll,
-      TIMETABLE_ACTUAL, PRIVATE, user.Id,
-      marks, sresp,
-    )
-    if err != nil { return err }
-
-    return e.String(200, sresp)
-  }
-}
-
 func StoreVapidEndpoint(
   app *pocketbase.PocketBase,
 ) func(*core.RequestEvent) error {
@@ -500,7 +467,14 @@ func MyTimeTableHandler(
   return func(e *core.RequestEvent) error {
     user := e.Auth
 
-    resp, err := BakaQuery(app, user, GET, TIMETABLE_ACTUAL, "")
+    date := e.Request.URL.Query().Get("date")
+
+    qparam := ""
+    if date != "" {
+      qparam = "?date=" + date
+    }
+
+    resp, err := BakaQuery(app, user, GET, TIMETABLE_ACTUAL + qparam, "")
     if err != nil { return err }
     sresp := string(resp)
 

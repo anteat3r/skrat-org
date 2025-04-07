@@ -29,7 +29,19 @@
   onMount(async function() {
     ttable = await pb.send("/api/kleo/mytt", {})
   })
+
+  let date = $state("");
+
+  async function onDateChange() {
+    ttable = await pb.send("/api/kleo/mytt", {
+      query: {
+        date: date,
+      },
+    })
+  }
 </script>
+
+<input type="date" bind:value={date} onchange={onDateChange}>
 
 {#if ttable !== null}
   <main>

@@ -21,11 +21,11 @@
         <span style="font-weight: bold;">{new Date(time.StartTime).toLocaleDateString("cs-CZ")}</span>
         {#if !time.WholeDay}
           <span>
-            {new Date(time.StartTime).toLocaleDateString("cs-CZ")}
             {new Date(time.StartTime).toLocaleTimeString("cs-CZ").split(":").slice(0, -1).join(":")} - 
             {new Date(time.EndTime).toLocaleTimeString("cs-CZ").split(":").slice(0, -1).join(":")}
           </span>
         {/if}
+        <br>
       {/each}
       <br><br>
       {#if event.Classes.length > 0} <span style="font-weight: bold;">Třídy:</span> {/if}

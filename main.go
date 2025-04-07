@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"log/slog"
 	"os"
 	"os/exec"
 	"regexp"
@@ -86,7 +87,7 @@ func main() {
         se.Router.GET("/s", func(e *core.RequestEvent) error {
           if len(e.Request.URL.Query()) != 1 { return e.Error(400, "key not specified", nil) }
           var key string
-          for k, _ := range e.Request.URL.Query() { key = k }
+          for k := range e.Request.URL.Query() { key = k }
           if key == "" { return e.Error(400, "invalid key", nil ) }
           rec, err := app.FindFirstRecordByData("urls", "name", key)
           if err != nil { return err }
@@ -227,7 +228,7 @@ func main() {
       Use: "cleardata",
       Run: func(cmd *cobra.Command, args []string) {
         _, err := app.DB().NewQuery("delete from data").Execute()
-        if err != nil { app.Logger().Error(err.Error(), err) }
+        if err != nil { app.Logger().Error(err.Error(), slog.Any("error", err)) }
       },
     })
 
