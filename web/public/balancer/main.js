@@ -2,7 +2,11 @@ async function getPerm() {
   try {
   let device = await navigator.bluetooth.requestDevice({filters: [{namePrefix: "BBC"}], optionalServices: ["6e400001-b5a3-f393-e0a9-e50e24dcca9e"]});
     await device.gatt.connect();
-    alert(await device.gatt.getPrimaryService("6e400001-b5a3-f393-e0a9-e50e24dcca9e"));
+    let service = await device.gatt.getPrimaryService("6e400001-b5a3-f393-e0a9-e50e24dcca9e");
+    let characteristic = await service.getCharacteristic("6e400002-b5a3-f393-e0a9-e50e24dcca9e");
+    characteristic.addEventListener('characteristicvaluechanged', function (evt) {
+      document.querySelector("h1").innerText = typeof evt.target.value;
+    });
   } catch (e) {
     alert(e);
   }
