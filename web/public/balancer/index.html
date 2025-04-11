@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Balancer</title>
+  </head>
+  <body>
+    <button onclick="getPerm()">Get Perm</button>
+  </body>
+  <script>
+    async function getPerm() {
+      let device = await navigator.bluetooth.requestDevice({acceptAllDevices: true});
+      let gatt = await device.gatt.connect();
+      console.log(gatt.getPrimaryService("6e400001-b5a3-f393-e0a9-e50e24dcca9e"));
+    }
+  </script>
+</html>

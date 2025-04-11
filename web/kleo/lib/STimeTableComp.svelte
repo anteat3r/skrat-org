@@ -103,10 +103,15 @@
               onkeypress={forwardButtonPress}
           >
             {#if useOwner}
-              <h1>{day.owner}</h1>
+              <h1>{day.owner} {day.special}</h1>
             {:else}
-              <h1>{day.title.split(" ")[0]}</h1>
-              <h1>{day.title.split(" ")[1]}</h1>
+              {#if day.special === ""}
+                <h1>{day.title.split(" ")[0]}</h1>
+                <h1>{day.title.split(" ")[1]}</h1>
+              {:else}
+                  <h1>{day.title.replace("\n", " ")}</h1>
+                  <h1>{day.special}</h1>
+              {/if}
             {/if}
             {#if day.events.length > 0}
               <p>{day.events.length} evts</p>
