@@ -5,6 +5,7 @@ async function getPerm() {
   } catch (e) {
     alert(e);
   }
+  alert(device.gatt.connected());
 }
 // async function getPerm() {
 //   let device = await navigator.usb.requestDevice({filters: [{vendorId: 0x0d28}]});
