@@ -2,7 +2,7 @@ async function getPerm() {
   try {
   let device = await navigator.bluetooth.requestDevice({filters: [{namePrefix: "BBC"}]});
     await device.gatt.connect();
-    alert(device.gatt.getPrimaryService());
+    alert(device.gatt.getPrimaryService("6e400001-b5a3-f393-e0a9-e50e24dcca9e"));
   } catch (e) {
     alert(e);
   }
