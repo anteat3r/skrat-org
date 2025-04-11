@@ -7,6 +7,7 @@ async function getPerm() {
     characteristic.addEventListener('characteristicvaluechanged', function (evt) {
       document.querySelector("h1").innerText = typeof evt.target.value;
     });
+    document.querySelector("h1").innerText = characteristic.readValue();
   } catch (e) {
     alert(e);
   }
