@@ -1,11 +1,11 @@
 async function getPerm() {
-  let device = await navigator.bluetooth.requestDevice({filters: [{namePrefix: "BBC"}]});
   try {
+  let device = await navigator.bluetooth.requestDevice({filters: [{namePrefix: "BBC"}]});
     await device.gatt.connect();
+    alert(device.gatt.connected());
   } catch (e) {
     alert(e);
   }
-  alert(device.gatt.connected());
 }
 // async function getPerm() {
 //   let device = await navigator.usb.requestDevice({filters: [{vendorId: 0x0d28}]});
