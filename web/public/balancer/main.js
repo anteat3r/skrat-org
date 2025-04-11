@@ -1,6 +1,10 @@
 async function getPerm() {
   let device = await navigator.bluetooth.requestDevice({acceptAllDevices: true});
-  await device.gatt.connect();
+  try {
+    await device.gatt.connect();
+  } catch (e) {
+    alert(e);
+  }
 }
 // async function getPerm() {
 //   let device = await navigator.usb.requestDevice({filters: [{vendorId: 0x0d28}]});
