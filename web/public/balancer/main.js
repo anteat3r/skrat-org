@@ -6,7 +6,12 @@ async function getPerm() {
     let characteristic = await service.getCharacteristic("6e400002-b5a3-f393-e0a9-e50e24dcca9e");
     let idk = await characteristic.startNotifications();
     idk.addEventListener('characteristicvaluechanged', function (evt) {
-      document.querySelector("h1").innerText = typeof evt.target.value;
+      let value = evt.target.value;
+      let a = [];
+      for (let i = 0; i < value.byteLength; i++) {
+        a.push('0x' + ('00' + value.getUint8(i).toString(16)).slice(-2));
+      }
+      document.querySelector("h1").innerText = a.join(" ");
     })
     document.querySelector("h1").innerText = JSON.stringify(Object.keys(idk));
   } catch (e) {
