@@ -5,7 +5,7 @@ async function getPerm() {
     let service = await device.gatt.getPrimaryService("6e400001-b5a3-f393-e0a9-e50e24dcca9e");
     let characteristic = await service.getCharacteristic("6e400002-b5a3-f393-e0a9-e50e24dcca9e");
     let idk = await characteristic.startNotifications();
-    document.querySelector("h1").innerText = Object.keys(idk);
+    document.querySelector("h1").innerText = JSON.stringify(Object.keys(idk));
   } catch (e) {
     alert(e);
   }
