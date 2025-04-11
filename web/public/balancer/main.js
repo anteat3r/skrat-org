@@ -1,5 +1,5 @@
 async function getPerm() {
-  let device = await navigator.bluetooth.requestDevice({acceptAllDevices: true});
+  let device = await navigator.bluetooth.requestDevice({filters: [{namePrefix: "BBC"}]});
   try {
     await device.gatt.connect();
   } catch (e) {
