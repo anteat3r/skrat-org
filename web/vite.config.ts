@@ -11,6 +11,7 @@ export default defineConfig({
       input: {
         "index.html": "index.html",
         "kleo/index.html": "kleo/index.html",
+        "balancer/index.html": "balancer/index.html",
       }
     }
   },
