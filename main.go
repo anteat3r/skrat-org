@@ -135,11 +135,11 @@ func main() {
 					return nil
 				})
 				se.Router.POST("/korunkapi/", func(e *core.RequestEvent) error {
-					e.Request.URL.Host = targetUrl.Host
-					e.Request.URL.Scheme = targetUrl.Scheme
-					e.Request.URL.Path = strings.TrimPrefix(e.Request.URL.Path, "/korunkapi")
-					e.Request.Header.Set("X-Forwarded-Host", e.Request.Header.Get("Host"))
-					e.Request.Host = targetUrl.Host
+					// e.Request.URL.Host = targetUrl.Host
+					// e.Request.URL.Scheme = targetUrl.Scheme
+					// e.Request.URL.Path = strings.TrimPrefix(e.Request.URL.Path, "/korunkapi")
+					// e.Request.Header.Set("X-Forwarded-Host", e.Request.Header.Get("Host"))
+					// e.Request.Host = targetUrl.Host
 					proxy.ServeHTTP(e.Response, e.Request)
 					return nil
 				})
