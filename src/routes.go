@@ -489,13 +489,13 @@ func MyTimeTableHandler(
     )
     if err != nil { return err }
 
-		evts, ok, err := QueryData[BakaEvents](
-			app, EVENTS_MY, PRIVATE, user.Id,
-		)
-		if err != nil { return err }
-		if ok {
-
-		}
+		// evts, ok, err := QueryData[BakaEvents](
+		// 	app, EVENTS_MY, PRIVATE, user.Id,
+		// )
+		// if err != nil { return err }
+		// if ok {
+		//
+		// }
 
     return e.String(200, sresp)
   }
