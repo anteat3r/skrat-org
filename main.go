@@ -16,8 +16,8 @@ import (
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/spf13/cobra"
 
-	"net/http/httputil"
-	"net/url"
+	// "net/http/httputil"
+	// "net/url"
 )
 
 var (
