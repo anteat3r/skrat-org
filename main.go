@@ -15,6 +15,9 @@ import (
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/spf13/cobra"
+
+	"net/http/httputil"
+	"net/url"
 )
 
 var (
@@ -119,6 +122,17 @@ func main() {
           }
           return e.Error(401, "reloaded a minute ago, slow down", nil)
         })
+
+				targetUrl, _ := url.Parse("http://localhost:1234")
+				proxy := httputil.NewSingleHostReverseProxy(targetUrl)
+				se.Router.GET("/korunkapi", func(e *core.RequestEvent) error {
+					e.Request.URL.Host = targetUrl.Host
+					e.Request.URL.Scheme = targetUrl.Scheme
+					e.Request.Header.Set("X-Forwarded-Host", e.Request.Header.Get("Host"))
+					e.Request.Host = targetUrl.Host
+					proxy.ServeHTTP(e.Response, e.Request)
+					return nil
+				})
 
         se.Router.POST(
           "/api/kleo/login",

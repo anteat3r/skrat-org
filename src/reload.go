@@ -444,6 +444,7 @@ func EveningRefresh(
         total_notifs := make([]Notif, 0)
 
         var absence BakaAbsence
+				var events BakaEvents
         var sresp string
 
         resp, err := BakaQuery(app, user, GET, ABSENCE_STUDENT, "")
@@ -464,6 +465,27 @@ func EveningRefresh(
           app, datacoll,
           ABSENCE_STUDENT, PRIVATE, user.Id,
           absence, sresp,
+        )
+        if err != nil { return err }
+
+        resp, err = BakaQuery(app, user, GET, EVENTS_MY, "")
+        if err != nil {
+          if _, ok := err.(BakaInvalidError); !ok { return err }
+          user.Set(BAKAVALID, false)
+          err = app.Save(user)
+          if err != nil { return err }
+          total_notifs = append(total_notifs, BakaInvalidNotif{})
+          goto sendnotifs
+        }
+        sresp = string(resp)
+
+        err = json.Unmarshal(resp, &events)
+        if err != nil { return err }
+
+        err = StoreData(
+          app, datacoll,
+          EVENTS_MY, PRIVATE, user.Id,
+          events, sresp,
         )
         if err != nil { return err }
         
