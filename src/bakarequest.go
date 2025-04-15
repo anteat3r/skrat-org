@@ -22,7 +22,7 @@ var doNotRedirectClient = http.Client{
   },
 }
 
-var _ error = (*BakaInvalidError)(nil)
+var _ error = *(*BakaInvalidError)(nil)
 
 type BakaInvalidError struct {
   user string

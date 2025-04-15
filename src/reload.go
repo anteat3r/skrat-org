@@ -178,7 +178,14 @@ func TimeTableReload(app *pocketbase.PocketBase, datacoll *core.Collection) func
       } else {
         app.Logger().Info(fmt.Sprintf("ttreload %s %s %s", GetTTime(), src.GetString(TYPE), src.GetString(NAME)))
         tt, err := BakaTimeTableQuery(txApp, user, GetTTime(), src.GetString(TYPE), src.GetString(NAME))
-        if err != nil { return err }
+        if err != nil {
+          if _, ok := err.(BakaInvalidError); !ok { return err }
+          user.Set(BAKAVALID, false)
+          err = txApp.Save(user)
+          if err != nil { return err }
+          SendNotifs(app, user, []Notif{ BakaInvalidNotif{} })
+          return nil
+        }
         if !user.GetBool(BAKAVALID) && user.GetString(VAPID) != "" {
           err = SendNotifs(app, user, []Notif{ BakaInvalidNotif{} })
           if err != nil { return err }
