@@ -3,6 +3,9 @@ package src
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
+	"regexp"
 	"slices"
 	"strconv"
 	"strings"
@@ -499,4 +502,23 @@ func MyTimeTableHandler(
 
     return e.String(200, sresp)
   }
+}
+
+func XKCDHandler(e *core.RequestEvent) error {
+	req, err := http.NewRequest( "GET", "https://xkcd.com", nil)
+	if err != nil { return err }
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil { return err }
+
+	resb, err := io.ReadAll(resp.Body)
+	if err != nil { return err }
+
+	reg, err := regexp.Compile(`<img src="\/\/imgs\.xkcd\.com\/comics\/(.+)\.png`)
+	if err != nil { return err }
+
+	match := reg.FindStringSubmatch(string(resb))
+	if match == nil || len(match) != 2 { return e.InternalServerError("idk lil bro", nil) }
+
+	return e.String(200, "https://imgs.xkcd.com/comics/" + match[1])
 }

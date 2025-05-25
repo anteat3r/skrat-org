@@ -206,12 +206,17 @@ func main() {
         ).Bind(apis.RequireAuth(src.USERS)).Bind(src.RequireBakaValid)
 
 				se.Router.POST(
-					"/api/reloadsrcs",
+					"/api/kleo/reloadsrcs",
 					func(e *core.RequestEvent) error {
 						src.TimeTableSourcesReload(app)()
 						return e.String(200, "")
 					},
 				).Bind(apis.RequireAuth(src.USERS))
+
+				se.Router.GET(
+					"/api/kleo/xkcd",
+					src.XKCDHandler,
+				)
 
 
         app.Cron().MustAdd(
