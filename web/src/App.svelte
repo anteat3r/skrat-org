@@ -39,7 +39,7 @@
 </script>
 
 {#snippet carImg(url: string, alt: string)}
-  <img onclick={scrollCarousel} data-active src={url} alt={alt} role="button" tabindex="0" onkeypress={forwardButtonPress}>
+  <img onclick={scrollCarousel} class="carousel" data-active src={url} alt={alt} role="button" tabindex="0" onkeypress={forwardButtonPress}>
 {/snippet}
 
 <main>
@@ -59,7 +59,7 @@
     <h1>Kdo jsme?</h1>
     <p>Jsme šestičlenný tým, poznali jsme se na Gymnáziu Christiana Dopplera v Praze, kam chodíme všichni do jedné třídy zaměřené na matematiku, fyziku a informatiku. Rádi se
 účastníme fyzikálních, matematických a zejména robotických soutěží.</p>
-    {@render carImg("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpleated-jeans.com%2Fwp-content%2Fuploads%2F2023%2F05%2Ffunny-random-pictures-may13.jpg&f=1&nofb=1&ipt=cbcaa87d2fecd633c978bda634cc21e6323a8ccfd0976d91d2718cac4cfaf5da&ipo=images", "fyziklani")}
+    {@render carImg("https://eu.zonerama.com/photos/522045015_800x500_8.jpg", "fyziklani")}
   </div>
   <div class="spacer"></div>
   <div id="members">
@@ -99,13 +99,13 @@
   <div class="article" id="achievments">
     <h1>Fyziklani</h1>
     <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quasi sed voluptatum, deserunt ea nobis distinctio natus quo placeat magnam ut expedita dicta corporis obcaecati nostrum nihil soluta eum doloremque quis.</p>
-    {@render carImg("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpleated-jeans.com%2Fwp-content%2Fuploads%2F2023%2F05%2Ffunny-random-pictures-may13.jpg&f=1&nofb=1&ipt=cbcaa87d2fecd633c978bda634cc21e6323a8ccfd0976d91d2718cac4cfaf5da&ipo=images", "fyziklani")}
-    {@render carImg("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F6d%2Fc4%2Fc8%2F6dc4c867fc9454a688aa72578db03568.png&f=1&nofb=1&ipt=25bbeff5cfe561af2bc632b8c2e8ea08604b47a7e1f1f007c8381047ea0cda76&ipo=images", "idk bro")}
+    {@render carImg("https://fyziklani.cz/media/photos/2025/winners/20250214_143103.jpg", "fyziklani")}
+    {@render carImg("https://fyziklani.cz/media/photos/2025/winners/20250214_143010.jpg", "idk bro")}
   </div>
   <div class="article left">
     <h1>FLL 2025</h1>
     <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quasi sed voluptatum, deserunt ea nobis distinctio natus quo placeat magnam ut expedita dicta corporis obcaecati nostrum nihil soluta eum doloremque quis.</p>
-    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpleated-jeans.com%2Fwp-content%2Fuploads%2F2023%2F05%2Ffunny-random-pictures-may13.jpg&f=1&nofb=1&ipt=cbcaa87d2fecd633c978bda634cc21e6323a8ccfd0976d91d2718cac4cfaf5da&ipo=images" alt="fyziklani">
+    <img src="https://fyziklani.cz/media/photos/2025/winners/20250214_143010.jpg" alt="fyziklani">
   </div>
   <div class="spacer"></div>
   <div id="photos">
@@ -322,7 +322,7 @@
   img[data-active] {
     display: block;
   }
-  .article > img:not([data-active]) {
+  .article > img:not([data-active]).carousel {
     display: none;
   }
   #about {
@@ -335,7 +335,7 @@
   }
   #about > img {
     margin-inline: 100px;
-    width: 70vw;
+    width: 30vw;
   }
   #ig {
     width: 30px;
