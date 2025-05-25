@@ -520,5 +520,5 @@ func XKCDHandler(e *core.RequestEvent) error {
 	match := reg.FindStringSubmatch(string(resb))
 	if match == nil || len(match) != 2 { return e.InternalServerError("idk lil bro", nil) }
 
-	return e.String(200, "https://imgs.xkcd.com/comics/" + match[1])
+	return e.String(200, "https://imgs.xkcd.com/comics/" + match[1] + ".png")
 }
