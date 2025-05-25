@@ -514,7 +514,7 @@ func XKCDHandler(e *core.RequestEvent) error {
 	resb, err := io.ReadAll(resp.Body)
 	if err != nil { return err }
 
-	reg, err := regexp.Compile(`<img src="\/\/imgs\.xkcd\.com\/comics\/(.+)\.png`)
+	reg, err := regexp.Compile(`<img src="\/\/imgs\.xkcd\.com\/comics\/(.+?)\.png`)
 	if err != nil { return err }
 
 	match := reg.FindStringSubmatch(string(resb))
