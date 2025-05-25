@@ -27,7 +27,7 @@
   {#await loadXKCD()}
     <h1>loading</h1>
   {:then value}
-    <img src={value} alt="" style="width: 100%;">
+    <img src={value} alt="">
   {:catch error}
     <h1>error: {error}</h1>
   {/await}
