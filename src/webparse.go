@@ -2,6 +2,7 @@ package src
 
 import (
 	// "fmt"
+	"errors"
 	"slices"
 	"strconv"
 	"strings"
@@ -197,10 +198,14 @@ func ParseSourcesWeb(htmldoc string) (WebSources, error) {
   }
 
   teachers := dom.QuerySelector(doc, "#selectedTeacher")
+	if teachers == nil { return WebSources{}, errors.New("no #selectedTeacher found") }
   rooms := dom.QuerySelector(doc, "#selectedRoom")
+	if rooms == nil { return WebSources{}, errors.New("no #selectedRoom found") }
   classes := dom.QuerySelector(doc, "#selectedClass")
+	if classes == nil { return WebSources{}, errors.New("no #selectedClass found") }
 
   teacheropts := dom.QuerySelectorAll(teachers, "option")
+	if teacheropts == nil { return WebSources{}, errors.New("no option found") }
   for _, opt := range teacheropts {
     if dom.InnerHTML(opt) == "" { continue }
     sources.Teachers = append(sources.Teachers, WebSourcePair{
@@ -210,6 +215,7 @@ func ParseSourcesWeb(htmldoc string) (WebSources, error) {
   }
 
   roomopts := dom.QuerySelectorAll(rooms, "option")
+	if roomopts == nil { return WebSources{}, errors.New("no option found") }
   for _, opt := range roomopts {
     if dom.InnerHTML(opt) == "" { continue }
     sources.Rooms = append(sources.Rooms, WebSourcePair{
@@ -219,6 +225,7 @@ func ParseSourcesWeb(htmldoc string) (WebSources, error) {
   }
   
   classopts := dom.QuerySelectorAll(classes, "option")
+	if classopts == nil { return WebSources{}, errors.New("no option found") }
   for _, opt := range classopts {
     if dom.InnerHTML(opt) == "" { continue }
     sources.Classes = append(sources.Classes, WebSourcePair{
