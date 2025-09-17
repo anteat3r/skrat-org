@@ -71,7 +71,7 @@
   }
 
   async function triggerTTSrcsreload() {
-    await pb.send("/api/reloadsrcs", {
+    await pb.send("/api/kleo/reloadsrcs", {
       method: "POST",
     });
   }
